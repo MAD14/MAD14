@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/tv_group"
+    tools:context="it.polito.mad14.MainActivity"
+    android:clickable="true"
+    android:onClick="onClick"
+    >
+
+    <ImageView
+        android:id="@+id/group_icon"
+        android:layout_width="@dimen/icon_dimension_group"
+        android:layout_height="@dimen/icon_dimension_group"
+        android:src="@mipmap/group_icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignBottom="@+id/group_summary1"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"/>
+
+    <TextView
+        android:id="@+id/group_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/main_text"
+        android:textColor="@color/writing"
+        android:elegantTextHeight="true"
+        android:layout_toRightOf="@+id/group_icon"
+        android:text="Group Name"
+        android:layout_marginTop="10dp"/>
+
+
+    <TextView
+        android:id="@+id/group_summary1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/summary"
+        android:textColor="@color/green"
+        android:text="Summary1"
+        android:layout_below="@+id/group_name"
+        android:layout_alignLeft="@+id/group_name"
+        android:layout_alignStart="@+id/group_name"
+        android:layout_marginTop="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="16dp"/>
+
+    <TextView
+        android:id="@+id/group_summary2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/summary"
+        android:textColor="@color/red"
+        android:text="Summary2"
+        android:layout_alignBaseline="@+id/group_summary1"
+        android:layout_alignBottom="@+id/group_summary1"
+        android:layout_toRightOf="@+id/group_summary1"
+        android:layout_toEndOf="@+id/group_summary1"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="5dp"
+        />
+
+    <TextView
+        android:id="@+id/group_notification"
+        android:layout_width="@dimen/icon_dimension"
+        android:layout_height="@dimen/icon_dimension"
+        android:background="@mipmap/notification_icon"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
+        android:layout_alignTop="@+id/group_name"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/margin"
+        android:textAlignment="center"
+        android:textColor="@color/writing"
+        android:gravity="center" />
+
+
+
+</RelativeLayout>
