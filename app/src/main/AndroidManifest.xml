@@ -46,7 +46,8 @@
         <activity
             android:name=".NewGroupActivityPhase3"
             android:label="@string/title_activity_new_group_phase3"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".ProfileActivity"></activity>
     </application>
 
 </manifest>

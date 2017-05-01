@@ -44,6 +44,7 @@
     <string name="title_activity_invite_users_to_group">Invite to TA (3of3)</string>
     <string name="no_network_connection">Check your connection</string>
     <string name="action_logout">Logout</string>
+    <string name="action_profile">Personal profile</string>
     <string name="title_activity_login">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="title_activity_new_group_phase1">NewGroupActivityPhase1</string>

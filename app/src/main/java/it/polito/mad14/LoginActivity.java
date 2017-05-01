@@ -60,10 +60,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-
     public static String[] DUMMY_CREDENTIALS = {""};
 
-    //ED
     public static final int RC_SIGN_IN = 10;
     private GoogleApiClient mGoogleApiClient;
     private GoogleSignInAccount acct;
@@ -73,7 +71,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private String password;
 
     private static final String TAG = LoginActivity.class.getName();
-    //ED
     /**
      * Id to identity READ_CONTACTS permission request.
      */
@@ -105,7 +102,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         setContentView(R.layout.activity_login);
 
-
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         populateAutoComplete();
@@ -115,8 +111,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-
-        //ED
 
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
@@ -198,7 +192,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         findViewById(R.id.email_register_button).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                register();
+                Intent registerIntent = new Intent(LoginActivity.this,RegistrationActivity.class);
+                startActivity(registerIntent);
             }
         });
 
@@ -208,19 +203,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 signIn();
             }
         });
-
-        //ED
     }
 
-    private void register(){
-//        Intent registerIntent = new Intent(this,RegistrationActivity.class);
-//        startActivity(registerIntent);
-        Toast.makeText(LoginActivity.this,"Registration",Toast.LENGTH_SHORT);
-    }
-
-
-
-    //
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
 
@@ -238,10 +222,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     // If sign in fails, display a message to the user.
                     Toast.makeText(LoginActivity.this, "Authentication failed.",
                             Toast.LENGTH_SHORT).show();
-                    //updateUI(null);
                 }
-
-                // ...
             }
         });
     }
@@ -257,6 +238,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
+            //TODO: ritorna result errore --> da risolvere!!!
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
         }
@@ -269,10 +251,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.
-//            TODO: show a message that the sign in has not concluded successfully
+            Toast.makeText(this,"Sign in unsuccessfull", Toast.LENGTH_SHORT).show();
         }
     }
-//ED
 
     private void populateAutoComplete() {
         if (!mayRequestContacts()) {
@@ -454,10 +435,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             }
 
-            // TODO: register the new account here.
-//            Intent intent = new Intent(getApplicationContext(),RegistrationActivity.class);
-//            intent.putExtra("emailRequested",mEmail);
-//            startActivity(intent);
             return true;
         }
 

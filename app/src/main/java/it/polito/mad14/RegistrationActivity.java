@@ -69,7 +69,6 @@ public class RegistrationActivity extends AppCompatActivity {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
                 }
-                // ...
             }
         };
 
@@ -81,7 +80,7 @@ public class RegistrationActivity extends AppCompatActivity {
         emailView.setText(emailRequested);
         passView = (EditText) findViewById(R.id.password);
 
-        mProgressView.findViewById(R.id.login_progress_registration);
+        mProgressView = findViewById(R.id.login_progress_registration);
 
         final Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -132,12 +131,12 @@ public class RegistrationActivity extends AppCompatActivity {
                                 mainActivityCall();
                             }
                             else{
+                                //TODO: new activity con richiesta nuovo username fino a quando non ce n'è uno disponibile                                     //con ActivityOnResult() che completa l'inserimento
+                                Toast.makeText(
+                                        RegistrationActivity.this, "Authentication failed: username already in use! Please select another one",Toast.LENGTH_SHORT).show();
 
-                                //TODO: new activity con richiesta nuovo username fino a quando non ce n'è uno disponibile
-                                //con ActivityOnResult() che completa l'inserimento
-                                Log.w(TAG, "createUserWithEmail:failure->username already in use", task.getException());
-                                Toast.makeText(RegistrationActivity.this, "Authentication failed: username already in use! Please select another one",
-                                        Toast.LENGTH_SHORT).show();
+                                passView.setFocusable(true);
+
 
                                 //TODO: rimozione authentication se abbandono app
                             }
