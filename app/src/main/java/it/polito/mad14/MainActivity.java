@@ -1,5 +1,6 @@
 package it.polito.mad14;
 
+import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,6 +21,8 @@ import android.view.ViewGroup;
 
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
@@ -87,8 +90,15 @@ public class MainActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_settings:
+                //
+                break;
+            case R.id.action_logout:
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(MainActivity.this,LoginActivity.class);
+                startActivity(intent);
+                break;
         }
 
         return super.onOptionsItemSelected(item);
