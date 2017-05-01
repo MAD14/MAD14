@@ -59,7 +59,6 @@ public class CustomAdapter extends BaseAdapter{
         tv.setText("Credit: " + String.valueOf(position) +"€");
         tv = (TextView) convertView.findViewById(R.id.group_summary2);
         tv.setText("Debit: "+ String.valueOf(position) +"€");
-        FloatingActionButton fab = (FloatingActionButton) convertView.findViewById(R.id.fab);
 
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override

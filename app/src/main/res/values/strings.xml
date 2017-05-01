@@ -1,6 +1,47 @@
 <resources>
     <string name="app_name">MAD14</string>
     <string name="action_settings">Settings</string>
-    <string name="section_format">Hello World from section: %1$d</string>
     <string name="title_activity_group">GroupActivity</string>
+
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password</string>
+    <string name="action_sign_in">Sign in</string>
+    <string name="action_register_proposal">If you are not registered yet, register now!</string>
+    <string name="action_register">Register</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <string name="auth_failed">Error in authentication</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_home">Home</string>
+    <string name="group_section">Groups Section</string>
+    <string name="personal_section">Personal Section</string>
+    <string name="expenses_section">Expenses</string>
+    <string name="summary_section">Summary</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="prompt_name">Type your name</string>
+    <string name="prompt_surname">Type your surname</string>
+    <string name="prompt_username">Type your username</string>
+    <string name="title_activity_new_group">Add members to your group (1of3)</string>
+    <string name="title_expense_creation">New Expense</string>
+    <string name="Name">Name</string>
+    <string name="Description">Description</string>
+    <string name="Import">Import</string>
+    <string name="Author">Author</string>
+    <string name="create_group">Create Group</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_activity_choice_group_members">Add members</string>
+    <string name="invite_user">Invite</string>
+    <string name="search">Search</string>
+    <string name="title_activity_add_members_to_group">Add members to your group (2of3)</string>
+    <string name="add_from_friend">Add members from your friends</string>
+    <string name="title_activity_invite_users_to_group">Invite to TA (3of3)</string>
+    <string name="no_network_connection">Check your connection</string>
+    <string name="action_logout">Logout</string>
 </resources>

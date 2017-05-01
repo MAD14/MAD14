@@ -60,11 +60,11 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                Snackbar.make(view, "Create new group activity", Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show();
             }
         });
@@ -147,6 +147,9 @@ public class MainActivity extends AppCompatActivity {
             else { // if (getArguments().getInt(ARG_SECTION_NUMBER) == 2)
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 // popolamento della pagina
+                //TODO: riepilogo dei soldi che si devono agli amici
+                //TODO: possibilità di segnare che si è pagato qualcuno
+                //TODO: grafico riepilogo crediti/debiti
 
                 return rootView;
             }

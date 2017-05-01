@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad14.ExpenseCreation"
+    android:orientation="vertical"
+    android:id="@+id/rl_expense"
+    android:layout_marginLeft="@dimen/margin"
+    android:layout_marginRight="@dimen/margin"
+    android:layout_marginTop="@dimen/margin"
+
+    >
+
+    <EditText android:id="@+id/expense_name"
+        android:hint="@string/Name"
+        android:inputType="text"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginBottom="20dp">
+    </EditText>
+
+    <EditText android:id="@+id/expense_description"
+        android:hint="@string/Description"
+        android:inputType="text"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_below="@+id/expense_name"
+        android:layout_marginBottom="20dp">
+    </EditText>
+
+    <EditText android:id="@+id/expense_import"
+        android:hint="@string/Import"
+        android:inputType="text"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_below="@id/expense_description"
+        android:layout_marginBottom="20dp">
+    </EditText>
+
+    <TextView
+        android:id="@+id/expense_add_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Insert an image"
+        android:textSize="@dimen/main_text"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_below="@id/expense_import"
+        android:textColor="@color/writing"
+        />
+
+    <ImageView
+        android:id="@+id/insert_image"
+        android:layout_width="@dimen/icon_dimension_group"
+        android:layout_height="@dimen/icon_dimension_group"
+        android:background="@mipmap/photo_icon"
+        android:layout_below="@id/expense_add_text"
+        android:layout_marginLeft="60dp"
+        android:layout_marginRight="50dp"
+        android:clickable="true"
+        android:onClick="onClickImage"
+        />
+
+    <Button
+        android:id="@+id/expense_button"
+        android:layout_width="@android:dimen/thumbnail_width"
+        android:layout_height="wrap_content"
+        android:text="Submit"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:clickable="true"
+        android:onClick="onClick"
+        android:layout_below="@+id/insert_image"
+        android:layout_alignParentRight="true"/>
+</RelativeLayout>
