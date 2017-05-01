@@ -1,6 +1,7 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +12,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import it.polito.mad14.GroupActivity;
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Group;
 
@@ -62,7 +64,9 @@ public class CustomAdapter extends BaseAdapter{
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-                Toast.makeText(context,"Group number "+position+" has been clicked!",Toast.LENGTH_SHORT).show();
+//                Toast.makeText(context,"Group number "+position+" has been clicked!",Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(context, GroupActivity.class);
+                context.startActivity(intent);
             }
         });
 
