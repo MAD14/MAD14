@@ -47,13 +47,13 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ListView list = (ListView) findViewById(R.id.list_view_expenses);
         ((BaseAdapter) list.getAdapter()).notifyDataSetChanged();
 
-        Intent intent = new Intent();
-        intent.putExtra("author",et_author);
-        intent.putExtra("name",et_name.getText().toString());
-        intent.putExtra("import",et_import.getText().toString());
-        intent.putExtra("description",et_description.getText().toString());
-        setResult(RESULT_OK, intent);
-        finish();
+//        Intent intent = new Intent();
+//        intent.putExtra("author",et_author);
+//        intent.putExtra("name",et_name.getText().toString());
+//        intent.putExtra("import",et_import.getText().toString());
+//        intent.putExtra("description",et_description.getText().toString());
+//        setResult(RESULT_OK, intent);
+//        finish();
 
 
 

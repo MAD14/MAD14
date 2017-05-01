@@ -12,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -21,16 +22,29 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
+import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
 public class GroupActivity extends AppCompatActivity {
+
+    private String groupname;
+    private ListView list;
+    private ArrayList<Expense> expensesList;
+    private int indexExp=0;
+
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,6 +63,7 @@ public class GroupActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        expensesList = new ArrayList<>();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
@@ -65,17 +80,51 @@ public class GroupActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        Intent myIntent = getIntent();
+        groupname = myIntent.getStringExtra("groupname");
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("groups/" + groupname + "/items");
+
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
+                intent.putExtra("groupname", groupname);
                 startActivity(intent);
             }
         });
 
-    }
 
+        myRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Expense tmp = new Expense(data.child("Name").getValue().toString(),
+                            data.child("Price").getValue().toString(),
+                            data.child("Description").getValue().toString(),
+                            data.child("Author").getValue().toString());
+                    expensesList.add(tmp);
+                }
+
+                list = (ListView) findViewById(R.id.list_view_expenses);
+                ((CustomAdapterExpenses) list.getAdapter()).setExpensesList(expensesList);
+
+                list.invalidate();
+                list.requestLayout();
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("Failed to read value.", error.toException());
+
+            }
+        });
+        //
+
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,8 +187,7 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 //TODO: lettura da db per popolare la lista (possibile popolarle entrambe in una lettura)
-                expensesList.add(new Expense("Expense1","21.50","patate","Elena"));  // questa sarà da sostituire con la lettura da db
-                expensesList.add(new Expense("Expense2","10.30","latte","Michela"));
+                expensesList = new ArrayList<>();
 
                 // popolamento della pagina
                 View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);

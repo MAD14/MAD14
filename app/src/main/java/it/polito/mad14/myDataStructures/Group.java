@@ -38,4 +38,8 @@ public class Group {
     public void setData(String date) {
         this.date = date;
     }
+
+    public String toString(){
+        return this.name;
+    }
 }

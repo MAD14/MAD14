@@ -67,4 +67,12 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
         return convertView;
     }
+
+    public ArrayList<Expense> getExpensesList() {
+        return expensesList;
+    }
+
+    public void setExpensesList(ArrayList<Expense> expensesList) {
+        this.expensesList = expensesList;
+    }
 }

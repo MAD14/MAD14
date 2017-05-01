@@ -63,8 +63,8 @@ public class CustomAdapter extends BaseAdapter{
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
-//                Toast.makeText(context,"Group number "+position+" has been clicked!",Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(context, GroupActivity.class);
+                intent.putExtra("groupname",groupList.get(position).getName());
                 context.startActivity(intent);
             }
         });
