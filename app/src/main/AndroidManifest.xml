@@ -34,7 +34,19 @@
         <activity
             android:name=".ExpenseCreation"
             android:label="@string/title_expense_creation" />
-        <activity android:name=".RegistrationActivity"></activity>
+        <activity android:name=".RegistrationActivity" />
+        <activity
+            android:name=".NewGroupActivityPhase1"
+            android:label="@string/title_activity_new_group_phase1"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NewGroupActivityPhase2"
+            android:label="@string/title_activity_new_group_phase2"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".NewGroupActivityPhase3"
+            android:label="@string/title_activity_new_group_phase3"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
     </application>
 
 </manifest>

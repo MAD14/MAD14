@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="it.polito.mad14.NewGroupActivityPhase1"
+    tools:showIn="@layout/activity_new_group_phase1"
+    >
+
+
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- <ImageView
+                android:id="@+id/image"
+                android:layout_width="110dp"
+                android:layout_height="110dp"
+                android:src="@mipmap/ic_launcher"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                />-->
+
+            <!--<EditText android:id="@+id/group_author"
+                android:hint="@string/Author"
+                android:inputType="text"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="@dimen/activity_vertical_margin"
+                android:layout_marginBottom="20dp"
+                android:layout_below="@id/image"
+                >
+            </EditText>-->
+
+            <EditText android:id="@+id/group_name"
+                android:hint="@string/Name"
+                android:inputType="text"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="20dp">
+            </EditText>
+
+            <EditText android:id="@+id/group_description"
+                android:hint="@string/Description"
+                android:inputType="text"
+                android:textSize="20dp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_below="@+id/group_name"
+                android:layout_marginBottom="20dp">
+            </EditText>
+
+
+            <TextView
+                android:id="@+id/insert_image_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Insert an image"
+                android:textSize="15sp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="30dp"
+                android:layout_below="@id/group_description"/>
+
+            <ImageView
+                android:id="@+id/insert_image"
+                android:layout_width="@dimen/icon_dimension_group"
+                android:layout_height="@dimen/icon_dimension_group"
+                android:background="@mipmap/photo_icon"
+                android:layout_below="@id/insert_image_text"
+                android:layout_marginLeft="20dp"
+                android:paddingRight="20dp"
+                android:clickable="true"
+                android:onClick="onClickImage"
+                />
+
+            <Button
+                android:id="@+id/group_create_button"
+                android:layout_width="@android:dimen/thumbnail_width"
+                android:layout_height="wrap_content"
+                android:text="@string/create_group"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_below="@+id/insert_image"
+                android:layout_alignParentRight="true"
+                android:layout_gravity="end"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>
