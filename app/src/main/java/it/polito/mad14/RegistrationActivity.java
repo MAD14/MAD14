@@ -25,6 +25,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,7 +45,7 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText userView;
     private String name,surname,username,email,password;
     private static final String TAG = RegistrationActivity.class.getName();
-    private boolean find;
+    private boolean userNotUsed;
 
     private View mProgressView;
     private View focusView = null;
@@ -112,35 +114,63 @@ public class RegistrationActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        mProgressView.setVisibility(View.GONE);
+
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            DatabaseReference myRef = database.getReference("users");
+                            final DatabaseReference myRef = database.getReference("users");
+                            userNotUsed = true;
 
-                            if(checkUserName(myRef)) {
-                                DatabaseReference ref = myRef.child(username);
-                                ref.child("Name").setValue(name);
-                                ref.child("Surname").setValue(surname);
-                                ref.child("Email").setValue(email);
-                                ref.child("Password").setValue(password);
-                                Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
-                                        Toast.LENGTH_SHORT).show();
-                                mainActivityCall();
-                            }
-                            else{
-                                //TODO: new activity con richiesta nuovo username fino a quando non ce n'è uno disponibile                                     //con ActivityOnResult() che completa l'inserimento
-                                Toast.makeText(
-                                        RegistrationActivity.this, "Authentication failed: username already in use! Please select another one",Toast.LENGTH_SHORT).show();
+                            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        if (data.getKey().equals(username)) {
+                                            userNotUsed = false;
+                                        }
+                                    }
+                                    mProgressView.setVisibility(View.GONE);
+                                    if(userNotUsed) {
+                                        DatabaseReference ref = myRef.child(username);
+                                        ref.child("Name").setValue(name);
+                                        ref.child("Surname").setValue(surname);
+                                        ref.child("Email").setValue(email);
+                                        ref.child("Password").setValue(password);
+                                        Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
+                                                Toast.LENGTH_SHORT).show();
+                                        mainActivityCall();
+                                    } else {
+                                        //TODO: new activity con richiesta nuovo username fino a quando non ce n'è uno disponibile
+                                        // con ActivityOnResult() che completa l'inserimento
+                                        Toast.makeText(
+                                                RegistrationActivity.this, "Authentication failed: username already in use!\nPlease select another one",Toast.LENGTH_SHORT).show();
+                                        passView.setFocusable(true);
 
-                                passView.setFocusable(true);
+                                        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+                                        user.delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if (task.isSuccessful()) {
+                                                    userView.setError(getString(R.string.error_invalid_username));
+                                                    focusView = userView;
+                                                    focusView.requestFocus();
+                                                }
+                                            }
+                                        });
 
 
-                                //TODO: rimozione authentication se abbandono app
-                            }
-
+                                        //TODO: rimozione authentication se abbandono app
+                                    }
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+                                    Log.w("Failed to read value.", error.toException());
+                                    Toast.makeText(RegistrationActivity.this, "Failed to read value from DB!.",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            });
 
                         } else {
                             // If sign in fails, display a message to the user.
@@ -153,33 +183,6 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
                 });
-    }
-
-    public boolean checkUserName(DatabaseReference ref) {
-
-        find = false;
-        /** addListenerForSingleValueEvent ci mette del tempo ad accedere al database, quindi la prima
-         * volta che checkUserName viene chiamata è imposibile che ritorni un valore diverso da quello settato
-         * di default nella riga precedente a questo commento
-         */
-        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (username==data.getKey()) {
-                        find = true;
-                    }
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("Failed to read value.", error.toException());
-                Toast.makeText(RegistrationActivity.this, "Failed to read value from DB!.",
-                        Toast.LENGTH_SHORT).show();
-            }
-
-        });
-        return find;
     }
 
     public boolean checkDataForRegistration() {

@@ -50,13 +50,12 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             dict.put("Description",groupDescription);
                             myRef.setValue(dict);
 
-                            //TODO importantissimo qui
-                            //ALSO ADD in the user
-                            // prendere la chiave con cui è stato salvato il gruppo e passarla all'intent
+                            String IDGroup=myRef.getKey();
 
                             Intent intent = new Intent(NewGroupActivityPhase1.this, NewGroupActivityPhase2.class);
                             intent.putExtra("groupname", groupName);
                             intent.putExtra("groupdescription", groupDescription);
+                            intent.putExtra("groupID",IDGroup);
                             startActivity(intent);
 
                         } else {

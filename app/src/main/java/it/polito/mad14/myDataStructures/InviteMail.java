@@ -6,9 +6,10 @@ package it.polito.mad14.myDataStructures;
 
 public class InviteMail extends Mail {
     private String message = "Hello! \n" +
-            "You received an invite to join a group in TeddyApplication from one of your friend.\n" +
+            "You received an invite to join a group in MAD14 from one of your friend.\n" +
             "Lets join our community downloading our app at this link:\n" +
             "https://teddyapplication.com/welcome\n" +
+            "To join the group .... " +
             "Your MAD14 team";
     private String _body;
     private String _subject;
@@ -20,7 +21,7 @@ public class InviteMail extends Mail {
     public InviteMail(){
         super();
         this._body=message;
-        this._subject="Teddy Application - Invite";
+        this._subject="MAD14 Application - Invite";
 
     }
 
@@ -34,4 +35,7 @@ public class InviteMail extends Mail {
         return _body;
     }
 
+    public void set_body(String _body) {
+        this._body = _body;
+    }
 }

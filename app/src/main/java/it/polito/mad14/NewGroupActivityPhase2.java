@@ -17,6 +17,9 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -34,6 +37,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ArrayList<String> emailsToBeSent;
     private String[] listAddress = {""};
     private ListView list_invitation;
+    private String groupname;
+    private String IDGroup;
+    private String description;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +47,10 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         setContentView(R.layout.activity_new_group_phase2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        groupname = getIntent().getExtras().getString("groupname");
+        IDGroup = getIntent().getExtras().getString("groupID");
+        description = getIntent().getExtras().getString("groupdescription");
 
         // lista temporanea che può essere scritta sul db nel momento in cui si passa alla schermata successiva
         friends_added = new ArrayList<>();
@@ -103,6 +113,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
         et.setText("");
+        //TODO check se prende il nome completo selezionato o solo la stringa scritta
         friends_added.add(tmp_name);
         list_friends.invalidate();
         list_friends.requestLayout();
@@ -119,7 +130,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             list_invitation.requestLayout();
             Toast.makeText(NewGroupActivityPhase2.this, "Email sent",
                     Toast.LENGTH_SHORT).show();
-            final InviteMail inviteMail = new InviteMail("madapplication14@gmail.com","mobilecourse17");
+            final Mail inviteMail = new Mail();
+            //new InviteMail("madapplication14@gmail.com","mobilecourse17");
 
             // Possibility1 (P1)
             /*new AsyncTask<Void, Void, Void>() {
@@ -143,8 +155,14 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 {
                     try {
                         Log.e("SendMail","set_to " + listAddress[0]);
-
+                        inviteMail.set_body("Hello! \n" +
+                                "You received an invite to join a group in MAD14 from one of your friend.\n" +
+                                "Lets join our community downloading our app at this link:\n" +
+                                "https://teddyapplication.com/welcome\n" +
+                                "To join the group .... \n" +
+                                "Your MAD14 team");
                         inviteMail.set_to(listAddress);
+                        inviteMail.set_subject("Invite to join MAD14");
                         inviteMail.send();
                     } catch (Exception e) {
                         Log.e("SendMail", e.getMessage(), e);
@@ -160,13 +178,19 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             Toast.makeText(NewGroupActivityPhase2.this, "Email not valid.",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
     public void onClickCompletedAction(View view) {
-        // TODO: scrittura sul db e aggiornamento cache dei gruppi
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
+
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        for (String user : friends_added) {
+            DatabaseReference myRefUser = database.getReference("users/" + user.toString() + "/groups/" + IDGroup);
+//            myRefUser.child("Name").setValue(groupname);
+//            myRefUser.child("Description").setValue(description);
+        }
+
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         startActivity(intent);
     }
