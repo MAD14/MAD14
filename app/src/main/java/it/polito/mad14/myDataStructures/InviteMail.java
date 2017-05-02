@@ -12,6 +12,8 @@ public class InviteMail extends Mail {
             "Your MAD14 team";
     private String _body;
     private String _subject;
+    private String _user;
+    private String _pass;
 
     private String[] _to;
 
@@ -22,11 +24,14 @@ public class InviteMail extends Mail {
 
     }
 
+    public InviteMail(String user, String pass) {
+        this();
+        _user = user;
+        _pass = pass;
+    }
+
     public String get_body() {
         return _body;
     }
 
-    public void set_to(String[] _to) {
-        this._to = _to;
-    }
 }

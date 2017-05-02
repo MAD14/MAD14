@@ -11,6 +11,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class NewGroupActivityPhase1 extends AppCompatActivity {
 
     Button createGroup;
@@ -36,11 +42,23 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                         groupName = editName.getText().toString();
                         if (EditIsAlphanumeric(groupName)) {
                             groupDescription = editDescription.getText().toString();
-                            //TODO: aggiunta sul db alla fine della catena di intent tra le diverse fasi
+                            // DB ACCESS
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            DatabaseReference myRef = database.getReference("groups").push();
+                            Map<String,String> dict=new HashMap<>();
+                            dict.put("Name",groupName);
+                            dict.put("Description",groupDescription);
+                            myRef.setValue(dict);
+
+                            //TODO importantissimo qui
+                            //ALSO ADD in the user
+                            // prendere la chiave con cui è stato salvato il gruppo e passarla all'intent
+
                             Intent intent = new Intent(NewGroupActivityPhase1.this, NewGroupActivityPhase2.class);
                             intent.putExtra("groupname", groupName);
                             intent.putExtra("groupdescription", groupDescription);
                             startActivity(intent);
+
                         } else {
                             groupName = "";
                             Toast.makeText(NewGroupActivityPhase1.this, "Group Name is not valid.\nMust contains numbers or letters",

@@ -22,6 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.polito.mad14.myDataStructures.InviteMail;
+import it.polito.mad14.myDataStructures.Mail;
 
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
 
@@ -77,6 +78,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         emailsToBeSent = new ArrayList<>();
 
+
         list_invitation = (ListView) findViewById(R.id.lv_invitation);
         list_invitation.setAdapter(new BaseAdapter() {
             @Override
@@ -117,7 +119,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             list_invitation.requestLayout();
             Toast.makeText(NewGroupActivityPhase2.this, "Email sent",
                     Toast.LENGTH_SHORT).show();
-            final InviteMail inviteMail = new InviteMail();
+            final InviteMail inviteMail = new InviteMail("madapplication14@gmail.com","mobilecourse17");
 
             // Possibility1 (P1)
             /*new AsyncTask<Void, Void, Void>() {
@@ -140,7 +142,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 public void run()
                 {
                     try {
-                        Log.e("SendMail","set_to" + listAddress[0]);
+                        Log.e("SendMail","set_to " + listAddress[0]);
 
                         inviteMail.set_to(listAddress);
                         inviteMail.send();

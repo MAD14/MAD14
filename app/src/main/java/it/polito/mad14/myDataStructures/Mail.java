@@ -73,7 +73,6 @@ public class Mail extends javax.mail.Authenticator {
 
     public Mail(String user, String pass) {
         this();
-
         _user = user;
         _pass = pass;
     }
@@ -147,7 +146,7 @@ public class Mail extends javax.mail.Authenticator {
         }
 
         props.put("mail.smtp.port", _port);
-
+        props.put("mail.smtp.starttls.enable", "true");
         props.put("mail.smtp.socketFactory.port", _sport);
         props.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
         props.put("mail.smtp.socketFactory.fallback", "false");
@@ -155,5 +154,8 @@ public class Mail extends javax.mail.Authenticator {
         return props;
     }
 
+    public void set_to(String[] _to) {
+        this._to = _to;
+    }
 }
 
