@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     tools:context="it.polito.mad14.MainActivity"
+    android:background="@color/background"
     >
 
     <android.support.design.widget.AppBarLayout

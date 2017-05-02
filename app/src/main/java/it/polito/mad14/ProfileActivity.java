@@ -1,11 +1,9 @@
 package it.polito.mad14;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.ImageButton;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -13,17 +11,17 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
+        ImageButton imgbt = (ImageButton)findViewById(R.id.user_profile_photo);
+        imgbt.bringToFront();
+
+        //TODO: fill the information with those coming from the database!!!!
+        // - nome, immagine profilo, descrizione
+
+        //TODO make active the button to add as a friend
+
+        //TODO allow to switch to the email app to send an email? or to the phone to make a call?
+
     }
 }
