@@ -158,6 +158,7 @@ public class MainActivity extends AppCompatActivity {
                             startActivity(intent);
                         }
                     });
+                    fab_groups.bringToFront();
                 return rootView;
 
             }
