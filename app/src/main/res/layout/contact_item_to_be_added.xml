@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:clickable="true"
+    android:onClick="onClick">
+
+    <ImageView
+        android:id="@+id/image_person_suggestion"
+        android:layout_width="@dimen/icon_dimension_group"
+        android:layout_height="@dimen/icon_dimension_group"
+        android:src="@mipmap/person_icon"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
+
+        />
+
+    <TextView
+        android:id="@+id/tv_contact_name_surname_suggestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name Surname"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
+        android:layout_alignTop="@+id/image_person_suggestion"
+        android:layout_toRightOf="@+id/image_person_suggestion"
+        android:layout_toEndOf="@+id/image_person_suggestion" />
+    <TextView
+        android:id="@+id/tv_contact_email_suggestion"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_below="@id/tv_contact_name_surname_suggestion"
+        android:layout_alignLeft="@+id/tv_contact_name_surname_suggestion"
+        android:layout_alignStart="@+id/tv_contact_name_surname_suggestion" />
+
+    <ImageButton
+        android:id="@+id/add_contact_suggestion"
+        android:layout_width="@dimen/icon_dimension"
+        android:layout_height="@dimen/icon_dimension"
+        android:src="@mipmap/plus_icon"
+        android:background="@color/background"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginBottom="@dimen/margin"
+        />
+</RelativeLayout>

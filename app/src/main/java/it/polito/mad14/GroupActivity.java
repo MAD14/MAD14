@@ -110,8 +110,6 @@ public class GroupActivity extends AppCompatActivity {
                 }
 
                 list = (ListView) findViewById(R.id.list_view_expenses);
-                ((CustomAdapterExpenses) list.getAdapter()).setExpensesList(expensesList);
-
                 list.invalidate();
                 list.requestLayout();
             }
@@ -187,8 +185,6 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 //TODO: lettura da db per popolare la lista (possibile popolarle entrambe in una lettura)
-                expensesList = new ArrayList<>();
-
                 // popolamento della pagina
                 View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
                 ListView list = (ListView) rootView.findViewById(R.id.list_view_expenses);

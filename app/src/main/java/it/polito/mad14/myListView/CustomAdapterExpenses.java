@@ -12,7 +12,6 @@ import java.util.ArrayList;
 
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Expense;
-import it.polito.mad14.myDataStructures.Group;
 
 /**
  * Created by Utente on 01/05/2017.

@@ -46,7 +46,7 @@ public class NewGroupActivityPhase3 extends AppCompatActivity{
             public View getView(int position, View convertView, ViewGroup parent) {
                 if (convertView == null)
                     convertView = getLayoutInflater().inflate(R.layout.contact_item, parent, false);
-                TextView tv = (TextView) findViewById(R.id.tv_email_contact);
+                TextView tv = (TextView) findViewById(R.id.tv_contact_email);
 //                tv.setText(emailsToBeSent.get(position));
                 return convertView;
             }

@@ -21,11 +21,13 @@ import android.view.ViewGroup;
 
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.ArrayList;
 
+import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myListView.CustomAdapter;
 
@@ -63,14 +65,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_main);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(),NewGroupActivityPhase1.class);
-                startActivity(intent);
-            }
-        });
+
 
     }
 
@@ -88,7 +83,6 @@ public class MainActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
@@ -124,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
          *  popolate tramite la lettura dal database!
          */
         ArrayList<Group> groupsList = new ArrayList<>();
-
+        ArrayList<Contact> contactsList = new ArrayList<>();
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -145,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 //TODO: mettere lettura da db della lista dei gruppi
                 groupsList.add(new Group("Group1","elena","oggi"));  // questa sarà da sostituire con la lettura da db
 
@@ -155,16 +149,43 @@ public class MainActivity extends AppCompatActivity {
                 CustomAdapter adapter = new CustomAdapter(this.getActivity(),groupsList);
                 list.setAdapter(adapter);
 
+                // il tasto fab qui permette di aggiungere un nuovo gruppo!!!
+                    FloatingActionButton fab_groups = (FloatingActionButton) rootView.findViewById(R.id.fab_groups_page);
+                    fab_groups.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(view.getContext(),NewGroupActivityPhase1.class);
+                            startActivity(intent);
+                        }
+                    });
                 return rootView;
 
             }
-            else { // if (getArguments().getInt(ARG_SECTION_NUMBER) == 2)
+            else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 // popolamento della pagina
                 //TODO: riepilogo dei soldi che si devono agli amici
                 //TODO: possibilità di segnare che si è pagato qualcuno
                 //TODO: grafico riepilogo crediti/debiti
 
+                //in questa vista possiamo aggiungere un bottone con scritto "salda/saldato" in modo da linkare subito alla conferma di pagamento effettuato/ricevuto
+                return rootView;
+            } else {
+                final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
+                // popolamento della pagina
+                //TODO: prendere i dati degli amici e visualizzarli qui
+                //con il formato contact_item
+
+                // il tasto fab qui permette di aggiungere un nuovo contatto agli amici!!!
+                    FloatingActionButton fab_contacts = (FloatingActionButton) rootView.findViewById(R.id.fab_contacts_page);
+                    fab_contacts.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Intent intent = new Intent(view.getContext(),AddNewContacts.class);
+                            startActivity(intent);
+                            Snackbar.make(rootView,"New contact",Snackbar.LENGTH_SHORT).show();
+                        }
+                    });
                 return rootView;
             }
         }
@@ -189,16 +210,18 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public int getCount() {// Show 2 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "GROUP SECTION";
+                    return "GROUPS";
                 case 1:
-                    return "PERSONAL SECTION";
+                    return "MY SECTION";
+                case 2:
+                    return "CONTACTS";
             }
             return null;
         }

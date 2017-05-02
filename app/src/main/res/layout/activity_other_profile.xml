@@ -39,6 +39,17 @@
 
 
             <ImageView
+                android:id="@+id/add_friend"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_marginLeft="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_toLeftOf="@+id/drop_down_option_menu"
+                android:src="@mipmap/ic_action_user_add"
+                android:clickable="true"
+                android:onClick="onClickAddAsFriend"/>
+
+            <ImageView
                 android:id="@+id/drop_down_option_menu"
                 android:layout_width="30dp"
                 android:layout_height="30dp"

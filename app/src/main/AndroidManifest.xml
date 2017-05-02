@@ -47,7 +47,12 @@
             android:name=".NewGroupActivityPhase3"
             android:label="@string/title_activity_new_group_phase3"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".ProfileActivity"></activity>
+        <activity android:name=".ProfileActivity" />
+        <activity
+            android:name=".AddNewContacts"
+            android:label="@string/title_activity_add_new_contacts"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".OtherProfileActivity"></activity>
     </application>
 
 </manifest>

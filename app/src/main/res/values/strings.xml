@@ -50,4 +50,5 @@
     <string name="title_activity_new_group_phase1">NewGroupActivityPhase1</string>
     <string name="title_activity_new_group_phase2">NewGroupActivityPhase2</string>
     <string name="title_activity_new_group_phase3">NewGroupActivityPhase3</string>
+    <string name="title_activity_add_new_contacts">AddNewContacts</string>
 </resources>
