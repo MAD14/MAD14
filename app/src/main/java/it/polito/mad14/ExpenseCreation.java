@@ -35,6 +35,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         EditText et_import = (EditText)findViewById(R.id.expense_import);
 
         String groupName= getIntent().getStringExtra("groupname");
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("groups/"+groupName+"/items");
 
@@ -44,16 +45,16 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ref.child("Name").setValue(et_name.getText().toString());
         ref.child("Author").setValue(et_author);
 
-        ListView list = (ListView) findViewById(R.id.list_view_expenses);
-        ((BaseAdapter) list.getAdapter()).notifyDataSetChanged();
+//        ListView list = (ListView) findViewById(R.id.list_view_expenses);
+//        ((BaseAdapter) list.getAdapter()).notifyDataSetChanged();
 
-//        Intent intent = new Intent();
-//        intent.putExtra("author",et_author);
-//        intent.putExtra("name",et_name.getText().toString());
-//        intent.putExtra("import",et_import.getText().toString());
-//        intent.putExtra("description",et_description.getText().toString());
-//        setResult(RESULT_OK, intent);
-//        finish();
+        Intent intent = new Intent();
+        intent.putExtra("author",et_author);
+        intent.putExtra("name",et_name.getText().toString());
+        intent.putExtra("import",et_import.getText().toString());
+        intent.putExtra("description",et_description.getText().toString());
+        setResult(RESULT_OK, intent);
+        finish();
 
 
 

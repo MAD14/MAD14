@@ -38,7 +38,9 @@ import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
+
 public class GroupActivity extends AppCompatActivity {
+    public static final int EXPENSE_CREATION=1;
 
     private String groupname;
     private ListView list;
@@ -67,6 +69,8 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
+        list = (ListView) findViewById(R.id.list_view_expenses);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -93,12 +97,13 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("groupname", groupname);
-                startActivity(intent);
+//                startActivity(intent);
+                startActivityForResult(intent,EXPENSE_CREATION);
             }
         });
 
 
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -108,10 +113,8 @@ public class GroupActivity extends AppCompatActivity {
                             data.child("Author").getValue().toString());
                     expensesList.add(tmp);
                 }
-
                 list = (ListView) findViewById(R.id.list_view_expenses);
-                list.invalidate();
-                list.requestLayout();
+
             }
 
             @Override
@@ -122,6 +125,16 @@ public class GroupActivity extends AppCompatActivity {
         });
         //
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EXPENSE_CREATION){
+            if (resultCode == RESULT_OK){
+                list.invalidate();
+                list.requestLayout();
+            }
+        }
     }
 
     @Override
@@ -185,6 +198,7 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 //TODO: lettura da db per popolare la lista (possibile popolarle entrambe in una lettura)
+
                 // popolamento della pagina
                 View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
                 ListView list = (ListView) rootView.findViewById(R.id.list_view_expenses);
