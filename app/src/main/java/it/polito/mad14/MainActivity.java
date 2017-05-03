@@ -42,6 +42,9 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    private String UserDisplayName;
+    private  ArrayList<Group> groupsList;
+    ArrayList<Contact> contactsList;
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -64,6 +67,19 @@ public class MainActivity extends AppCompatActivity {
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
+
+        UserDisplayName=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        Toast.makeText(MainActivity.this, UserDisplayName,
+                Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, FirebaseAuth.getInstance().getCurrentUser().getEmail(),
+                Toast.LENGTH_SHORT).show();
+
+        ArrayList<Group> groupsList = new ArrayList<>();
+        ArrayList<Contact> contactsList = new ArrayList<>();
+
+
+
+        groupsList.add(new Group("Group1","elena","oggi"));
 
 
 
@@ -117,8 +133,8 @@ public class MainActivity extends AppCompatActivity {
          *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
          *  popolate tramite la lettura dal database!
          */
-        ArrayList<Group> groupsList = new ArrayList<>();
-        ArrayList<Contact> contactsList = new ArrayList<>();
+
+
         private static final String ARG_SECTION_NUMBER = "section_number";
 
         public PlaceholderFragment() {
@@ -141,7 +157,7 @@ public class MainActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
                 if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 //TODO: mettere lettura da db della lista dei gruppi
-                groupsList.add(new Group("Group1","elena","oggi"));  // questa sarà da sostituire con la lettura da db
+                // questa sarà da sostituire con la lettura da db
 
                 // popolamento della pagina
                 View rootView = inflater.inflate(R.layout.groups_list_page, container, false);

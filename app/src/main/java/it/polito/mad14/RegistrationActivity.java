@@ -19,6 +19,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -67,6 +68,9 @@ public class RegistrationActivity extends AppCompatActivity {
                 if (user != null) {
                     // User is signed in
                     Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                    UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                            .setDisplayName(username).build();
+                    user.updateProfile(profileUpdates);
                 } else {
                     // User is signed out
                     Log.d(TAG, "onAuthStateChanged:signed_out");
@@ -94,7 +98,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 username = userView.getText().toString();
                 email = emailView.getText().toString();
                 password = passView.getText().toString();
-
                 if(checkDataForRegistration()){
                     focusView.requestFocus();
                 } else {
@@ -227,10 +230,32 @@ public class RegistrationActivity extends AppCompatActivity {
 
     public void mainActivityCall(){
         Intent intent = new Intent(this,MainActivity.class);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        // Added to save the username inside the firebaseUser object
+        if(user!=null) {
+            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                    .setDisplayName(username).build();
+            user.updateProfile(profileUpdates);
+        }
+
         intent.putExtra("email",email);
         startActivity(intent);
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mAuthListener != null){
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 
 
 }
