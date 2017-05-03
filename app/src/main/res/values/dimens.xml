@@ -7,6 +7,7 @@
     <dimen name="margin">10dp</dimen>
     <dimen name="icon_dimension">35dp</dimen>
     <dimen name="icon_dimension_group">60dp</dimen>
+    <dimen name="list_view_dimension_group">90dp</dimen>
     <dimen name="main_text">20sp</dimen>
     <dimen name="description">12sp</dimen>
     <dimen name="summary">16sp</dimen>

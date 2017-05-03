@@ -10,7 +10,6 @@
     android:background="@color/background"
     >
 
-
     <ProgressBar
         android:id="@+id/login_progress"
         style="?android:attr/progressBarStyleLarge"
@@ -88,7 +87,7 @@
                 android:layout_marginTop="30dp"
                 android:layout_below="@id/group_description"/>
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/insert_image"
                 android:layout_width="@dimen/icon_dimension_group"
                 android:layout_height="@dimen/icon_dimension_group"

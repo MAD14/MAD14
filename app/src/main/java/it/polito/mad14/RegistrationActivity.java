@@ -106,8 +106,6 @@ public class RegistrationActivity extends AppCompatActivity {
         });
     }
 
-
-
     public void createAccount() {
 
         mAuth.createUserWithEmailAndPassword(email, password)
