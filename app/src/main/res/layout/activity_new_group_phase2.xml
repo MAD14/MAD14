@@ -25,116 +25,72 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <ScrollView
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        xmlns:android="http://schemas.android.com/apk/res/android">
+    <RelativeLayout
+        android:id="@+id/relative_layout_group_creation_phase2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
 
-        <RelativeLayout
-            android:id="@+id/relative_layout_group_creation_phase2"
+        <android.support.design.widget.TextInputLayout
+            android:id="@+id/text_input_add"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/autoCompleteTextView_friends"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/add_from_friend"
+                android:layout_marginTop="@dimen/margin"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:maxLines="1"
+                android:textSize="15dp"
+                android:singleLine="true"
+                />
+        </android.support.design.widget.TextInputLayout>
+
+        <Button
+            android:id="@+id/add_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_below="@id/text_input_add"
+            android:layout_alignParentRight="true"
+            android:clickable="true"
+            android:gravity="center"
+            android:onClick="onClick"
+            android:text="Add"
+            android:textSize="@dimen/main_text" />
+
+        <ListView
+            android:id="@+id/lv_friends"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            >
-
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/text_input_add"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp">
-
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView_friends"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/add_from_friend"
-                    android:layout_marginTop="@dimen/margin"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:maxLines="1"
-                    android:textSize="15dp"
-                    android:singleLine="true"
-                    />
-            </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/add_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/margin"
-                android:layout_below="@id/text_input_add"
-                android:layout_alignParentRight="true"
-                android:clickable="true"
-                android:gravity="center"
-                android:onClick="onClick"
-                android:text="Add"
-                android:textSize="@dimen/main_text" />
-
-            <ListView
-                android:id="@+id/lv_friends"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin"
-                android:layout_below="@id/add_button"
-                />
+            android:layout_marginTop="@dimen/margin"
+            android:layout_below="@id/add_button"
+            />
 
 
-            <android.support.design.widget.TextInputLayout
-                android:id="@+id/edit_text_invite"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingTop="16dp"
-                android:layout_below="@id/lv_friends">
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_invitation"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="end|bottom"
+            app:elevation="0dp"
+            app:srcCompat="@mipmap/check_icon"
+            android:clickable="true"
+            android:onClick="onClickCompletedAction"
 
-                <AutoCompleteTextView
-                    android:id="@+id/autoCompleteTextView_invite"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/add_from_email"
-                    android:layout_marginTop="@dimen/margin"
-                    android:layout_marginLeft="@dimen/margin"
-                    android:layout_marginRight="@dimen/margin"
-                    android:maxLines="1"
-                    android:singleLine="true"
-                    />
-            </android.support.design.widget.TextInputLayout>
-
-            <Button
-                android:id="@+id/invite_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Invite"
-                android:layout_below="@id/edit_text_invite"
-                android:layout_alignParentRight="true"
-                android:clickable="true"
-                android:onClick="onClickInvite"/>
-
-            <ListView
-                android:id="@+id/lv_invitation"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/invite_button"
-                />
-            <android.support.design.widget.FloatingActionButton
-                android:id="@+id/fab_invitation"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/invite_button"
-                android:layout_marginRight="15dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginBottom="10dp"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_gravity="end|bottom"
-                app:elevation="0dp"
-                app:srcCompat="@mipmap/check_icon"
-                android:clickable="true"
-                android:onClick="onClickCompletedAction"
-
-                />
-        </RelativeLayout>
-
-    </ScrollView>
+            />
+    </RelativeLayout>
 
 </LinearLayout>

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="it.polito.mad14.InviteToJoinCommunity"
+    tools:showIn="@layout/activity_invite_to_join_community"
+    android:orientation="vertical"
+    >
+
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/edit_text_invite"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/lv_friends"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_alignParentTop="true"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView_invite"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/add_from_email"
+            android:maxLines="1"
+            android:singleLine="true"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/invite_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/add_to_list_invitations"
+        android:layout_below="@id/edit_text_invite"
+        android:layout_alignEnd="@id/edit_text_invite"
+        android:layout_alignRight="@id/edit_text_invite"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:clickable="true"
+        android:onClick="onClickInviteButton"
+     />
+
+    <ListView
+        android:id="@+id/lv_invitation"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/invite_button"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"/>
+
+</RelativeLayout>

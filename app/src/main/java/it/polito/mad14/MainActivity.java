@@ -97,6 +97,9 @@ public class MainActivity extends AppCompatActivity {
                 intent = new Intent(MainActivity.this,LoginActivity.class);
                 startActivity(intent);
                 break;
+            case R.id.action_invite_new_members:
+                intent = new Intent(MainActivity.this, InviteToJoinCommunity.class);
+                startActivity(intent);
         }
 
         return super.onOptionsItemSelected(item);

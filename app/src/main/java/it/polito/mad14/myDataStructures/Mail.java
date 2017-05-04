@@ -4,6 +4,7 @@ package it.polito.mad14.myDataStructures;
  * Created by Elena on 27/04/2017.
  */
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
@@ -27,7 +28,7 @@ public class Mail extends javax.mail.Authenticator {
     private String _user;
     private String _pass;
 
-    private String[] _to;
+    private ArrayList<String> _to;
     private String _from;
 
     private String _port;
@@ -81,7 +82,7 @@ public class Mail extends javax.mail.Authenticator {
         Properties props = _setProperties();
 
         // se c'è un utente con la password + se ci sono destinatari + se c'è un mittente + se c'è un oggetto + se c'è un messaggio
-        if(!_user.equals("") && !_pass.equals("") && _to.length > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")){
+        if(!_user.equals("") && !_pass.equals("") && _to.size() > 0 && !_from.equals("") && !_subject.equals("") && !_body.equals("")){
             Session session = Session.getInstance(props, this);
 
             //Multipurpose Internet Mail Extension
@@ -91,9 +92,9 @@ public class Mail extends javax.mail.Authenticator {
             msg.setFrom(new InternetAddress(_from));
 
             // future receivers
-            InternetAddress[] addressTo = new InternetAddress[_to.length];
-            for (int i = 0; i < _to.length; i++) {
-                addressTo[i] = new InternetAddress(_to[i]);
+            InternetAddress[] addressTo = new InternetAddress[_to.size()];
+            for (int i = 0; i < _to.size(); i++) {
+                addressTo[i] = new InternetAddress(_to.get(i).toString());
             }
             msg.setRecipients(MimeMessage.RecipientType.TO, addressTo);
 
@@ -154,7 +155,7 @@ public class Mail extends javax.mail.Authenticator {
         return props;
     }
 
-    public void set_to(String[] _to) {
+    public void set_to(ArrayList<String> _to) {
         this._to = _to;
     }
 
