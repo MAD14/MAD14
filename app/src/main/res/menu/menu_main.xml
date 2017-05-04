@@ -4,9 +4,15 @@
     tools:context="it.polito.mad14.MainActivity">
     <item
         android:id="@+id/action_settings"
-        android:orderInCategory="3"
+        android:orderInCategory="4"
         android:title="@string/action_settings"
         app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_join_a_group"
+        android:orderInCategory="3"
+        android:title="@string/action_join_a_group"
+        app:showAsAction="never"/>
 
     <item
         android:id="@+id/action_personal_profile"

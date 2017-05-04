@@ -50,18 +50,14 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
 
     public void onClick(View v){
-        //TODO sistemare che l'autore è l'utente stesso
+
         //TODO scrittura su firebase
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        String name = user.getDisplayName();
-        String email = user.getEmail();
-        String uid = user.getUid();
-        Toast.makeText(
-                ExpenseCreation.this, name + "\n" + email + "\n" + uid,Toast.LENGTH_SHORT).show();
-
-
-        /*String et_author = "me stesso";
+        String et_author = user.getDisplayName();
+        /**Perché funzioni dobbiamo ri-registrare tutti gli utenti in modo che nella autentication
+         * venga chiamata la funzione setDisplayName, altrimenti ovviamente qui ritorna solo null
+         */
         EditText et_name = (EditText)findViewById(R.id.expense_name);
         EditText et_description = (EditText)findViewById(R.id.expense_description);
         EditText et_import = (EditText)findViewById(R.id.expense_import);
@@ -76,6 +72,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ref.child("Description").setValue(et_description.getText().toString());
         ref.child("Name").setValue(et_name.getText().toString());
         ref.child("Author").setValue(et_author);
+        ref.child("ExpenseImage").setValue(encodedExpenseImage);
 
 //        ListView list = (ListView) findViewById(R.id.list_view_expenses);
 //        ((BaseAdapter) list.getAdapter()).notifyDataSetChanged();
@@ -85,8 +82,9 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         intent.putExtra("name",et_name.getText().toString());
         intent.putExtra("import",et_import.getText().toString());
         intent.putExtra("description",et_description.getText().toString());
+        intent.putExtra("expenseImage",encodedExpenseImage);
         setResult(RESULT_OK, intent);
-        finish();*/
+        finish();
     }
 
     @Override

@@ -55,7 +55,8 @@
         <activity
             android:name=".InviteToJoinCommunity"
             android:label="@string/title_activity_invite_to_join_community"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".JoinGroupActivity"></activity>
     </application>
 
 </manifest>
