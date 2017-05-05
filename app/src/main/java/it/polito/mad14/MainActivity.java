@@ -1,6 +1,7 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -13,6 +14,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,9 +25,16 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Group;
@@ -42,14 +51,17 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
-    private String UserDisplayName;
-    private  ArrayList<Group> groupsList;
-    ArrayList<Contact> contactsList;
+
+
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private static FirebaseDatabase database;
+    private static String UserID;
+    private static DatabaseReference myRef;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,19 +80,8 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        UserDisplayName=FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-        Toast.makeText(MainActivity.this, UserDisplayName,
-                Toast.LENGTH_SHORT).show();
-        Toast.makeText(MainActivity.this, FirebaseAuth.getInstance().getCurrentUser().getEmail(),
-                Toast.LENGTH_SHORT).show();
-
-        ArrayList<Group> groupsList = new ArrayList<>();
-        ArrayList<Contact> contactsList = new ArrayList<>();
-
-
-
-        groupsList.add(new Group("Group1","elena","oggi"));
-
+        database = FirebaseDatabase.getInstance();
+        UserID=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
 
     }
@@ -134,8 +135,13 @@ public class MainActivity extends AppCompatActivity {
          *  popolate tramite la lettura dal database!
          */
 
-
+        private ArrayList<Group> groupsList=new ArrayList<>();
+        private ArrayList<Contact> contactsList=new ArrayList<>();
+        private int indexGroup=0;
+        private int indexContact=0;
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        //DatabaseReference myRefGroup = database.getReference("groups");
 
         public PlaceholderFragment() {
         }
@@ -153,19 +159,47 @@ public class MainActivity extends AppCompatActivity {
         }
 
         @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-                if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                //TODO: mettere lettura da db della lista dei gruppi
-                // questa sarà da sostituire con la lettura da db
+        public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
-                // popolamento della pagina
-                View rootView = inflater.inflate(R.layout.groups_list_page, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
-                CustomAdapter adapter = new CustomAdapter(this.getActivity(),groupsList);
-                list.setAdapter(adapter);
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                myRef = database.getReference("users/"+UserID+"/groups/");
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
 
-                // il tasto fab qui permette di aggiungere un nuovo gruppo!!!
+                            Iterator<Group> it = groupsList.iterator();
+                            boolean flag = false;
+                            while (it.hasNext()) {
+                                if (it.next().getID().equals(data.getKey().toString()))
+                                    flag = true;
+                            }
+                            if (!flag) {
+                                String id = data.getKey();
+                                String nm = data.child("Name").getValue().toString();
+                                String own = data.child("Author").getValue().toString();
+                                String dat = data.child("Date").getValue().toString();
+                                groupsList.add(indexGroup, new Group(id, nm, own, dat));
+                                indexGroup++;
+
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+                    }
+                });
+
+                    View rootView = inflater.inflate(R.layout.groups_list_page, container, false);
+                    ListView list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
+
+
+                    CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
+                    list.setAdapter(adapter);
+
+                    // il tasto fab qui permette di aggiungere un nuovo gruppo!!!
                     FloatingActionButton fab_groups = (FloatingActionButton) rootView.findViewById(R.id.fab_groups_page);
                     fab_groups.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -175,7 +209,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                     fab_groups.bringToFront();
-                return rootView;
+
+                    return rootView;
 
             }
             else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -192,6 +227,27 @@ public class MainActivity extends AppCompatActivity {
                 // popolamento della pagina
                 //TODO: prendere i dati degli amici e visualizzarli qui
                 //con il formato contact_item
+                myRef = database.getReference("users/"+UserID+"/contacts/");
+
+                if (myRef!=null) {
+                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                             contactsList.add(indexContact,new Contact(data.child("Name").toString(),
+                                     data.child("Surname").toString(),data.child("Username").toString(),
+                                     data.child("Email").toString()));
+                                indexContact++;
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            Log.w("Failed to read value.", error.toException());
+                        }
+                    });
+                }
+
 
                 // il tasto fab qui permette di aggiungere un nuovo contatto agli amici!!!
                     FloatingActionButton fab_contacts = (FloatingActionButton) rootView.findViewById(R.id.fab_contacts_page);
@@ -244,3 +300,5 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
+
+

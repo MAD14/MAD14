@@ -5,14 +5,23 @@ package it.polito.mad14.myDataStructures;
  */
 
 public class Group {
+    String ID;
     String name;
     String author;
     String date;
 
-    public Group(String name, String author, String date) {
+    public Group(String ID,String name, String author, String date) {
+        this.ID=ID;
         this.name = name;
         this.author = author;
         this.date = date;
+    }
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID=ID;
     }
 
     public String getName() {
@@ -41,5 +50,13 @@ public class Group {
 
     public String toString(){
         return this.name;
+    }
+
+    public boolean compare(Group group){
+
+        if(group.ID.equals(this.ID))
+            return true;
+        else
+            return false;
     }
 }

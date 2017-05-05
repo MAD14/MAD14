@@ -8,10 +8,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
@@ -20,8 +28,8 @@ import it.polito.mad14.myListView.CustomAdapterContactSuggested;
 
 public class AddNewContacts extends AppCompatActivity implements View.OnClickListener{
 
-    // List of all contacts //TODO: deve essere riempita dei contatti dal db e resa un ArrayList<Contact>
-    private ArrayList<String> searchNames = new ArrayList<String>();
+    // List of all contacts
+    private ArrayList<Contact> searchNames = new ArrayList<>();
     // Filtered list of contacts after user begins typing in search field
     private ArrayList<Contact> partialNames = new ArrayList<>();
 
@@ -34,6 +42,7 @@ public class AddNewContacts extends AppCompatActivity implements View.OnClickLis
     // Adapter for myList
     private CustomAdapterContactSuggested adapter;
 
+    private String name,surname,username,email,image;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,49 +51,59 @@ public class AddNewContacts extends AppCompatActivity implements View.OnClickLis
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        // Set list adapter
-        list = (ListView) findViewById(R.id.list_view_contact_suggestion);
-        adapter = new CustomAdapterContactSuggested(this,partialNames);
-        list.setAdapter(adapter);
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
 
-
-        //TODO: searchNames deve essere popolata dei nomi-cognomi dal db!
-        searchNames.add("Tom Arnold");
-        searchNames.add("Zeb Arnold");
-        searchNames.add("Dan Bateman");
-        searchNames.add("Tommy Canders");
-        searchNames.add("Elijah Arnman");
-        searchNames.add("Tomas Muster");
-        searchNames.add("Stefan Edberg");
-        searchNames.add("Ivan Lendl");
-
-
-        nameCapture = (EditText) findViewById(R.id.edit_name_search);
-        nameCapture.setText("Tom");
-
-        AlterAdapter();
-
-        nameCapture.addTextChangedListener(new TextWatcher() {
-
-            // As the user types in the search field, the list is
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    searchNames.add(new Contact(data.child("Name").getValue().toString(),
+                            data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
+                            data.child("Email").getValue().toString()));
+
+                }
+
+                list = (ListView) findViewById(R.id.list_view_contact_suggestion);
+                adapter = new CustomAdapterContactSuggested(getApplicationContext(), partialNames);
+                list.setAdapter(adapter);
+
+                nameCapture = (EditText) findViewById(R.id.edit_name_search);
+                //nameCapture.setText("Tom");
+
                 AlterAdapter();
+
+                nameCapture.addTextChangedListener(new TextWatcher() {
+
+                    // As the user types in the search field, the list is
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                        AlterAdapter();
+                    }
+
+                    // Not used for this program
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+
+                    }
+
+                    // Not uses for this program
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+
+                    }
+                });
             }
 
-            // Not used for this program
             @Override
-            public void afterTextChanged(Editable arg0) {
-
-            }
-
-            // Not uses for this program
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                // TODO Auto-generated method stub
+            public void onCancelled(DatabaseError error) {
 
             }
         });
+
+
+
 
     }
 
@@ -97,8 +116,11 @@ public class AddNewContacts extends AppCompatActivity implements View.OnClickLis
         else {
             partialNames.clear();
             for (int i = 0; i < searchNames.size(); i++) {
+
+                // TODO Qui da implementare la ricerca nome? cognome?email?
                 if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase())) {
-                    partialNames.add(new Contact(searchNames.get(i).toString(),"","username","email")); //TODO poi basterà prendere il contatto dall'altra lista
+                    //partialNames.add(new Contact(searchNames.get(i).toString(),"","username","email")); //TODO poi basterà prendere il contatto dall'altra lista
+                    partialNames.add(searchNames.get(i));
                 }
                 adapter.notifyDataSetChanged();
             }
@@ -109,6 +131,7 @@ public class AddNewContacts extends AppCompatActivity implements View.OnClickLis
     public void onClick(View view){
         Intent intent = new Intent(AddNewContacts.this,OtherProfileActivity.class);
         //TODO bisognerà passare le info di quale profilo si vuole vedere
+        // aggiungere customAdapterContact?
         startActivity(intent);
     }
 }

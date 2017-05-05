@@ -47,7 +47,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -67,8 +70,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private GoogleSignInAccount acct;
     private FirebaseAuth auth;
     private FirebaseAuth.AuthStateListener mAuthListener;
-    private String email;
-    private String password;
 
     private static final String TAG = LoginActivity.class.getName();
     /**
@@ -240,7 +241,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (requestCode == RC_SIGN_IN) {
             //TODO: ritorna result errore --> da risolvere!!!
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("users/"+ result.getSignInAccount().getEmail().replace(".",","));
+            Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
+            myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
+            myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
+            myRef.child("Email").setValue(result.getSignInAccount().getEmail());
+
             handleSignInResult(result);
+        }else{
+            Toast.makeText(this,"Problems", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -462,5 +472,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         return cm.getActiveNetworkInfo() != null;
     }
+
 
 }

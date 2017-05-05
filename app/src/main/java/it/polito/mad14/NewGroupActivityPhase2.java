@@ -17,13 +17,18 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.InviteMail;
 import it.polito.mad14.myDataStructures.Mail;
 
@@ -32,14 +37,18 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ListView list_friends;
     //TODO: friends dovrebbe essere popolata degli amici --> potremmo tenere una mappa/lista che funga da cache
     // friends viene utilizzata poi nell'adapter a riga 55 per popolare i suggerimenti
-    private String[] friends = {"Elena","Martina","Giulia","Eleonora","Elisabetta"};
+    //private String[] friends = {"Elena","Martina","Giulia","Eleonora","Elisabetta"};
+    private ArrayList<Contact> friends;
+    private int friendsIndex=0;
     private ArrayList<String> friends_added;
+    private int nFriends=0;
     private ArrayList<String> emailsToBeSent;
     private String[] listAddress = {""};
     private ListView list_invitation;
-    private String groupname;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage;
     private String IDGroup;
-    private String description;
+    private String MyID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +57,13 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        groupname = getIntent().getExtras().getString("groupname");
-        IDGroup = getIntent().getExtras().getString("groupID");
-        description = getIntent().getExtras().getString("groupdescription");
-
+        groupName = getIntent().getStringExtra("Name");
+        groupAuthor= getIntent().getStringExtra("Author");
+        groupDescr= getIntent().getStringExtra("Description");
+        groupDate= getIntent().getStringExtra("Date");
+        groupImage= getIntent().getStringExtra("Image");
+        IDGroup=getIntent().getStringExtra("IDGroup");
+        MyID=FirebaseAuth.getInstance().getCurrentUser().getEmail();  // here no replace directly nel for
         // lista temporanea che può essere scritta sul db nel momento in cui si passa alla schermata successiva
         friends_added = new ArrayList<>();
 
@@ -88,7 +100,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         emailsToBeSent = new ArrayList<>();
 
-
         list_invitation = (ListView) findViewById(R.id.lv_invitation);
         list_invitation.setAdapter(new BaseAdapter() {
             @Override
@@ -107,6 +118,30 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             }
         });
 
+        friends=new ArrayList<>();
+
+        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        DatabaseReference myRef=database.getReference("users/"+
+                FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
+                        .toString()+"/contacts");
+        // TODO da controllare dove viene aggiunto l'amico e creare il ramo contact decidendo quali info
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    friends.add(friendsIndex,new Contact(data.child("Name").toString(),data.child("Surname").toString(),
+                            data.child("Username").toString(),data.child("Email").toString()));
+                    friendsIndex++;
+
+                }
+
+                }
+            @Override
+            public void onCancelled(DatabaseError error) {
+                Log.w("Failed to read value.", error.toException());
+
+            }
+        });
     }
 
     public void onClick(View view){
@@ -185,10 +220,27 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 Toast.LENGTH_SHORT).show();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
+        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
+        DatabaseReference myRefGroup=database.getReference("groups/"+IDGroup+"/members/");
+        friends_added.add(nFriends,MyID);
+        nFriends++;
         for (String user : friends_added) {
-            DatabaseReference myRefUser = database.getReference("users/" + user.toString() + "/groups/" + IDGroup);
-//            myRefUser.child("Name").setValue(groupname);
-//            myRefUser.child("Description").setValue(description);
+            String newUser=user.replace(".",",");
+            myRefGroup.child(newUser).child("Debits").setValue("0");
+            myRefGroup.child(newUser).child("Credits").setValue("0");
+        }
+        // Insertion of the group in each user
+        DatabaseReference myRefUser = database.getReference("users");
+        for (String user : friends_added) {
+            String newUser=user.replace(".",",");
+            DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
+            ref.child("Name").setValue(groupName);
+            ref.child("Author").setValue(groupAuthor);
+            ref.child("Description").setValue(groupDescr);
+            ref.child("Date").setValue(groupDate);
+            ref.child("Image").setValue(groupImage);
+
         }
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);

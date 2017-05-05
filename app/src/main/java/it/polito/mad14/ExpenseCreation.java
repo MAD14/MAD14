@@ -9,12 +9,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private Button bt;
+    FirebaseAuth auth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -23,21 +25,22 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         bt = (Button) findViewById(R.id.expense_button);
         bt.setOnClickListener(this);
 
+        auth=FirebaseAuth.getInstance();
+
     }
 
 
     public void onClick(View v){
-        //TODO sistemare che l'autore è l'utente stesso
-        //TODO scrittura su firebase
-        String et_author = "me stesso";
+
+        String et_author = auth.getCurrentUser().getEmail();
         EditText et_name = (EditText)findViewById(R.id.expense_name);
         EditText et_description = (EditText)findViewById(R.id.expense_description);
         EditText et_import = (EditText)findViewById(R.id.expense_import);
 
-        String groupName= getIntent().getStringExtra("groupname");
+        String IDGRoup= getIntent().getStringExtra("IDGroup");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("groups/"+groupName+"/items");
+        DatabaseReference myRef = database.getReference("groups/"+IDGRoup+"/items");
 
         DatabaseReference ref=myRef.child(et_name.getText().toString());
         ref.child("Price").setValue(et_import.getText().toString());

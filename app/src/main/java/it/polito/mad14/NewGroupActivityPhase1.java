@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
@@ -28,6 +29,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Calendar;
 
 public class NewGroupActivityPhase1 extends AppCompatActivity {
 
@@ -40,6 +42,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
 
     private Bitmap targetImageBitmap = null;
     private String encodedImage;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,8 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
             }
         });
 
+        mAuth=FirebaseAuth.getInstance();
+
         createGroup.setOnClickListener(
                 new View.OnClickListener() {
                     public void onClick(View view) {
@@ -71,18 +76,25 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             // DB ACCESS
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("groups").push();
+                            String author=mAuth.getCurrentUser().getEmail();
+                            String date=Calendar.getInstance().getTime().toString();
                             Map<String,String> dict=new HashMap<>();
                             dict.put("Name",groupName);
                             dict.put("Description",groupDescription);
+                            dict.put("Author",author);
+                            dict.put("Date",date);
                             dict.put("Image", encodedImage);
                             myRef.setValue(dict);
 
                             String IDGroup=myRef.getKey();
 
                             Intent intent = new Intent(NewGroupActivityPhase1.this, NewGroupActivityPhase2.class);
-                            intent.putExtra("groupname", groupName);
-                            intent.putExtra("groupdescription", groupDescription);
-                            intent.putExtra("groupID",IDGroup);
+                            intent.putExtra("IDGroup",IDGroup);
+                            intent.putExtra("Name",groupName);
+                            intent.putExtra("Description",groupDescription);
+                            intent.putExtra("Author",author);
+                            intent.putExtra("Date",date);
+                            intent.putExtra("Image",encodedImage);
                             startActivity(intent);
 
                         } else {
