@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -78,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
+
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -204,12 +206,19 @@ public class MainActivity extends AppCompatActivity {
                                     flag = true;
                             }
                             if (!flag) {
-                                String id = data.getKey();
-                                String name = data.child("Name").getValue().toString();
-                                String owner = data.child("Author").getValue().toString();
-                                String date = data.child("Date").getValue().toString();
-                                groupsList.add(indexGroup, new Group(id, name, owner, date));
-                                indexGroup++;
+
+                                try {
+                                    String id = data.getKey();
+                                    String nm = data.child("Name").getValue().toString();
+                                    String own = data.child("Author").getValue().toString();
+                                    String dat = data.child("Date").getValue().toString();
+                                    groupsList.add(indexGroup, new Group(id, nm, own, dat));
+                                    indexGroup++;
+                                }
+                                    catch(Error e){
+                                        Toast.makeText(getContext(), e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
 
                             }
                         }

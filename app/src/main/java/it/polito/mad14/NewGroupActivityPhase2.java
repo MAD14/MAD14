@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,6 +61,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupDate= getIntent().getStringExtra("Date");
         groupImage= getIntent().getStringExtra("Image");
         IDGroup=getIntent().getStringExtra("IDGroup");
+        Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
+                Toast.LENGTH_SHORT).show();
+
         MyID=FirebaseAuth.getInstance().getCurrentUser().getEmail();  // here no replace directly nel for
         // lista temporanea che può essere scritta sul db nel momento in cui si passa alla schermata successiva
         friends_added = new ArrayList<>();
@@ -102,7 +106,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
                         .toString()+"/contacts");
+
         // TODO da controllare dove viene aggiunto l'amico e creare il ramo contact decidendo quali info
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -125,11 +131,20 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     public void onClick(View view){
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
-        et.setText("");
+        et.setText("Type the username or look for a friend");
         //TODO check se prende il nome completo selezionato o solo la stringa scritta
-        friends_added.add(tmp_name);
-        list_friends.invalidate();
-        list_friends.requestLayout();
+        Iterator<Contact> it=friends.iterator();
+        boolean flag=false;
+        while(it.hasNext()){
+            Contact cont=it.next();
+            if(cont.getUsername().equals(tmp_name))
+                flag=true;
+        }
+        if (flag) {
+            friends_added.add(tmp_name);
+            list_friends.invalidate();
+            list_friends.requestLayout();
+        }
     }
 
 
@@ -166,6 +181,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         }
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
+        intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);
     }
 

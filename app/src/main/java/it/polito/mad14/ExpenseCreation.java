@@ -159,6 +159,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         intent.putExtra("import",et_import.getText().toString());
         intent.putExtra("description",et_description.getText().toString());
         intent.putExtra("expenseImage",encodedExpenseImage);
+        intent.putExtra("IDGroup",IDGroup);
         setResult(RESULT_OK, intent);
         finish();
     }
