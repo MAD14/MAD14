@@ -57,7 +57,7 @@
         android:textColor="@color/writing"
         />
 
-    <ImageView
+    <ImageButton
         android:id="@+id/insert_image"
         android:layout_width="@dimen/icon_dimension_group"
         android:layout_height="@dimen/icon_dimension_group"

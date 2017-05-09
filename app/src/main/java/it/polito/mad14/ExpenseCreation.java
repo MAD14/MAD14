@@ -1,17 +1,25 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Base64;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
@@ -22,14 +30,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import java.io.ByteArrayOutputStream;
+
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private Button bt;
+
     private FirebaseAuth auth;
     private Set<String> contacts;
     private FirebaseDatabase database;
     private float nMembers;
     private String IDGroup;
+
+    private ImageButton getExpenseImage;
+    private Bitmap expenseImageBitmap;
+    private String encodedExpenseImage;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +54,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         bt = (Button) findViewById(R.id.expense_button);
         bt.setOnClickListener(this);
+
 
         auth=FirebaseAuth.getInstance();
 
@@ -67,13 +84,29 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             }
         });
 
-
+        getExpenseImage = (ImageButton) findViewById(R.id.insert_image);
+        getExpenseImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cameraIntent, 0);
+            }
+        });
     }
 
 
     public void onClick(View v){
 
         String et_author = auth.getCurrentUser().getEmail().replace(".",",");
+
+        //TODO scrittura su firebase
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+      
+        /**Perché funzioni dobbiamo ri-registrare tutti gli utenti in modo che nella autentication
+         * venga chiamata la funzione setDisplayName, altrimenti ovviamente qui ritorna solo null
+         */
+      
         EditText et_name = (EditText)findViewById(R.id.expense_name);
         EditText et_description = (EditText)findViewById(R.id.expense_description);
         final EditText et_import = (EditText)findViewById(R.id.expense_import);
@@ -85,6 +118,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ref.child("Description").setValue(et_description.getText().toString());
         ref.child("Name").setValue(et_name.getText().toString());
         ref.child("Author").setValue(et_author);
+        ref.child("ExpenseImage").setValue(encodedExpenseImage);
 
         DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
         // 2 decimals
@@ -124,14 +158,23 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         intent.putExtra("name",et_name.getText().toString());
         intent.putExtra("import",et_import.getText().toString());
         intent.putExtra("description",et_description.getText().toString());
+        intent.putExtra("expenseImage",encodedExpenseImage);
         setResult(RESULT_OK, intent);
         finish();
-
-
-
     }
 
-    public void onClickImage(View v){
-        //TODO: inserire l'immagine della spesa
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            expenseImageBitmap = (Bitmap) data.getExtras().get("data");
+            BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(),expenseImageBitmap);
+            getExpenseImage.setBackgroundDrawable(bDrawable);
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+            byte[] byteArrayImage = baos.toByteArray();
+            encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+        }
     }
+
 }

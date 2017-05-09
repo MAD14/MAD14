@@ -41,6 +41,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
+
     private int nFriends=0;
     private ArrayList<String> emailsToBeSent;
     private String[] listAddress = {""};
@@ -155,65 +156,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     }
 
 
-    public void onClickInvite(View view) throws Exception{
-        AutoCompleteTextView actv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_invite);
-        String emailInserted = actv.getText().toString();
-        if (isEmailValid(emailInserted)) {
-            listAddress[0] = emailInserted;
-            emailsToBeSent.add(emailInserted);
-            list_invitation.invalidate();
-            list_invitation.requestLayout();
-            Toast.makeText(NewGroupActivityPhase2.this, "Email sent",
-                    Toast.LENGTH_SHORT).show();
-            final Mail inviteMail = new Mail();
-            //new InviteMail("madapplication14@gmail.com","mobilecourse17");
 
-            // Possibility1 (P1)
-            /*new AsyncTask<Void, Void, Void>() {
-                @Override
-                public Void doInBackground(Void... arg) {
-                    try {
-                        inviteMail.set_to(listAddress);
-                        inviteMail.send();
-                    } catch (Exception e) {
-                        Log.e("SendMail", e.getMessage(), e);
-                    }
-                    return null;
-                }
-            }.execute(); */
-            // end P1
-            // Possibility2 (P2)
-            Runnable r = new Runnable()
-            {
-                @Override
-                public void run()
-                {
-                    try {
-                        Log.e("SendMail","set_to " + listAddress[0]);
-                        inviteMail.set_body("Hello! \n" +
-                                "You received an invite to join a group in MAD14 from one of your friend.\n" +
-                                "Lets join our community downloading our app at this link:\n" +
-                                "https://teddyapplication.com/welcome\n" +
-                                "To join the group .... \n" +
-                                "Your MAD14 team");
-                        inviteMail.set_to(listAddress);
-                        inviteMail.set_subject("Invite to join MAD14");
-                        inviteMail.send();
-                    } catch (Exception e) {
-                        Log.e("SendMail", e.getMessage(), e);
-                    }
-                }
-            };
-
-            Thread t = new Thread(r);
-            t.start();
-            // end P2
-            actv.setText("");
-        } else{
-            Toast.makeText(NewGroupActivityPhase2.this, "Email not valid.",
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
 
     public void onClickCompletedAction(View view) {
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
@@ -247,12 +190,5 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         startActivity(intent);
     }
 
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-    private boolean isEmailValid(String email) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-        return matcher.find();
-    }
 
 }

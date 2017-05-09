@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="it.polito.mad14.JoinGroupActivity"
+    tools:showIn="@layout/activity_join_group"
+    android:orientation="vertical"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    >
+
+    <ProgressBar
+        android:id="@+id/search_group_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/search_group_progress">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/how_to_join_group"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:text="@string/how_to_join_group"
+                android:textSize="17sp"
+                android:textColor="@color/colorAccent"
+                />
+
+            <EditText
+                android:id="@+id/join_group_id"
+                android:hint="@string/group_id"
+                android:inputType="text"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_below="@id/how_to_join_group"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_marginBottom="20dp">
+            </EditText>
+
+            <EditText
+                android:id="@+id/join_group_code"
+                android:hint="@string/group_code"
+                android:inputType="text"
+                android:textSize="20sp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginRight="@dimen/margin"
+                android:layout_below="@+id/join_group_id"
+                android:layout_marginBottom="20dp">
+            </EditText>
+
+            <Button
+                android:id="@+id/join_group_button"
+                android:layout_width="@android:dimen/thumbnail_width"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/join_group_code"
+                android:text="@string/join"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
+                android:clickable="true"
+                android:onClick="onClick"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end"/>
+
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>
