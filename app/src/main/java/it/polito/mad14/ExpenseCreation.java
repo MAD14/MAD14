@@ -89,7 +89,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
         // 2 decimals
         double priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
-        
+
         Iterator<String> it=contacts.iterator();
         while(it.hasNext()){
 
