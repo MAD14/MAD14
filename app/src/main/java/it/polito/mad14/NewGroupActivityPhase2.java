@@ -105,7 +105,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
-                        .toString()+"/contacts");
+                        +"/contacts");
 
         // TODO da controllare dove viene aggiunto l'amico e creare il ramo contact decidendo quali info
 
@@ -113,12 +113,11 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    friends.add(friendsIndex,new Contact(data.child("Name").toString(),data.child("Surname").toString(),
-                            data.child("Username").toString(),data.child("Email").toString()));
+                    friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),data.child("Surname").getValue().toString(),
+                            data.child("Username").getValue().toString(),data.child("Email").getValue().toString()));
                     friendsIndex++;
 
                 }
-
                 }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -131,17 +130,22 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     public void onClick(View view){
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
-        et.setText("Type the username or look for a friend");
+        et.setText("");
         //TODO check se prende il nome completo selezionato o solo la stringa scritta
         Iterator<Contact> it=friends.iterator();
+
         boolean flag=false;
+        Contact cont=null;
         while(it.hasNext()){
-            Contact cont=it.next();
-            if(cont.getUsername().equals(tmp_name))
-                flag=true;
+            cont=it.next();
+            if(cont.getUsername().toString().equals(tmp_name)) {
+                flag = true;
+                break;
+            }
         }
         if (flag) {
-            friends_added.add(tmp_name);
+            friends_added.add(nFriends,cont.getEmail().toString());
+            nFriends++;
             list_friends.invalidate();
             list_friends.requestLayout();
         }
@@ -156,15 +160,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
-        DatabaseReference myRefGroup=database.getReference("groups/"+IDGroup+"/members/");
         friends_added.add(nFriends,MyID);
         nFriends++;
-        for (String user : friends_added) {
-            String newUser=user.replace(".",",");
-            myRefGroup.child(newUser).child("Debits").setValue("0");
-            myRefGroup.child(newUser).child("Credits").setValue("0");
-        }
+
         // Insertion of the group in each user
         DatabaseReference myRefUser = database.getReference("users");
         for (String user : friends_added) {
@@ -176,6 +174,14 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
 
+        }
+
+        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
+        DatabaseReference myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
+        for (String user : friends_added) {
+            String newUser = user.replace(".", ",");
+            myRefGroup.child(newUser).child("Debits").setValue("0");
+            myRefGroup.child(newUser).child("Credits").setValue("0");
         }
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
