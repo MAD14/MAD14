@@ -156,15 +156,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
-        DatabaseReference myRefGroup=database.getReference("groups/"+IDGroup+"/members/");
         friends_added.add(nFriends,MyID);
         nFriends++;
-        for (String user : friends_added) {
-            String newUser=user.replace(".",",");
-            myRefGroup.child(newUser).child("Debits").setValue("0");
-            myRefGroup.child(newUser).child("Credits").setValue("0");
-        }
+
         // Insertion of the group in each user
         DatabaseReference myRefUser = database.getReference("users");
         for (String user : friends_added) {
@@ -176,6 +170,14 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
 
+        }
+
+        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
+        DatabaseReference myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
+        for (String user : friends_added) {
+            String newUser = user.replace(".", ",");
+            myRefGroup.child(newUser).child("Debits").setValue("0");
+            myRefGroup.child(newUser).child("Credits").setValue("0");
         }
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);

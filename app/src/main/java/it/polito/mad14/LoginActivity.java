@@ -97,7 +97,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            //startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
             finish();
         }
 
@@ -179,8 +180,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                     Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
                                 }
                             } else {
-                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
-                                startActivity(intent);
+//                                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+//                                startActivity(intent);
+                                startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
                                 finish();
                             }
                         }
@@ -439,8 +441,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 String[] pieces = credential.split(":");
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    startActivity(intent);
+                    startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
+
+//                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+//                    startActivity(intent);
                     return pieces[1].equals(mPassword);
                 }
             }
