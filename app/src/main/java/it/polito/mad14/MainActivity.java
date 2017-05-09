@@ -139,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case R.id.action_invite_new_members:
                 intent = new Intent(MainActivity.this, InviteToJoinCommunity.class);
+                intent.putExtra("sender",UserID);
                 startActivity(intent);
                 break;
             case R.id.action_join_a_group:
