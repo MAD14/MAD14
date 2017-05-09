@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import it.polito.mad14.myDataStructures.Expense;
@@ -42,12 +43,8 @@ import it.polito.mad14.myListView.CustomAdapterSummary;
 public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
 
-    private String groupname;
+
     private ListView list;
-    private ArrayList<Expense> expensesList;
-    private int indexExp=0;
-
-
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -62,14 +59,16 @@ public class GroupActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
+    private static String IDGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        expensesList = new ArrayList<>();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
         list = (ListView) findViewById(R.id.list_view_expenses);
+
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -85,44 +84,20 @@ public class GroupActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         Intent myIntent = getIntent();
-        groupname = myIntent.getStringExtra("groupname");
-
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("groups/" + groupname + "/items");
-
+        IDGroup = myIntent.getStringExtra("IDGroup");
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
-                intent.putExtra("groupname", groupname);
+                intent.putExtra("IDGroup", IDGroup);
 //                startActivity(intent);
                 startActivityForResult(intent,EXPENSE_CREATION);
             }
         });
 
 
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    Expense tmp = new Expense(data.child("Name").getValue().toString(),
-                            data.child("Price").getValue().toString(),
-                            data.child("Description").getValue().toString(),
-                            data.child("Author").getValue().toString());
-                    expensesList.add(tmp);
-                }
-                list = (ListView) findViewById(R.id.list_view_expenses);
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                Log.w("Failed to read value.", error.toException());
-
-            }
-        });
         //
 
     }
@@ -168,6 +143,10 @@ public class GroupActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        ArrayList<Expense> expensesList = new ArrayList<>();
+        private int indexExp=0;
+        ArrayList<Summary> summaryList = new ArrayList<>();
+        private int indexSum=0;
 
         public PlaceholderFragment() {
         }
@@ -177,9 +156,6 @@ public class GroupActivity extends AppCompatActivity {
          *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
          *  popolate tramite la lettura dal database!
          */
-        ArrayList<Expense> expensesList = new ArrayList<>();
-        ArrayList<Summary> summaryList = new ArrayList<>();
-
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -196,9 +172,42 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
-                //TODO: lettura da db per popolare la lista (possibile popolarle entrambe in una lettura)
 
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/items");
+
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+
+                myRef.addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+
+                            Iterator<Expense> it = expensesList.iterator();
+                            boolean flag = false;
+                            while (it.hasNext()) {
+                                if (it.next().getName().equals(data.child("Name").getValue().toString()))
+                                    flag = true;
+                            }
+                            if (!flag) {
+                                Expense tmp = new Expense(data.child("Name").getValue().toString(),
+                                        data.child("Price").getValue().toString(),
+                                        data.child("Description").getValue().toString(),
+                                        data.child("Author").getValue().toString());
+                                expensesList.add(indexExp, tmp);
+                                indexExp++;
+                            }
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+
+                    }
+                });
                 // popolamento della pagina
                 View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
                 ListView list = (ListView) rootView.findViewById(R.id.list_view_expenses);
@@ -208,7 +217,7 @@ public class GroupActivity extends AppCompatActivity {
                 return rootView;
             }
             else {
-                //TODO: lettura da db per popolare la lista
+                //TODO: lettura da db per popolare la lista->non ancora implementato
                 summaryList.add(new Summary("Elena","21.50",false)); // questa sarà da sostituire con la lettura da db
                 summaryList.add(new Summary("Michela","10.30",true));
 

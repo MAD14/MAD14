@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.LoaderManager;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +20,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -58,23 +60,6 @@ public class RegistrationActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String emailRequested = intent.getStringExtra("emailRequested");
 
-        mAuth = FirebaseAuth.getInstance();
-
-        mAuthListener = new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                FirebaseUser user = firebaseAuth.getCurrentUser();
-                if (user != null) {
-                    // User is signed in
-                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
-                } else {
-                    // User is signed out
-                    Log.d(TAG, "onAuthStateChanged:signed_out");
-                }
-            }
-        };
-
-
         nameView = (EditText) findViewById(R.id.name);
         surnameView = (EditText) findViewById(R.id.surname);
         userView = (EditText) findViewById(R.id.username);
@@ -83,6 +68,9 @@ public class RegistrationActivity extends AppCompatActivity {
         passView = (EditText) findViewById(R.id.password);
 
         mProgressView = findViewById(R.id.login_progress_registration);
+
+        mAuth=FirebaseAuth.getInstance();
+
 
         final Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +82,6 @@ public class RegistrationActivity extends AppCompatActivity {
                 username = userView.getText().toString();
                 email = emailView.getText().toString();
                 password = passView.getText().toString();
-
                 if(checkDataForRegistration()){
                     focusView.requestFocus();
                 } else {
@@ -125,17 +112,21 @@ public class RegistrationActivity extends AppCompatActivity {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        if (data.getKey().equals(username)) {
+                                        if (data.getKey().toString().equals(email.replace(".",","))) {
+                                            Toast.makeText(RegistrationActivity.this, data.getKey().toString(),
+                                                    Toast.LENGTH_SHORT).show();
                                             userNotUsed = false;
                                         }
                                     }
                                     mProgressView.setVisibility(View.GONE);
                                     if(userNotUsed) {
-                                        DatabaseReference ref = myRef.child(username);
+                                        // TODO qui per ora ho messo l'email
+                                        DatabaseReference ref = myRef.child(email.replace(".",","));
                                         ref.child("Name").setValue(name);
                                         ref.child("Surname").setValue(surname);
                                         ref.child("Email").setValue(email);
                                         ref.child("Password").setValue(password);
+                                        ref.child("Username").setValue(username);
                                         Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
                                                 Toast.LENGTH_SHORT).show();
                                         mainActivityCall();
@@ -160,6 +151,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
 
                                         //TODO: rimozione authentication se abbandono app
+                                        //FirebaseAuth.getInstance().signOut();
                                     }
                                 }
                                 @Override
@@ -230,7 +222,20 @@ public class RegistrationActivity extends AppCompatActivity {
         intent.putExtra("email",email);
         startActivity(intent);
     }
+    /*
+    @Override
+    public void onResume(){
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
 
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mAuthListener != null){
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }*/
 
 
 }
