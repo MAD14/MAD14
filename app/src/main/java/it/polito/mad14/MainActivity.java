@@ -61,6 +61,8 @@ public class MainActivity extends AppCompatActivity {
     private static FirebaseDatabase database;
     private static String UserID;
     private static DatabaseReference myRef;
+    private FloatingActionButton fab_groups;
+    private FloatingActionButton fab_contacts;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,12 +79,49 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                animateFab(tab.getPosition());
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        };
+
+
+        ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                animateFab(position);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+            }
+        };
+
+        mViewPager.setOnPageChangeListener(onPageChangeListener);
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
         database = FirebaseDatabase.getInstance();
         UserID=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
+        fab_groups = (FloatingActionButton) findViewById(R.id.fab_groups_page);
+        fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
 
     }
 
@@ -179,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                             Iterator<Group> it = groupsList.iterator();
                             boolean flag = false;
                             while (it.hasNext()) {
-                                if (it.next().getID().equals(data.getKey().toString()))
+                                if (it.next().getID().equals(data.getKey()))
                                     flag = true;
                             }
                             if (!flag) {
@@ -206,17 +245,6 @@ public class MainActivity extends AppCompatActivity {
 
                     CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
                     list.setAdapter(adapter);
-
-                    // il tasto fab qui permette di aggiungere un nuovo gruppo!!!
-                    FloatingActionButton fab_groups = (FloatingActionButton) rootView.findViewById(R.id.fab_groups_page);
-                    fab_groups.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(view.getContext(),NewGroupActivityPhase1.class);
-                            startActivity(intent);
-                        }
-                    });
-                    fab_groups.bringToFront();
 
                     return rootView;
 
@@ -257,16 +285,6 @@ public class MainActivity extends AppCompatActivity {
                 }
 
 
-                // il tasto fab qui permette di aggiungere un nuovo contatto agli amici!!!
-                    FloatingActionButton fab_contacts = (FloatingActionButton) rootView.findViewById(R.id.fab_contacts_page);
-                    fab_contacts.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            Intent intent = new Intent(view.getContext(),AddNewContacts.class);
-                            startActivity(intent);
-                            Snackbar.make(rootView,"New contact",Snackbar.LENGTH_SHORT).show();
-                        }
-                    });
                 return rootView;
             }
         }
@@ -306,6 +324,38 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+
+    private void animateFab(int position) {
+        switch (position) {
+            case 0:
+                fab_groups.show();
+                fab_contacts.hide();
+                fab_groups.bringToFront();
+                break;
+            case 2:
+                fab_contacts.show();
+                fab_groups.hide();
+                fab_contacts.bringToFront();
+                break;
+
+            default:
+                fab_groups.hide();
+                fab_contacts.hide();
+                fab_groups.bringToFront();
+                break;
+        }
+    }
+
+    public void onClickNewGroup(View view) {
+        Intent intent = new Intent(view.getContext(), NewGroupActivityPhase1.class);
+        startActivity(intent);
+    }
+
+    public void onClickNewContact(View view) {
+        Intent intent = new Intent(view.getContext(), AddNewContacts.class);
+        startActivity(intent);
     }
 }
 
