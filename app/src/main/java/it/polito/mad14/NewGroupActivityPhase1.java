@@ -78,7 +78,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             // DB ACCESS
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("groups").push();
-                            String author=mAuth.getCurrentUser().getEmail();
+                            String author = mAuth.getCurrentUser().getEmail().toString();
                             String date=Calendar.getInstance().getTime().toString();
                             Map<String,String> dict=new HashMap<>();
                             dict.put("Name",groupName);

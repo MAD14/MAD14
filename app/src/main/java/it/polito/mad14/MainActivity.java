@@ -79,24 +79,6 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
-        TabLayout.OnTabSelectedListener onTabSelectedListener = new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                animateFab(tab.getPosition());
-            }
-
-            @Override
-            public void onTabUnselected(TabLayout.Tab tab) {
-
-            }
-
-            @Override
-            public void onTabReselected(TabLayout.Tab tab) {
-
-            }
-        };
-
-
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -223,10 +205,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if (!flag) {
                                 String id = data.getKey();
-                                String nm = data.child("Name").getValue().toString();
-                                String own = data.child("Author").getValue().toString();
-                                String dat = data.child("Date").getValue().toString();
-                                groupsList.add(indexGroup, new Group(id, nm, own, dat));
+                                String name = data.child("Name").getValue().toString();
+                                String owner = data.child("Author").getValue().toString();
+                                String date = data.child("Date").getValue().toString();
+                                groupsList.add(indexGroup, new Group(id, name, owner, date));
                                 indexGroup++;
 
                             }
