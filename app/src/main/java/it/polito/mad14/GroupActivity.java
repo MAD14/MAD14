@@ -1,5 +1,6 @@
 package it.polito.mad14;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -21,6 +22,7 @@ import android.view.ViewGroup;
 
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,7 +61,7 @@ public class GroupActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private static String IDGroup;
+    private String IDGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,6 +87,9 @@ public class GroupActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
+
+        Toast.makeText(GroupActivity.this, IDGroup,
+                Toast.LENGTH_SHORT).show();
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +178,7 @@ public class GroupActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+            String IDGroup=getActivity().getIntent().getStringExtra("IDGroup");
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/items");
 
