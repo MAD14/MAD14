@@ -28,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
         imgbt.bringToFront();
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
-        email=auth.getCurrentUser().getEmail();
+        email=auth.getCurrentUser().getEmail().replace(".",",");
 
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");

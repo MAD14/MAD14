@@ -157,7 +157,7 @@ public class RegistrationActivity extends AppCompatActivity {
                                 @Override
                                 public void onCancelled(DatabaseError error) {
                                     Log.w("Failed to read value.", error.toException());
-                                    Toast.makeText(RegistrationActivity.this, "Failed to read value from DB!.",
+                                    Toast.makeText(RegistrationActivity.this, "Failed to read value from DB!",
                                             Toast.LENGTH_SHORT).show();
                                 }
                             });

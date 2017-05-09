@@ -35,17 +35,13 @@ import it.polito.mad14.myDataStructures.Mail;
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
 
     private ListView list_friends;
-    //TODO: friends dovrebbe essere popolata degli amici --> potremmo tenere una mappa/lista che funga da cache
-    // friends viene utilizzata poi nell'adapter a riga 55 per popolare i suggerimenti
-    //private String[] friends = {"Elena","Martina","Giulia","Eleonora","Elisabetta"};
+    //TODO: friends deve essere popolata degli amici  ++++ molto importante
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
 
     private int nFriends=0;
-    private ArrayList<String> emailsToBeSent;
-    private String[] listAddress = {""};
-    private ListView list_invitation;
+
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage;
     private String IDGroup;
     private String MyID;
@@ -99,25 +95,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             }
         });
 
-        emailsToBeSent = new ArrayList<>();
-
-        list_invitation = (ListView) findViewById(R.id.lv_invitation);
-        list_invitation.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {return emailsToBeSent.size();}
-            @Override
-            public Object getItem(int position) {return emailsToBeSent.get(position);}
-            @Override
-            public long getItemId(int position) {return 0;}
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null)
-                    convertView = getLayoutInflater().inflate(R.layout.contact_item, parent, false);
-                TextView tv = (TextView) findViewById(R.id.tv_contact_email);
-//                tv.setText(emailsToBeSent.get(position));
-                return convertView;
-            }
-        });
 
         friends=new ArrayList<>();
 
