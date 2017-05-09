@@ -48,10 +48,30 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        try {
+                        try {                            Intent intent = getIntent();
+                            //System.out.println("AAAAAAAAAAAAAAAAAa");
+                            String key = intent.getStringExtra("sender");
+                            //System.out.println(key);
+                            DatabaseReference myRef = database.getReference("users");
+                            myRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String name = dataSnapshot.child("Name").getValue().toString();
+                                    //System.out.println(name);
+                                    String surname = dataSnapshot.child("Surname").getValue().toString();
+                                    //System.out.println(surname);
+                                    String nameSurnameString = name+" "+surname;
+                                    //System.out.println(nameSurnameString);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError error) { }
+                            });
+                            //System.out.println(nameSurnameString);
+
 //                            Log.e("SendMail", "set_to " + listAddress[0]);
                             inviteMail.set_body("Hi! \n" +
-                                    nameSurnameString + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
+                                    key + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
                                     "This application will allow you to easily manage expenses shared with your friends.\n\n" +
                                     "We cannot wait for your association!\n" +
                                     "Your MAD14 team");
