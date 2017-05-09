@@ -15,6 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -28,6 +34,8 @@ public class InviteToJoinCommunity extends AppCompatActivity {
     private String[] listAddress = {""};
     private ListView list_invitation;
     private String nameSurnameString = "Elena Daraio"; //TODO sarà da sostituire con il nome dell'utente
+    private FirebaseDatabase database;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,6 +45,9 @@ public class InviteToJoinCommunity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         emailsToBeSent = new ArrayList<>();
+
+        database = FirebaseDatabase.getInstance();
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_send_invitation);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -50,29 +61,23 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                     public void run() {
                         try {                            
                             Intent intent = getIntent();
-                            //System.out.println("AAAAAAAAAAAAAAAAAa");
                             String key = intent.getStringExtra("sender");
-                            //System.out.println(key);
                             DatabaseReference myRef = database.getReference("users");
                             myRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     String name = dataSnapshot.child("Name").getValue().toString();
-                                    //System.out.println(name);
                                     String surname = dataSnapshot.child("Surname").getValue().toString();
-                                    //System.out.println(surname);
                                     String nameSurnameString = name+" "+surname;
-                                    //System.out.println(nameSurnameString);
                                 }
 
                                 @Override
                                 public void onCancelled(DatabaseError error) { }
                             });
-                            //System.out.println(nameSurnameString);
 
 //                            Log.e("SendMail", "set_to " + listAddress[0]);
                             inviteMail.set_body("Hi! \n" +
-                                    key + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
+                                    nameSurnameString + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
                                     "This application will allow you to easily manage expenses shared with your friends.\n\n" +
                                     "We cannot wait for your association!\n" +
                                     "Your MAD14 team");
