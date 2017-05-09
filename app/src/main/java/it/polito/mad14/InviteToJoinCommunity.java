@@ -48,7 +48,8 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        try {                            Intent intent = getIntent();
+                        try {                            
+                            Intent intent = getIntent();
                             //System.out.println("AAAAAAAAAAAAAAAAAa");
                             String key = intent.getStringExtra("sender");
                             //System.out.println(key);
