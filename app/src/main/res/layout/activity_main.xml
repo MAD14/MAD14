@@ -41,5 +41,25 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_groups_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@mipmap/add_group_icon"
+        android:clickable="true"
+        android:onClick="onClickNewGroup" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_contacts_page"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@mipmap/add_person_icon"
+        android:clickable="true"
+        android:onClick="onClickNewContact"
+        android:visibility="gone" />
 
 </android.support.design.widget.CoordinatorLayout>
