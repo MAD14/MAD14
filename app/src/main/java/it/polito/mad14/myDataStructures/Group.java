@@ -10,6 +10,7 @@ public class Group {
     String author;
     String date;
 
+
     public Group(String ID,String name, String author, String date) {
         this.ID=ID;
         this.name = name;
