@@ -118,8 +118,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
+
+               .requestIdToken(getString(R.string.default_web_client_id))
+
+
+                 .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
@@ -128,7 +131,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         /*mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
+                Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
             }
         }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();*/
 
@@ -223,18 +226,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
-            //TODO: ritorna result errore --> da risolvere!!!
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            GoogleSignInAccount account = result.getSignInAccount();
-            firebaseAuthWithGoogle(account);
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("users/"+ result.getSignInAccount().getEmail().replace(".",","));
-            Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
-            myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
-            myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
-            myRef.child("Email").setValue(result.getSignInAccount().getEmail());
-            myRef.child("Username").setValue(result.getSignInAccount().getGivenName()+"."+result.getSignInAccount().getFamilyName());
-
             handleSignInResult(result);
         }else{
             Toast.makeText(this,"Problems", Toast.LENGTH_SHORT).show();
@@ -266,10 +258,16 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
+            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef = database.getReference("users/"+ acct.getEmail().replace(".",","));
+            Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
+            myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
+            myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
+            myRef.child("Email").setValue(result.getSignInAccount().getEmail());
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.
-            Toast.makeText(this,"Sign in unsuccessfull", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Sign in unsuccessfull"+result.getStatus().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
