@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -46,7 +47,7 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
 
 
-    private ListView list;
+    //private ListView list;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -69,7 +70,7 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        list = (ListView) findViewById(R.id.list_view_expenses);
+        //list = (ListView) findViewById(R.id.list_view_expenses);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,16 +89,13 @@ public class GroupActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
 
-        Toast.makeText(GroupActivity.this, IDGroup,
-                Toast.LENGTH_SHORT).show();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
-//                startActivity(intent);
+                //startActivity(intent);
                 startActivityForResult(intent,EXPENSE_CREATION);
             }
         });
@@ -111,6 +109,7 @@ public class GroupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EXPENSE_CREATION){
             if (resultCode == RESULT_OK){
+                ListView list = (ListView) findViewById(R.id.list_view_expenses);
                 list.invalidate();
                 list.requestLayout();
             }
@@ -173,6 +172,8 @@ public class GroupActivity extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
+        private View rootView;
+        private ListView list;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -182,9 +183,12 @@ public class GroupActivity extends AppCompatActivity {
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/items");
 
-            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
 
-                myRef.addValueEventListener(new ValueEventListener() {
+            if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
+                list = (ListView) rootView.findViewById(R.id.list_view_expenses);
+
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -205,7 +209,8 @@ public class GroupActivity extends AppCompatActivity {
                             }
                         }
 
-
+                        list.invalidate();
+                        list.requestLayout();
                     }
 
                     @Override
@@ -214,9 +219,9 @@ public class GroupActivity extends AppCompatActivity {
 
                     }
                 });
+
                 // popolamento della pagina
-                View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.list_view_expenses);
+
                 CustomAdapterExpenses adapter = new CustomAdapterExpenses(this.getActivity(),expensesList);
                 list.setAdapter(adapter);
 
@@ -228,8 +233,8 @@ public class GroupActivity extends AppCompatActivity {
                 summaryList.add(new Summary("Michela","10.30",true));
 
                 // popolamento della pagina
-                View rootView = inflater.inflate(R.layout.summary_page, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.list_view_summary);
+                rootView = inflater.inflate(R.layout.summary_page, container, false);
+                list = (ListView) rootView.findViewById(R.id.list_view_summary);
                 CustomAdapterSummary adapter = new CustomAdapterSummary(this.getActivity(),summaryList);
                 list.setAdapter(adapter);
 

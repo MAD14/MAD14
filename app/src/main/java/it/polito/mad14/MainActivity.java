@@ -197,12 +197,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
-            rootView = inflater.inflate(R.layout.groups_list_page, container, false);
-            list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                rootView = inflater.inflate(R.layout.groups_list_page, container, false);
+                list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
+
                 myRef = database.getReference("users/"+UserID+"/groups/");
-                myRef.addValueEventListener(new ValueEventListener() {
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
@@ -239,10 +240,6 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
-
-                    View rootView = inflater.inflate(R.layout.groups_list_page, container, false);
-                    ListView list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
-
 
                     CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
                     list.setAdapter(adapter);

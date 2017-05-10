@@ -55,7 +55,7 @@ public class LoadingActivity extends AppCompatActivity {
         img.startAnimation(animation);
 
         myRef = database.getReference("users/" + UserID + "/groups/");
-        myRef.addValueEventListener(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {

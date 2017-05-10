@@ -136,7 +136,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 newRef.child("Money").setValue(priceEach);
                 //updating debitors list inside the author
                 DatabaseReference refDeb = userRef.child(et_author).child("credits").push();
-                refDeb.child("Group").setValue("IDGroup");
+                refDeb.child("Group").setValue(IDGroup);
                 refDeb.child("Debitor").setValue(name);
                 refDeb.child("Money").setValue(priceEach);
                 //updating each creditor
@@ -148,10 +148,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
 
         }
-
-
-//        ListView list = (ListView) findViewById(R.id.list_view_expenses);
-//        ((BaseAdapter) list.getAdapter()).notifyDataSetChanged();
 
         Intent intent = new Intent();
         intent.putExtra("author",et_author);

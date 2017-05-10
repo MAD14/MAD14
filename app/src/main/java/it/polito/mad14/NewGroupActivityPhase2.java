@@ -187,6 +187,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);
+
     }
 
 
