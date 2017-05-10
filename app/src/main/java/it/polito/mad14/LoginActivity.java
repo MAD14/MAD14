@@ -57,11 +57,12 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
+import static android.R.attr.tag;
 
 /**
  * A login screen that offers login via email/password.
  */
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor>, GoogleApiClient.OnConnectionFailedListener {
 
     public static String[] DUMMY_CREDENTIALS = {""};
 
@@ -117,15 +118,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+        /*mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
             @Override
             public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
 
             }
-        }).addApi(Auth.GOOGLE_SIGN_IN_API,gso).build();
-
+        }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();*/
 
         findViewById(R.id.email_sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
@@ -135,7 +140,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
                 boolean cancel = false;
                 View focusView = null;
-                //signIn();
                 String email = mEmailView.getText().toString();
                 final String password = mPasswordView.getText().toString();
                 if (email.isEmpty() && password.isEmpty()){
@@ -208,28 +212,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-
-    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-
-        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-        final GoogleSignInAccount acct = account;
-        auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
-            @Override
-            public void onComplete(@NonNull Task<AuthResult> task) {
-                if (task.isSuccessful()) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    intent.putExtra("email",acct.getEmail());
-                    startActivity(intent);
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Toast.makeText(LoginActivity.this, "Authentication failed.",
-                            Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-    }
-
     private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
@@ -243,17 +225,41 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (requestCode == RC_SIGN_IN) {
             //TODO: ritorna result errore --> da risolvere!!!
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            GoogleSignInAccount account = result.getSignInAccount();
+            firebaseAuthWithGoogle(account);
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users/"+ result.getSignInAccount().getEmail().replace(".",","));
             Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
             myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
             myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
             myRef.child("Email").setValue(result.getSignInAccount().getEmail());
+            myRef.child("Username").setValue(result.getSignInAccount().getGivenName()+"."+result.getSignInAccount().getFamilyName());
 
             handleSignInResult(result);
         }else{
             Toast.makeText(this,"Problems", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
+        final GoogleSignInAccount acct = account;
+        auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+            @Override
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+                    intent.putExtra("email",acct.getEmail());
+                    startActivityForResult(intent,1);
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void handleSignInResult(GoogleSignInResult result) {
@@ -265,6 +271,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Signed out, show unauthenticated UI.
             Toast.makeText(this,"Sign in unsuccessfull", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        // An unresolvable error has occurred and Google APIs (including Sign-In) will not
+        // be available.
+        Log.d(TAG, "onConnectionFailed:" + connectionResult);
+        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
     }
 
     private void populateAutoComplete() {

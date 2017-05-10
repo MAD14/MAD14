@@ -10,10 +10,30 @@
       "client_info": {
         "mobilesdk_app_id": "1:1090817053466:android:ed97acae9972ebca",
         "android_client_info": {
-          "package_name": "it.polito.mad14"
+          "package_name": "it.polito.cowapplication"
         }
       },
       "oauth_client": [
+        {
+          "client_id": "1090817053466-djoj293icq8ee4b675i69n644ld680l8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1090817053466-6lh7fg18biluvau4brf1j6ssltatkqqk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.cowapplication",
+            "certificate_hash": "140463709fd9783ec2f1d70f1b2fe9d07012303c"
+          }
+        },
+        {
+          "client_id": "1090817053466-8g26lp2ufmflodtliajk06adhk02mj5p.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.cowapplication",
+            "certificate_hash": "9aab5f3091ddbd54649a9ed90085fc27fac326e1"
+          }
+        },
         {
           "client_id": "1090817053466-8he7hvjglj3hebd96ud3a4mhvt4oc55d.apps.googleusercontent.com",
           "client_type": 1,
@@ -40,7 +60,55 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "1090817053466-pdpmal85r7qr7bquk0s9o92j7d8k748e.apps.googleusercontent.com",
+              "client_id": "1090817053466-djoj293icq8ee4b675i69n644ld680l8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1090817053466:android:0161f96b4cd44517",
+        "android_client_info": {
+          "package_name": "it.polito.mad14"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1090817053466-jm9r4c8s2qa15v9ufmjhk3huki7tjv93.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad14",
+            "certificate_hash": "9aab5f3091ddbd54649a9ed90085fc27fac326e1"
+          }
+        },
+        {
+          "client_id": "1090817053466-djoj293icq8ee4b675i69n644ld680l8.apps.googleusercontent.com",
+          "client_type": 3
+        },
+        {
+          "client_id": "1090817053466-pdpmal85r7qr7bquk0s9o92j7d8k748e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm3dZBlsgiJAmLQPoax6f8POlXX0hkvn0"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1090817053466-djoj293icq8ee4b675i69n644ld680l8.apps.googleusercontent.com",
               "client_type": 3
             }
           ]
