@@ -36,6 +36,7 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Group;
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setupWithViewPager(mViewPager);
 
         database = FirebaseDatabase.getInstance();
-        UserID=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+        UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
 
         fab_groups = (FloatingActionButton) findViewById(R.id.fab_groups_page);
         fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
@@ -190,8 +191,14 @@ public class MainActivity extends AppCompatActivity {
             return fragment;
         }
 
+        private View rootView;
+        private ListView list;
+
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
+
+            rootView = inflater.inflate(R.layout.groups_list_page, container, false);
+            list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 myRef = database.getReference("users/"+UserID+"/groups/");
@@ -223,6 +230,8 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         }
+                        list.invalidate();
+                        list.requestLayout();
                     }
 
                     @Override
