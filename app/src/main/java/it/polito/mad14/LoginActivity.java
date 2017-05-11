@@ -118,22 +118,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-
-               .requestIdToken(getString(R.string.default_web_client_id))
-
-
-                 .requestEmail()
+                .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-        /*mGoogleApiClient = new GoogleApiClient.Builder(this).enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-            @Override
-            public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                Toast.makeText(LoginActivity.this, getString(R.string.auth_failed), Toast.LENGTH_LONG).show();
-            }
-        }).addApi(Auth.GOOGLE_SIGN_IN_API, gso).build();*/
+
 
         findViewById(R.id.email_sign_in_button).setOnClickListener(new OnClickListener() {
             @Override
@@ -242,9 +234,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
                     // Sign in success, update UI with the signed-in user's information
-                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-                    intent.putExtra("email",acct.getEmail());
-                    startActivityForResult(intent,1);
+                    Intent intent = new Intent(getApplicationContext(),LoadingActivity.class);
+                    //intent.putExtra("email",acct.getEmail());
+                    startActivity(intent);
                 } else {
                     // If sign in fails, display a message to the user.
                     Toast.makeText(LoginActivity.this, "Authentication failed.",

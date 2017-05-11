@@ -44,6 +44,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
 
     private Bitmap targetImageBitmap = null;
     private String encodedImage;
+    private String strImageUri;
     private FirebaseAuth mAuth;
 
     @Override
@@ -52,6 +53,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         setContentView(R.layout.activity_new_group_phase1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        encodedImage = null;
 
         createGroup = (Button) findViewById(R.id.group_create_button);
         editName = (EditText) findViewById(R.id.group_name);
@@ -61,9 +63,8 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         insertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                intent.setType("image/*");
-                startActivityForResult(intent, 0);
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(NewGroupActivityPhase1.this);
+                startActivityForResult(chooseImageIntent, 1);
             }
         });
 
@@ -97,7 +98,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             intent.putExtra("Description",groupDescription);
                             intent.putExtra("Author",author);
                             intent.putExtra("Date",date);
-                            intent.putExtra("Image",encodedImage);
+                            intent.putExtra("Image",strImageUri);
                             startActivity(intent);
 
                         } else {
@@ -117,16 +118,17 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK){
-            Uri targetImageUri = data.getData();
+            Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
+            strImageUri = imageUri.toString();
             try {
-                targetImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(targetImageUri));
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(),targetImageBitmap);
+                targetImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), targetImageBitmap);
                 insertImage.setBackgroundDrawable(bDrawable);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                targetImageBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
+                targetImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
                 byte[] byteArrayImage = baos.toByteArray();
                 encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-            } catch (FileNotFoundException e) {
+            }catch (FileNotFoundException e){
                 e.printStackTrace();
             }
         }

@@ -1,11 +1,15 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -49,6 +55,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private String MyID;
     private FirebaseDatabase database;
 
+    private Uri groupImageUri;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,7 +68,16 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
-        groupImage= getIntent().getStringExtra("Image");
+        groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
+        try {
+            Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(groupImageUri));
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+            byte[] byteArrayImage = baos.toByteArray();
+            groupImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+        }catch (FileNotFoundException e){
+            e.printStackTrace();
+        }
         IDGroup=getIntent().getStringExtra("IDGroup");
         Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
                 Toast.LENGTH_SHORT).show();

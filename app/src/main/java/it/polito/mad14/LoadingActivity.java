@@ -54,6 +54,7 @@ public class LoadingActivity extends AppCompatActivity {
         Animation animation = AnimationUtils.loadAnimation(LoadingActivity.this, R.anim.zoom_in_animation);
         img.startAnimation(animation);
 
+
         myRef = database.getReference("users/" + UserID + "/groups/");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
