@@ -148,8 +148,11 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Expense> expensesList = new ArrayList<>();
         private int indexExp=0;
         ArrayList<Summary> summaryList = new ArrayList<>();
+        ArrayList<Summary> tmpList = new ArrayList<>();
+        ArrayList<Expense> tmpList_exp = new ArrayList<>();
         private int indexSummary=0;
         private boolean credit;
+        private String user;
 
         public PlaceholderFragment() {
         }
@@ -172,7 +175,7 @@ public class GroupActivity extends AppCompatActivity {
             return fragment;
         }
         private View rootView;
-        private ListView list;
+        private ListView list_expenses,list_summary;
         private String name;
 
         @Override
@@ -181,15 +184,13 @@ public class GroupActivity extends AppCompatActivity {
 
             String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             FirebaseDatabase database = FirebaseDatabase.getInstance();
+            user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
-            String user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
-            DatabaseReference myRef_summary_debits = database.getReference("users/" + user + "/debits");
-            DatabaseReference myRef_summary_credits = database.getReference("users/" + user + "/credits");
-
+            DatabaseReference myRef_summary = database.getReference("users/" + IDGroup + "/debits");
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
-                list = (ListView) rootView.findViewById(R.id.list_view_expenses);
+                list_expenses = (ListView) rootView.findViewById(R.id.list_view_expenses);
 
                 myRef_expenses.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -210,8 +211,12 @@ public class GroupActivity extends AppCompatActivity {
                                 indexExp++;
                             }
                         }
-                        list.invalidate();
-                        list.requestLayout();
+
+                        tmpList_exp = ((CustomAdapterExpenses)list_expenses.getAdapter()).getExpensesList();
+
+                        expensesList.addAll(tmpList_exp);
+                        CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(),expensesList);
+                        list_expenses.setAdapter(adapter);
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -221,28 +226,42 @@ public class GroupActivity extends AppCompatActivity {
 
                 // popolamento della pagina
 
-                CustomAdapterExpenses adapter = new CustomAdapterExpenses(this.getActivity(),expensesList);
-                list.setAdapter(adapter);
+//                CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(),expensesList);
+//                list_expenses.setAdapter(adapter);
 
                 return rootView;
             }
             else { // summary page
                 rootView = inflater.inflate(R.layout.summary_page, container, false);
-                list = (ListView) rootView.findViewById(R.id.list_view_summary);
+                list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
                 //
-                myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
+
+                myRef_summary.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            credit = false; // debits section --> it's a debit
-                            Summary tmp = new Summary(data.child("Creditor").getValue().toString(),
-                                    data.child("Money").getValue().toString(),
-                                    credit);
-                            summaryList.add(indexSummary, tmp);
-                            indexSummary++;
+
+                            if (data.child("Receiver").getValue().toString().equals(user)){
+                                credit = true;
+                                name = data.child("Sender").getValue().toString();
+                                Summary tmp = new Summary(name,
+                                        data.child("Money").getValue().toString(),
+                                        credit);
+                                summaryList.add(indexSummary, tmp);
+                                indexSummary++;
+                            } else if (data.child("Sender").getValue().toString().equals(user)) {
+                                credit = false;
+                                name = data.child("Receiver").getValue().toString();
+                                Summary tmp = new Summary(name,
+                                        data.child("Money").getValue().toString(),
+                                        credit);
+                                summaryList.add(indexSummary, tmp);
+                                indexSummary++;
+                            }
                         }
-                        list.invalidate();
-                        list.requestLayout();
+                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                        summaryList.addAll(tmpList);
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -250,32 +269,9 @@ public class GroupActivity extends AppCompatActivity {
 
                     }
                 });
-                myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            credit = true; // credits section --> it's a credit
-                            Summary tmp = new Summary(data.child("Debitor").getValue().toString(),
-                                    data.child("Money").getValue().toString(),
-                                    credit);
-                            summaryList.add(indexSummary, tmp);
-                            indexSummary++;
-                        }
-                        list.invalidate();
-                        list.requestLayout();
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        Log.w("Failed to read value.", error.toException());
 
-                    }
-                });
-                //
-
-                // popolamento della pagina
                 CustomAdapterSummary adapter = new CustomAdapterSummary(this.getActivity(),summaryList);
-                list.setAdapter(adapter);
-
+                list_summary.setAdapter(adapter);
                 return rootView;
             }
         }

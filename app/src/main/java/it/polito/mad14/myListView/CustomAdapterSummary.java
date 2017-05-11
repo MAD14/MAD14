@@ -66,4 +66,12 @@ public class CustomAdapterSummary extends BaseAdapter {
 
         return convertView;
     }
+
+    public ArrayList<Summary> getSummaryList() {
+        return summaryList;
+    }
+
+    public void setSummaryList(ArrayList<Summary> summaryList) {
+        this.summaryList = summaryList;
+    }
 }
