@@ -189,10 +189,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void run() {
                 try {
-                    Intent intent = getIntent();
-                    String key = intent.getStringExtra("sender");
-
-                    myRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                    myRef.child(MyID).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             String name = dataSnapshot.child("Name").getValue().toString();
