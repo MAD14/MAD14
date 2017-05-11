@@ -40,12 +40,14 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
+    private ArrayList<String> emailsToBeSent = new ArrayList<>();
 
     private int nFriends=0;
 
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage;
     private String IDGroup;
     private String MyID;
+    private FirebaseDatabase database;
 
 
     @Override
@@ -145,6 +147,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         }
         if (flag) {
             friends_added.add(nFriends,cont.getEmail().toString());
+            emailsToBeSent.add(nFriends,cont.getEmail());
+
             nFriends++;
             list_friends.invalidate();
             list_friends.requestLayout();
@@ -158,8 +162,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-
+        database = FirebaseDatabase.getInstance();
         friends_added.add(nFriends,MyID);
         nFriends++;
 
@@ -183,6 +186,34 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             myRefGroup.child(newUser).child("Debits").setValue("0");
             myRefGroup.child(newUser).child("Credits").setValue("0");
         }
+
+        //send e-mail to members
+        final Mail inviteMail = new Mail();
+        final DatabaseReference myRef = database.getReference("users");
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
+
+                    database = FirebaseDatabase.getInstance();
+//                    Log.e("SendMail", "set_to " + listAddress[0]);
+                    inviteMail.set_body("Hi! \n" + displayName + " (email : "+
+                            user_email + ") is inviting you to join a group called " + groupName+
+                            " whose code is "+IDGroup+".\n\n" +
+                            "We cannot wait for your association!\n" +
+                            "Your MAD14 team");
+                    inviteMail.set_to(emailsToBeSent);
+                    inviteMail.set_subject("Invite to join MAD14");
+                    inviteMail.send();
+                } catch (Exception e) {
+                    Log.e("SendMail", e.getMessage(), e);
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
