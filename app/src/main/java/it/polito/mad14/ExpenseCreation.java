@@ -1,6 +1,7 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -31,6 +32,8 @@ import java.util.List;
 import java.util.Set;
 
 import java.io.ByteArrayOutputStream;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
@@ -46,6 +49,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Bitmap expenseImageBitmap;
     private String encodedExpenseImage;
 
+    private EditText et_import, et_name, et_description;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         bt = (Button) findViewById(R.id.expense_button);
         bt.setOnClickListener(this);
 
+        et_name = (EditText)findViewById(R.id.expense_name);
+        et_description = (EditText)findViewById(R.id.expense_description);
+        et_import = (EditText)findViewById(R.id.expense_import);
+        et_import.setRawInputType(Configuration.KEYBOARD_12KEY);
 
         auth=FirebaseAuth.getInstance();
 
@@ -101,63 +110,59 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         //TODO scrittura su firebase
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-      
-        /**Perché funzioni dobbiamo ri-registrare tutti gli utenti in modo che nella autentication
-         * venga chiamata la funzione setDisplayName, altrimenti ovviamente qui ritorna solo null
-         */
-      
-        EditText et_name = (EditText)findViewById(R.id.expense_name);
-        EditText et_description = (EditText)findViewById(R.id.expense_description);
-        final EditText et_import = (EditText)findViewById(R.id.expense_import);
+        if(isImportValid(et_import.getText().toString())){
+            DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
+            DatabaseReference userRef= database.getReference("users");
+            DatabaseReference ref=myRef.child(et_name.getText().toString());
+            ref.child("Price").setValue(et_import.getText().toString());
+            ref.child("Description").setValue(et_description.getText().toString());
+            ref.child("Name").setValue(et_name.getText().toString());
+            ref.child("Author").setValue(et_author);
+            ref.child("ExpenseImage").setValue(encodedExpenseImage);
 
-        DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
-        DatabaseReference userRef= database.getReference("users");
-        DatabaseReference ref=myRef.child(et_name.getText().toString());
-        ref.child("Price").setValue(et_import.getText().toString());
-        ref.child("Description").setValue(et_description.getText().toString());
-        ref.child("Name").setValue(et_name.getText().toString());
-        ref.child("Author").setValue(et_author);
-        ref.child("ExpenseImage").setValue(encodedExpenseImage);
+            DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
+            // 2 decimals
+            double priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
 
-        DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
-        // 2 decimals
-        double priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
+            Iterator<String> it=contacts.iterator();
+            while(it.hasNext()){
 
-        Iterator<String> it=contacts.iterator();
-        while(it.hasNext()){
+                String name=it.next();
+                if(!name.equals(et_author)) {
+                    //updating of the group's info
+                    DatabaseReference newRef = refDebits.push();
+                    newRef.child("Receiver").setValue(et_author);
+                    newRef.child("Sender").setValue(name);
+                    newRef.child("Money").setValue(priceEach);
+                    //updating debitors list inside the author
+                    DatabaseReference refDeb = userRef.child(et_author).child("credits").push();
+                    refDeb.child("Group").setValue(IDGroup);
+                    refDeb.child("Debitor").setValue(name);
+                    refDeb.child("Money").setValue(priceEach);
+                    //updating each creditor
+                    DatabaseReference refCred = userRef.child(name).child("debits").push();
+                    refCred.child("Group").setValue(IDGroup);
+                    refCred.child("Paying").setValue(et_author);
+                    refCred.child("Money").setValue(priceEach);
+                }
 
-            String name=it.next();
-            if(!name.equals(et_author)) {
-                //updating of the group's info
-                DatabaseReference newRef = refDebits.push();
-                newRef.child("Receiver").setValue(et_author);
-                newRef.child("Sender").setValue(name);
-                newRef.child("Money").setValue(priceEach);
-                //updating debitors list inside the author
-                DatabaseReference refDeb = userRef.child(et_author).child("credits").push();
-                refDeb.child("Group").setValue(IDGroup);
-                refDeb.child("Debitor").setValue(name);
-                refDeb.child("Money").setValue(priceEach);
-                //updating each creditor
-                DatabaseReference refCred = userRef.child(name).child("debits").push();
-                refCred.child("Group").setValue(IDGroup);
-                refCred.child("Paying").setValue(et_author);
-                refCred.child("Money").setValue(priceEach);
+
             }
 
-
+            Intent intent = new Intent();
+            intent.putExtra("author",et_author);
+            intent.putExtra("name",et_name.getText().toString());
+            intent.putExtra("import",et_import.getText().toString());
+            intent.putExtra("description",et_description.getText().toString());
+            intent.putExtra("expenseImage",encodedExpenseImage);
+            intent.putExtra("IDGroup",IDGroup);
+            setResult(RESULT_OK, intent);
+            finish();
+        } else {
+            et_import.setError(getString(R.string.error_invalid_import));
+            et_import.requestFocus();
         }
 
-        Intent intent = new Intent();
-        intent.putExtra("author",et_author);
-        intent.putExtra("name",et_name.getText().toString());
-        intent.putExtra("import",et_import.getText().toString());
-        intent.putExtra("description",et_description.getText().toString());
-        intent.putExtra("expenseImage",encodedExpenseImage);
-        intent.putExtra("IDGroup",IDGroup);
-        setResult(RESULT_OK, intent);
-        finish();
     }
 
     @Override
@@ -172,6 +177,38 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             byte[] byteArrayImage = baos.toByteArray();
             encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
         }
+    }
+
+    private boolean isImportValid(String value) {
+        Matcher matcher = Pattern.compile("^[0-9]+\\.[0-9]{2}$").matcher(value);
+        if (matcher.find()) {
+            return true;
+        } else {
+            matcher = Pattern.compile("^[0-9]+\\.[0-9]{1}$").matcher(value);
+            if (matcher.find()) {
+                value = value + "0";
+                et_import.setText(value);
+                return true;
+            } else {
+                matcher = Pattern.compile("^[0-9]+\\.$").matcher(value);
+                if (matcher.find()) {
+                    value = value + "00";
+                    et_import.setText(value);
+                    return true;
+                } else {
+                    matcher = Pattern.compile("^[0-9]+$").matcher(value);
+                    if (matcher.find()) {
+                        value = value + ".00";
+                        et_import.setText(value);
+                        return true;
+                    }
+                }
+
+            }
+        }
+        if (value.isEmpty()) Toast.makeText(ExpenseCreation.this,getString(R.string.error_field_required), Toast.LENGTH_SHORT).show();
+
+        return false;
     }
 
 }
