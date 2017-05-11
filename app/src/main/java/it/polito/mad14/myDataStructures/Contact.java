@@ -18,9 +18,7 @@ public class Contact {
         this.email = email;
     }
 
-    public String toString(){
-        return name + " " + surname;
-    };
+    public String toString(){ return name + " " + surname + " - " + username; }
 
     public String getName() {
         return name;

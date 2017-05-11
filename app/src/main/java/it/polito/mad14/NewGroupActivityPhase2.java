@@ -56,6 +56,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private FirebaseDatabase database;
 
     private Uri groupImageUri;
+    private String noImage = "no_image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,16 +69,19 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
-        groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
-        try {
-            Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(groupImageUri));
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-            byte[] byteArrayImage = baos.toByteArray();
-            groupImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-        }catch (FileNotFoundException e){
-            e.printStackTrace();
-        }
+        if (getIntent().getStringExtra("Image") != noImage){
+            groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
+            try {
+                Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(groupImageUri));
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] byteArrayImage = baos.toByteArray();
+                groupImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+            }catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+        } else {groupImage = noImage;}
+
         IDGroup=getIntent().getStringExtra("IDGroup");
         Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
                 Toast.LENGTH_SHORT).show();
@@ -95,29 +99,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         });
         fab.bringToFront();
 
-        // adapter per suggerire gli amici in elenco
-        AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
-        tv.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_single_choice,friends));
-
-        list_friends = (ListView) findViewById(R.id.lv_friends);
-        list_friends.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {return friends_added.size();}
-            @Override
-            public Object getItem(int position) {return friends_added.get(position);}
-            @Override
-            public long getItemId(int position) {return 0;}
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null)
-                    convertView = getLayoutInflater().inflate(R.layout.friend_selected_item, parent, false);
-                TextView tv = (TextView) convertView.findViewById(R.id.friend_name);
-                tv.setText(friends_added.get(position));
-                return convertView;
-            }
-        });
-
-
         friends=new ArrayList<>();
 
         FirebaseDatabase database=FirebaseDatabase.getInstance();
@@ -134,8 +115,28 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),data.child("Surname").getValue().toString(),
                             data.child("Username").getValue().toString(),data.child("Email").getValue().toString()));
                     friendsIndex++;
-
                 }
+                // adapter per suggerire gli amici in elenco
+                final AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
+                tv.setAdapter(new ArrayAdapter<>(
+                        NewGroupActivityPhase2.this,android.R.layout.simple_list_item_single_choice,friends));
+                list_friends = (ListView) findViewById(R.id.lv_friends);
+                list_friends.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {return friends_added.size();}
+                    @Override
+                    public Object getItem(int position) {return friends_added.get(position);}
+                    @Override
+                    public long getItemId(int position) {return 0;}
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        if (convertView == null)
+                            convertView = getLayoutInflater().inflate(R.layout.friend_selected_item, parent, false);
+                        TextView tv = (TextView) convertView.findViewById(R.id.friend_name);
+                        tv.setText(friends_added.get(position));
+                        return convertView;
+                    }
+                });
                 }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -148,6 +149,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     public void onClick(View view){
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
+        String[] parts = tmp_name.split(" - ");
+        String contUsername = parts[1];
         et.setText("");
         //TODO check se prende il nome completo selezionato o solo la stringa scritta
         Iterator<Contact> it=friends.iterator();
@@ -156,7 +159,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Contact cont=null;
         while(it.hasNext()){
             cont=it.next();
-            if(cont.getUsername().toString().equals(tmp_name)) {
+            if(cont.getUsername().toString().equals(contUsername)) {
                 flag = true;
                 break;
             }
@@ -168,11 +171,10 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             nFriends++;
             list_friends.invalidate();
             list_friends.requestLayout();
+        } else {
+            Toast.makeText(NewGroupActivityPhase2.this,"User not found",Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
 
     public void onClickCompletedAction(View view) {
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",

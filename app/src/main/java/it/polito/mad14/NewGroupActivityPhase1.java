@@ -44,7 +44,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
 
     private Bitmap targetImageBitmap = null;
     private String encodedImage;
-    private String strImageUri;
+    private String strImageUri, noImage = "no_image";
     private FirebaseAuth mAuth;
 
     @Override
@@ -54,6 +54,8 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         encodedImage = null;
+        strImageUri = noImage;
+
 
         createGroup = (Button) findViewById(R.id.group_create_button);
         editName = (EditText) findViewById(R.id.group_name);
