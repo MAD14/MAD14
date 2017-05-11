@@ -1,2 +1,2 @@
 # MAD14
-mail per join il gruppo
+popolamento lista contatti
