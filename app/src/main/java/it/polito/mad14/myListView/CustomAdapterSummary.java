@@ -71,7 +71,7 @@ public class CustomAdapterSummary extends BaseAdapter {
         return summaryList;
     }
 
-    public void setSummaryList(ArrayList<Summary> summaryList) {
+    public void setSummaryList(ArrayList<Summary> summaryList){
         this.summaryList = summaryList;
     }
 }
