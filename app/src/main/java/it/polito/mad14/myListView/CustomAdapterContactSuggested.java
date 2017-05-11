@@ -2,6 +2,7 @@ package it.polito.mad14.myListView;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,8 @@ import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
+import it.polito.mad14.AddNewContacts;
+import it.polito.mad14.OtherProfileActivity;
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Contact;
 
@@ -76,8 +79,20 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
                 myRef.child("Username").setValue(partialNames.get(position).getUsername());
                 myRef.child("Email").setValue(partialNames.get(position).getEmail());
 
+
+            }
+        });
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context,OtherProfileActivity.class);
+                intent.putExtra("email",partialNames.get(position).getEmail());
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
         return convertView;
     }
+
 }
