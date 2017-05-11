@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -14,10 +15,8 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String name;
-    private String surname;
-    private String email;
-    private String username;
+     String username;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,30 +27,30 @@ public class ProfileActivity extends AppCompatActivity {
         imgbt.bringToFront();
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
-        email=auth.getCurrentUser().getEmail().replace(".",",");
+        String email = auth.getCurrentUser().getEmail();
 
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
 
-        myRef.child(email).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child(email.replace(".",",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                name = dataSnapshot.child("Name").getValue().toString();
-                surname = dataSnapshot.child("Surname").getValue().toString();
                 username = dataSnapshot.child("Username").getValue().toString();
+                TextView tv = (TextView) findViewById(R.id.info1);
+                tv.setText(username);
             }
 
             @Override
             public void onCancelled(DatabaseError error) { }
         });
 
-
-
-
-        //TODO: fill the information with those coming from the database!!!!
-        // - nome, immagine profilo, descrizione
-
-        //TODO allow to switch to the email app to send an email? or to the phone to make a call?
+        String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
+        TextView tv = (TextView) findViewById(R.id.user_profile_name);
+        tv.setText(displayName);
+        tv = (TextView) findViewById(R.id.info1);
+        tv.setText(username);
+        tv = (TextView) findViewById(R.id.info2);
+        tv.setText(email);
 
     }
 }

@@ -8,7 +8,7 @@
     android:background="@color/background"
     tools:context="it.polito.mad14.MainActivity"
     android:clickable="true"
-    android:onClick="onClickOtherProfile">
+    >
 
     <ImageView
         android:id="@+id/image_person_suggestion"
@@ -21,7 +21,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
-
         />
 
     <TextView

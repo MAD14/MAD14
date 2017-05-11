@@ -127,11 +127,4 @@ public class AddNewContacts extends AppCompatActivity {
         }
     }
 
-
-    public void onClickOtherProfile(View view){
-        Intent intent = new Intent(AddNewContacts.this,OtherProfileActivity.class);
-        //TODO bisognerà passare le info di quale profilo si vuole vedere
-        // aggiungere customAdapterContact?
-        startActivity(intent);
-    }
 }

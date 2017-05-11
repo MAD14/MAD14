@@ -63,6 +63,7 @@
     <string name="title_activity_invite_to_join_community">InviteToJoinCommunity</string>
     <string name="action_invite_members">Invite your friends</string>
     <string name="add_to_list_invitations">Add to receivers list</string>
-
+    <string name="email">Email</string>
+    <string name="username">Username</string>
     <string name="loading">Loading...</string>
 </resources>
