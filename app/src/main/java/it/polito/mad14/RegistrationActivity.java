@@ -129,6 +129,9 @@ public class RegistrationActivity extends AppCompatActivity {
                                         ref.child("Username").setValue(username);
                                         Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
                                                 Toast.LENGTH_SHORT).show();
+                                        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder().setDisplayName(name+"."+surname).build();
+                                        FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
+
                                         mainActivityCall();
                                     } else {
                                         //TODO: new activity con richiesta nuovo username fino a quando non ce n'è uno disponibile

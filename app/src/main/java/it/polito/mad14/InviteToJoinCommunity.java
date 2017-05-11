@@ -15,6 +15,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -33,7 +34,6 @@ public class InviteToJoinCommunity extends AppCompatActivity {
     private ArrayList<String> emailsToBeSent;
     private String[] listAddress = {""};
     private ListView list_invitation;
-    private String nameSurnameString = "Elena Daraio"; //TODO sarà da sostituire con il nome dell'utente
     private FirebaseDatabase database;
 
 
@@ -59,25 +59,19 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 Runnable r = new Runnable() {
                     @Override
                     public void run() {
-                        try {                            
-                            Intent intent = getIntent();
-                            String key = intent.getStringExtra("sender");
-                            DatabaseReference myRef = database.getReference("users");
-                            myRef.child(key).addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    String name = dataSnapshot.child("Name").getValue().toString();
-                                    String surname = dataSnapshot.child("Surname").getValue().toString();
-                                    String nameSurnameString = name+" "+surname;
-                                }
+                        try {
+                            String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+//                            String user_db = user_email.replace(".",",");
+//                            Log.e("email_db"," is " + user_db);
+                            String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
-                                @Override
-                                public void onCancelled(DatabaseError error) { }
-                            });
+//                            String name = database.getReference("users/"+ user_db).child("Name").toString();
+//                            String surname = database.getReference("users/"+ user_db).child("Surname").getKey();
+
 
 //                            Log.e("SendMail", "set_to " + listAddress[0]);
                             inviteMail.set_body("Hi! \n" +
-                                    nameSurnameString + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
+                                    displayName + " (" + user_email + ")" + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
                                     "This application will allow you to easily manage expenses shared with your friends.\n\n" +
                                     "We cannot wait for your association!\n" +
                                     "Your MAD14 team");
@@ -98,7 +92,6 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
         list_invitation = (ListView) findViewById(R.id.lv_invitation);
         list_invitation.setAdapter(new CustomAdapterInvitations(InviteToJoinCommunity.this,emailsToBeSent));
 

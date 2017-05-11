@@ -26,7 +26,7 @@ import java.util.ArrayList;
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myListView.CustomAdapterContactSuggested;
 
-public class AddNewContacts extends AppCompatActivity implements View.OnClickListener{
+public class AddNewContacts extends AppCompatActivity {
 
     // List of all contacts
     private ArrayList<Contact> searchNames = new ArrayList<>();
@@ -127,8 +127,8 @@ public class AddNewContacts extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    @Override
-    public void onClick(View view){
+
+    public void onClickOtherProfile(View view){
         Intent intent = new Intent(AddNewContacts.this,OtherProfileActivity.class);
         //TODO bisognerà passare le info di quale profilo si vuole vedere
         // aggiungere customAdapterContact?
