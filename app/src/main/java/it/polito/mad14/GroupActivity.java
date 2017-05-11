@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -47,7 +48,6 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
 
 
-    //private ListView list;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -70,7 +70,6 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        //list = (ListView) findViewById(R.id.list_view_expenses);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -95,7 +94,6 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
-                //startActivity(intent);
                 startActivityForResult(intent,EXPENSE_CREATION);
             }
         });
@@ -150,7 +148,8 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Expense> expensesList = new ArrayList<>();
         private int indexExp=0;
         ArrayList<Summary> summaryList = new ArrayList<>();
-        private int indexSum=0;
+        private int indexSummary=0;
+        private boolean credit;
 
         public PlaceholderFragment() {
         }
@@ -174,25 +173,28 @@ public class GroupActivity extends AppCompatActivity {
         }
         private View rootView;
         private ListView list;
+        private String name;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            String IDGroup=getActivity().getIntent().getStringExtra("IDGroup");
+            String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/items");
+            DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
+            String user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+            DatabaseReference myRef_summary_debits = database.getReference("users/" + user + "/debits");
+            DatabaseReference myRef_summary_credits = database.getReference("users/" + user + "/credits");
 
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.list_view_expenses);
 
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                myRef_expenses.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-
                             Iterator<Expense> it = expensesList.iterator();
                             boolean flag = false;
                             while (it.hasNext()) {
@@ -208,15 +210,12 @@ public class GroupActivity extends AppCompatActivity {
                                 indexExp++;
                             }
                         }
-
                         list.invalidate();
                         list.requestLayout();
                     }
-
                     @Override
                     public void onCancelled(DatabaseError error) {
                         Log.w("Failed to read value.", error.toException());
-
                     }
                 });
 
@@ -227,14 +226,53 @@ public class GroupActivity extends AppCompatActivity {
 
                 return rootView;
             }
-            else {
-                //TODO: lettura da db per popolare la lista->non ancora implementato
-                summaryList.add(new Summary("Elena","21.50",false)); // questa sarà da sostituire con la lettura da db
-                summaryList.add(new Summary("Michela","10.30",true));
-
-                // popolamento della pagina
+            else { // summary page
                 rootView = inflater.inflate(R.layout.summary_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.list_view_summary);
+                //
+                myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            credit = false; // debits section --> it's a debit
+                            Summary tmp = new Summary(data.child("Creditor").getValue().toString(),
+                                    data.child("Money").getValue().toString(),
+                                    credit);
+                            summaryList.add(indexSummary, tmp);
+                            indexSummary++;
+                        }
+                        list.invalidate();
+                        list.requestLayout();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+
+                    }
+                });
+                myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            credit = true; // credits section --> it's a credit
+                            Summary tmp = new Summary(data.child("Debitor").getValue().toString(),
+                                    data.child("Money").getValue().toString(),
+                                    credit);
+                            summaryList.add(indexSummary, tmp);
+                            indexSummary++;
+                        }
+                        list.invalidate();
+                        list.requestLayout();
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+
+                    }
+                });
+                //
+
+                // popolamento della pagina
                 CustomAdapterSummary adapter = new CustomAdapterSummary(this.getActivity(),summaryList);
                 list.setAdapter(adapter);
 
