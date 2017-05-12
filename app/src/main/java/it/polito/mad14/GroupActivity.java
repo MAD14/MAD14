@@ -94,7 +94,9 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
-                startActivityForResult(intent,EXPENSE_CREATION);
+                //startActivityForResult(intent,EXPENSE_CREATION);
+                startActivity(intent);
+                finish();
             }
         });
 
@@ -128,9 +130,27 @@ public class GroupActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id){
+            case R.id.silenzioso:
+                System.out.println("silenzioso");
+                break;
+            case R.id.add_members:
+                //Intent intent = new Intent(GroupActivity.this,NewGroupActivityPhase2.class);
+                //startActivity(intent);
+                System.out.println("add members");
+                break;
+            case R.id.changes:
+                FirebaseAuth.getInstance().signOut();
+                //intent = new Intent(MainActivity.this,LoginActivity.class);
+                //startActivity(intent);
+                System.out.println("changes");
+                break;
+            case R.id.info:
+                //intent = new Intent(MainActivity.this, InviteToJoinCommunity.class);
+                //intent.putExtra("sender",UserID);
+                //startActivity(intent);
+                System.out.println("info");
+                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -178,6 +198,7 @@ public class GroupActivity extends AppCompatActivity {
         private ListView list_expenses,list_summary;
         private String name;
 
+
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
@@ -198,16 +219,15 @@ public class GroupActivity extends AppCompatActivity {
                 myRef_expenses.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        expensesList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString());
+                                indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
-                                indexExp++;
                         }
-
-
                         ((CustomAdapterExpenses) list_expenses.getAdapter()).setExpensesList(expensesList);
                         list_expenses.invalidate();
                         list_expenses.requestLayout();
@@ -217,7 +237,6 @@ public class GroupActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
-
 
                 return rootView;
             }

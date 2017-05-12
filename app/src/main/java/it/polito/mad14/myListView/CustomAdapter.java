@@ -71,4 +71,12 @@ public class CustomAdapter extends BaseAdapter{
 
         return convertView;
     }
+
+    public ArrayList<Group> getGroupList() {
+        return groupList;
+    }
+
+    public void setGroupList(ArrayList<Group> groupList) {
+        this.groupList = groupList;
+    }
 }

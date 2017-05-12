@@ -102,7 +102,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             intent.putExtra("Date",date);
                             intent.putExtra("Image",strImageUri);
                             startActivity(intent);
-
+                            finish();
                         } else {
                             groupName = "";
                             Toast.makeText(NewGroupActivityPhase1.this, "Group Name is not valid.\nMust contains numbers or letters",
