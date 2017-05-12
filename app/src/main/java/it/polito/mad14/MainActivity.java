@@ -39,9 +39,15 @@ import java.util.Iterator;
 import java.util.List;
 
 import it.polito.mad14.myDataStructures.Contact;
+import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
+import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapter;
+
 import it.polito.mad14.myListView.CustomAdapterContacts;
+
+import it.polito.mad14.myListView.CustomAdapterSummary;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -174,6 +180,13 @@ public class MainActivity extends AppCompatActivity {
         private int indexGroup=0;
         private int indexContact=0;
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private ArrayList<Summary> summaryList = new ArrayList<>();
+        ArrayList<Summary> creditsList = new ArrayList<>();
+        ArrayList<Summary> debitsList = new ArrayList<>();
+        ArrayList<Summary> tmpList = new ArrayList<>();
+
+        private int indexSummary=0;
+        private boolean credit;
 
         //DatabaseReference myRefGroup = database.getReference("groups");
 
@@ -193,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list;
+        private ListView list,list_summary;
 
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -249,13 +262,71 @@ public class MainActivity extends AppCompatActivity {
             }
             else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
+                list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
+
                 // popolamento della pagina
                 //TODO: riepilogo dei soldi che si devono agli amici
+                String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+                DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
+                DatabaseReference myRef_summary_credits = database.getReference("users/" + userID + "/credits");
+
+                CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
+                list_summary.setAdapter(adapter);
+
+                myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            credit = false; // debits section --> it's a debit
+                            Summary tmp = new Summary(data.child("Paying").getValue().toString(),
+                                    data.child("Money").getValue().toString(),
+                                    credit);
+                            indexSummary = debitsList.size();
+                            debitsList.add(indexSummary, tmp);
+                        }
+                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                        debitsList.addAll(tmpList);
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),debitsList));
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+                    }
+                });
+                myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            credit = true; // credits section --> it's a credit
+                            Summary tmp = new Summary(data.child("Debitor").getValue().toString(),
+                                    data.child("Money").getValue().toString(),
+                                    credit);
+                            indexSummary = creditsList.size();
+                            creditsList.add(indexSummary, tmp);
+                        }
+                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                        creditsList.addAll(tmpList);
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),creditsList));
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+
+                    }
+                });
+
+                creditsList.addAll(debitsList);
+                summaryList = creditsList;
+                 adapter = new CustomAdapterSummary(getContext(),summaryList);
+                list_summary.setAdapter(adapter);
+
+                //
                 //TODO: possibilità di segnare che si è pagato qualcuno
                 //TODO: grafico riepilogo crediti/debiti
 
                 //in questa vista possiamo aggiungere un bottone con scritto "salda/saldato" in modo da linkare subito alla conferma di pagamento effettuato/ricevuto
                 return rootView;
+
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 // popolamento della pagina

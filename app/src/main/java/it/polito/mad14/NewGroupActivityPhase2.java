@@ -1,11 +1,15 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +28,8 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.regex.Matcher;
@@ -40,14 +46,19 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
-    private ArrayList<String> emailsToBeSent;
+
+    private ArrayList<String> emailsToBeSent = new ArrayList<>();
+
 
     private int nFriends=0;
 
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
     private String IDGroup;
     private String MyID;
+    private FirebaseDatabase database;
 
+    private Uri groupImageUri;
+    private String noImage = "no_image";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +71,19 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
-        groupImage= getIntent().getStringExtra("Image");
+        if (getIntent().getStringExtra("Image") != noImage){
+            groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
+            try {
+                Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(groupImageUri));
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                byte[] byteArrayImage = baos.toByteArray();
+                groupImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+            }catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+        } else {groupImage = noImage;}
+
         IDGroup=getIntent().getStringExtra("IDGroup");
         Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
                 Toast.LENGTH_SHORT).show();
@@ -75,29 +98,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             }
         });
         fab.bringToFront();
-
-        // adapter per suggerire gli amici in elenco
-        AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
-        tv.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_list_item_single_choice,friends));
-
-        list_friends = (ListView) findViewById(R.id.lv_friends);
-        list_friends.setAdapter(new BaseAdapter() {
-            @Override
-            public int getCount() {return friends_added.size();}
-            @Override
-            public Object getItem(int position) {return friends_added.get(position);}
-            @Override
-            public long getItemId(int position) {return 0;}
-            @Override
-            public View getView(int position, View convertView, ViewGroup parent) {
-                if (convertView == null)
-                    convertView = getLayoutInflater().inflate(R.layout.friend_selected_item, parent, false);
-                TextView tv = (TextView) convertView.findViewById(R.id.friend_name);
-                tv.setText(friends_added.get(position));
-                return convertView;
-            }
-        });
-
 
         friends=new ArrayList<>();
 
@@ -115,8 +115,28 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),data.child("Surname").getValue().toString(),
                             data.child("Username").getValue().toString(),data.child("Email").getValue().toString()));
                     friendsIndex++;
-
                 }
+                // adapter per suggerire gli amici in elenco
+                final AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
+                tv.setAdapter(new ArrayAdapter<>(
+                        NewGroupActivityPhase2.this,android.R.layout.simple_list_item_single_choice,friends));
+                list_friends = (ListView) findViewById(R.id.lv_friends);
+                list_friends.setAdapter(new BaseAdapter() {
+                    @Override
+                    public int getCount() {return friends_added.size();}
+                    @Override
+                    public Object getItem(int position) {return friends_added.get(position);}
+                    @Override
+                    public long getItemId(int position) {return 0;}
+                    @Override
+                    public View getView(int position, View convertView, ViewGroup parent) {
+                        if (convertView == null)
+                            convertView = getLayoutInflater().inflate(R.layout.friend_selected_item, parent, false);
+                        TextView tv = (TextView) convertView.findViewById(R.id.friend_name);
+                        tv.setText(friends_added.get(position));
+                        return convertView;
+                    }
+                });
                 }
             @Override
             public void onCancelled(DatabaseError error) {
@@ -129,6 +149,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     public void onClick(View view){
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
+        String[] parts = tmp_name.split(" - ");
+        String contUsername = parts[1];
         et.setText("");
         //TODO check se prende il nome completo selezionato o solo la stringa scritta
         Iterator<Contact> it=friends.iterator();
@@ -137,27 +159,30 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Contact cont=null;
         while(it.hasNext()){
             cont=it.next();
-            if(cont.getUsername().toString().equals(tmp_name)) {
+            if(cont.getUsername().toString().equals(contUsername)) {
                 flag = true;
                 break;
             }
         }
         if (flag) {
             friends_added.add(nFriends,cont.getEmail().toString());
+
             emailsToBeSent.add(nFriends,cont.getEmail().toString());
+
             nFriends++;
             list_friends.invalidate();
             list_friends.requestLayout();
+        } else {
+            Toast.makeText(NewGroupActivityPhase2.this,"User not found",Toast.LENGTH_SHORT).show();
         }
     }
-
-
-
 
     public void onClickCompletedAction(View view) {
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         friends_added.add(nFriends,MyID);
         nFriends++;
 
@@ -189,22 +214,16 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void run() {
                 try {
-                    myRef.child(MyID).addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            String name = dataSnapshot.child("Name").getValue().toString();
-                            String surname = dataSnapshot.child("Surname").getValue().toString();
-                            String creator = name+" "+surname;
-                        }
 
-                        @Override
-                        public void onCancelled(DatabaseError error) { }
-                    });
+                    String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+                    String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
-//                            Log.e("SendMail", "set_to " + listAddress[0]);
-                    inviteMail.set_body("Hi! \n" +"( e-mail: "+creator+" ( e-mail : "+
-                            groupAuthor + ") is inviting you to join a group called" + groupName+
-                            "whose code is "+IDGroup+".\n\n" +
+                    database = FirebaseDatabase.getInstance();
+//                    Log.e("SendMail", "set_to " + listAddress[0]);
+                    inviteMail.set_body("Hi! \n" + displayName + " (email : "+
+                            user_email + ") is inviting you to join a group called " + groupName+
+                            " whose code is "+IDGroup+".\n\n" +
+
                             "We cannot wait for your association!\n" +
                             "Your MAD14 team");
                     inviteMail.set_to(emailsToBeSent);
@@ -221,6 +240,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);
+
     }
 
 

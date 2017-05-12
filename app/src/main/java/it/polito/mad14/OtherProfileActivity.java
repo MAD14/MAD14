@@ -1,37 +1,72 @@
 package it.polito.mad14;
 
-import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class OtherProfileActivity extends AppCompatActivity {
 
-    private String name,surname,username,email,image;
+    private String username;
+    private String email;
+    private String displayName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
 
         // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
-        ImageButton imgbt = (ImageButton)findViewById(R.id.user_profile_photo);
+        ImageButton imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
         imgbt.bringToFront();
 
-        Intent intent=getIntent();
+        email = getIntent().getStringExtra("email");
 
-        name=intent.getStringExtra("Name");
-        email=intent.getStringExtra("Email");
-        surname=intent.getStringExtra("Surname");
-        username=intent.getStringExtra("Username");
-        image=intent.getStringExtra("Image");
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference("users");
 
-        //TODO make active the button to add as a friend
+        myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                username = dataSnapshot.child("Username").getValue().toString();
+                TextView tv = (TextView) findViewById(R.id.info1);
+                tv.setText(username);
+                displayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
+                tv = (TextView) findViewById(R.id.user_profile_name);
+                tv.setText(displayName);
+            }
 
-        //TODO allow to switch to the email app to send an email? or to the phone to make a call?
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+
+        TextView tv = (TextView) findViewById(R.id.info2);
+        tv.setText(email);
+
     }
 
-    public void onClickAddAsFriend(View view){
-        // TODO da gestire la richiesta di amicizia come nell'altro punto
+    public void onClickAddAsFriend(View view) {
+
+        //TODO gestione invio amicizia nella pagina main
+        String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
+        String[] parts = displayName.split(" ");
+        myRef.child("Name").setValue(parts[0]);
+        myRef.child("Surname").setValue(parts[1]);
+        myRef.child("Username").setValue(username);
+        myRef.child("Email").setValue(email);
+
+        Toast.makeText(OtherProfileActivity.this, "Added as friend", Toast.LENGTH_SHORT).show();
+
     }
 }

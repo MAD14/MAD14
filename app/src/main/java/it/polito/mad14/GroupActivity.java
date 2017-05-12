@@ -20,10 +20,12 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.BaseAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -46,7 +48,6 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
 
 
-    private ListView list;
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -69,7 +70,6 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        list = (ListView) findViewById(R.id.list_view_expenses);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -88,16 +88,12 @@ public class GroupActivity extends AppCompatActivity {
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
 
-        Toast.makeText(GroupActivity.this, IDGroup,
-                Toast.LENGTH_SHORT).show();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
-//                startActivity(intent);
                 startActivityForResult(intent,EXPENSE_CREATION);
             }
         });
@@ -111,6 +107,7 @@ public class GroupActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EXPENSE_CREATION){
             if (resultCode == RESULT_OK){
+                ListView list = (ListView) findViewById(R.id.list_view_expenses);
                 list.invalidate();
                 list.requestLayout();
             }
@@ -151,7 +148,11 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Expense> expensesList = new ArrayList<>();
         private int indexExp=0;
         ArrayList<Summary> summaryList = new ArrayList<>();
-        private int indexSum=0;
+        ArrayList<Summary> tmpList = new ArrayList<>();
+        ArrayList<Expense> tmpList_exp = new ArrayList<>();
+        private int indexSummary=0;
+        private boolean credit;
+        private String user;
 
         public PlaceholderFragment() {
         }
@@ -173,65 +174,93 @@ public class GroupActivity extends AppCompatActivity {
             fragment.setArguments(args);
             return fragment;
         }
+        private View rootView;
+        private ListView list_expenses,list_summary;
+        private String name;
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            String IDGroup=getActivity().getIntent().getStringExtra("IDGroup");
+            String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/items");
+            user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+            DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
+            DatabaseReference myRef_summary = database.getReference("groups/" + IDGroup + "/debits");
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
+                rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
+                list_expenses = (ListView) rootView.findViewById(R.id.list_view_expenses);
 
-                myRef.addValueEventListener(new ValueEventListener() {
+                CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(), expensesList);
+                list_expenses.setAdapter(adapter);
+
+                myRef_expenses.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-
-                            Iterator<Expense> it = expensesList.iterator();
-                            boolean flag = false;
-                            while (it.hasNext()) {
-                                if (it.next().getName().equals(data.child("Name").getValue().toString()))
-                                    flag = true;
-                            }
-                            if (!flag) {
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString());
                                 expensesList.add(indexExp, tmp);
                                 indexExp++;
-                            }
                         }
 
 
+                        ((CustomAdapterExpenses) list_expenses.getAdapter()).setExpensesList(expensesList);
+                        list_expenses.invalidate();
+                        list_expenses.requestLayout();
                     }
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+                    }
+                });
 
+
+                return rootView;
+            }
+            else { // summary page
+                rootView = inflater.inflate(R.layout.summary_page, container, false);
+                list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
+
+                CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
+                list_summary.setAdapter(adapter);
+
+                myRef_summary.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            if (data.child("Receiver").getValue().toString().equals(user) ||
+                                    data.child("Sender").getValue().toString().equals(user)) {
+                                if (data.child("Receiver").getValue().toString().equals(user)) {
+                                    credit = true;
+                                    name = data.child("Sender").getValue().toString();
+                                } else {
+                                    credit = false;
+                                    name = data.child("Receiver").getValue().toString();
+                                }
+                                Summary tmp = new Summary(name,
+                                        data.child("Money").getValue().toString(),
+                                        credit);
+                                summaryList.add(indexSummary, tmp);
+                                indexSummary++;
+                            }
+                        }
+//                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+//                        summaryList.addAll(tmpList);
+//                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
+                        ((CustomAdapterSummary) list_summary.getAdapter()).setSummaryList(summaryList);
+                        list_summary.invalidate();
+                        list_summary.requestLayout();
+                    }
                     @Override
                     public void onCancelled(DatabaseError error) {
                         Log.w("Failed to read value.", error.toException());
 
                     }
                 });
-                // popolamento della pagina
-                View rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.list_view_expenses);
-                CustomAdapterExpenses adapter = new CustomAdapterExpenses(this.getActivity(),expensesList);
-                list.setAdapter(adapter);
-
-                return rootView;
-            }
-            else {
-                //TODO: lettura da db per popolare la lista->non ancora implementato
-                summaryList.add(new Summary("Elena","21.50",false)); // questa sarà da sostituire con la lettura da db
-                summaryList.add(new Summary("Michela","10.30",true));
-
-                // popolamento della pagina
-                View rootView = inflater.inflate(R.layout.summary_page, container, false);
-                ListView list = (ListView) rootView.findViewById(R.id.list_view_summary);
-                CustomAdapterSummary adapter = new CustomAdapterSummary(this.getActivity(),summaryList);
-                list.setAdapter(adapter);
 
                 return rootView;
             }

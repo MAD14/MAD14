@@ -2,7 +2,7 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@color/backgroundDark">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -13,7 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/navigation_header_image" />
+            android:background="@color/padding"/>
 
         <ImageButton
             android:id="@+id/user_profile_photo"
@@ -26,14 +26,14 @@
             android:elevation="15dp"
             android:padding="20dp"
             android:scaleType="centerCrop"
-            android:src="@mipmap/person_icon" />
+            android:src="@mipmap/person_icon_white" />
 
         <RelativeLayout
             android:id="@+id/profile_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/header_cover_image"
-            android:background="@color/colorAccent"
+            android:background="@color/colorPrimaryDark"
             android:elevation="4dp"
             android:paddingBottom="24dp">
 
@@ -47,7 +47,7 @@
                 android:layout_toLeftOf="@+id/drop_down_option_menu"
                 android:src="@mipmap/ic_action_user_add"
                 android:clickable="true"
-                android:onClick="onClickAddAsFriend"/>
+                android:onClick="onClickAddAsFriends"/>
 
             <ImageView
                 android:id="@+id/drop_down_option_menu"
@@ -82,35 +82,74 @@
         </RelativeLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/profile_layout"
             android:layout_marginTop="5dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:background="@color/backgroundDark"
+            >
 
-            <TextView
-                android:layout_width="fill_parent"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:background="#fff"
-                android:clickable="true"
-                android:elevation="4dp"
-                android:padding="20dp"
-                android:text="Numero di telefono " />
+                android:orientation="horizontal">
 
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="5dp"
-                android:layout_marginBottom="3dp"
-                android:layout_marginTop="3dp"
-                android:background="#fff"
-                android:clickable="true"
-                android:elevation="4dp"
-                android:padding="20dp"
-                android:text="Contatto email" />
+                <TextView
+                    android:id="@+id/info1_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:padding="20dp"
+                    android:text="@string/username"
+                    android:textSize="@dimen/summary"
+                    android:layout_alignParentTop="true"/>
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/info1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:padding="20dp"
+                    android:textColor="@color/writing"
+                    android:textSize="@dimen/summary"
+                    android:layout_alignParentRight="true"
+                    />
+
+                <TextView
+                    android:id="@+id/info2_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:padding="20dp"
+                    android:text="@string/email"
+                    android:textSize="@dimen/summary"
+                    android:layout_below="@id/info1_text"/>
+
+                <TextView
+                    android:id="@+id/info2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="3dp"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:padding="20dp"
+                    android:textColor="@color/writing"
+                    android:textSize="@dimen/summary"
+                    android:layout_below="@id/info1"
+                    android:layout_alignParentRight="true"
+                    />
+            </RelativeLayout>
+
+        </RelativeLayout>
     </RelativeLayout>
 </ScrollView>
