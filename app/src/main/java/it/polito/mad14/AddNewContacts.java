@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -40,7 +41,7 @@ public class AddNewContacts extends AppCompatActivity {
     private ListView list;
 
     // Field where user enters his search criteria
-    private EditText nameCapture;
+    private AutoCompleteTextView nameCapture;
 
     // Adapter for myList
     private CustomAdapterContactSuggested adapter;
@@ -69,44 +70,31 @@ public class AddNewContacts extends AppCompatActivity {
                             data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
                             data.child("Email").getValue().toString()));
                 }
-                ((CustomAdapterContactSuggested)list.getAdapter()).setPartialNames(searchNames);
-            }
+                nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
 
+                AlterAdapter();
+
+                nameCapture.addTextChangedListener(new TextWatcher() {
+                    // As the user types in the search field, the list is
+                    @Override
+                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                        AlterAdapter();
+                    }
+                    // Not used for this program
+                    @Override
+                    public void afterTextChanged(Editable arg0) {
+                    }
+                    // Not uses for this program
+                    @Override
+                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    }
+                });
+            }
             @Override
             public void onCancelled(DatabaseError error) {
             }
         });
-
-        nameCapture = (EditText) findViewById(R.id.edit_name_search);
-
-        AlterAdapter();
-
-        nameCapture.addTextChangedListener(new TextWatcher() {
-
-            // As the user types in the search field, the list is
-            @Override
-            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                AlterAdapter();
-            }
-
-            // Not used for this program
-            @Override
-            public void afterTextChanged(Editable arg0) {
-
-            }
-
-            // Not uses for this program
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-
-            }
-        });
-
-
     }
-
-
     private void AlterAdapter() {
         if (nameCapture.getText().toString().isEmpty()) {
             partialNames.clear();
@@ -115,11 +103,9 @@ public class AddNewContacts extends AppCompatActivity {
         else {
             partialNames.clear();
             for (int i = 0; i < searchNames.size(); i++) {
-
-                // TODO Qui da implementare la ricerca nome? cognome?email?
                 if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase())) {
-                    //partialNames.add(new Contact(searchNames.get(i).toString(),"","username","email")); //TODO poi basterà prendere il contatto dall'altra lista
                     partialNames.add(searchNames.get(i));
+                    adapter.notifyDataSetChanged();
                 }
                 adapter.notifyDataSetChanged();
             }
