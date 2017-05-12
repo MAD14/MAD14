@@ -26,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.android.gms.common.api.BooleanResult;
 import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -35,8 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Expense;
@@ -261,7 +264,8 @@ public class MainActivity extends AppCompatActivity {
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
-                // popolamento della pagina
+
+                final Map<String,Summary> tot=new HashMap<>();
                 //TODO: riepilogo dei soldi che si devono agli amici
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                 DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
@@ -283,6 +287,22 @@ public class MainActivity extends AppCompatActivity {
                         }
                         tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
                         debitsList.addAll(tmpList);
+
+                        Iterator<Summary> itDeb=creditsList.iterator();
+                        while(itDeb.hasNext()){
+                            Summary sum=itDeb.next();
+                            if(tot.containsKey(sum.getName())){
+                                Float past=Float.valueOf(tot.get(sum.getName()).getValue());
+                                Float newtot=past-Float.valueOf(sum.getValue());
+                                boolean flag=true;
+                                if(newtot<0)
+                                    flag=false;
+                                tot.put(sum.getName(),new Summary(sum.getName(),Float.toString(newtot),flag));
+
+                            }else{
+                                tot.put(sum.getName(),sum);
+                            }
+                        }
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),debitsList));
                     }
                     @Override
@@ -290,6 +310,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
+
                 myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -303,6 +324,19 @@ public class MainActivity extends AppCompatActivity {
                         }
                         tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
                         creditsList.addAll(tmpList);
+                        Iterator<Summary> itCred=creditsList.iterator();
+                        while(itCred.hasNext()){
+                            Summary sum=itCred.next();
+                            if(tot.containsKey(sum.getName())){
+                                Float past=Float.valueOf(tot.get(sum.getName()).getValue());
+                                Float newtot=past+Float.valueOf(sum.getValue());
+
+                                tot.put(sum.getName(),new Summary(sum.getName(),Float.toString(newtot),true));
+
+                            }else{
+                                tot.put(sum.getName(),sum);
+                            }
+                        }
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),creditsList));
                     }
                     @Override
@@ -312,9 +346,14 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                creditsList.addAll(debitsList);
-                summaryList = creditsList;
-                 adapter = new CustomAdapterSummary(getContext(),summaryList);
+
+
+
+
+                summaryList=new ArrayList<>(tot.values());
+                /*creditsList.addAll(debitsList);
+                summaryList = creditsList;*/
+                adapter = new CustomAdapterSummary(getContext(),summaryList);
                 list_summary.setAdapter(adapter);
 
                 //
