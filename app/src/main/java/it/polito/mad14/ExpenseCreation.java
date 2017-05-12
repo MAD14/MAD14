@@ -131,16 +131,17 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 if(!name.equals(et_author)) {
                     //updating of the group's info
                     DatabaseReference newRef = refDebits.push();
+                    String key=newRef.getKey();
                     newRef.child("Receiver").setValue(et_author);
                     newRef.child("Sender").setValue(name);
                     newRef.child("Money").setValue(priceEach);
                     //updating debitors list inside the author
-                    DatabaseReference refDeb = userRef.child(et_author).child("credits").push();
+                    DatabaseReference refDeb = userRef.child(et_author).child("credits").child(key);
                     refDeb.child("Group").setValue(IDGroup);
                     refDeb.child("Debitor").setValue(name);
                     refDeb.child("Money").setValue(priceEach);
                     //updating each creditor
-                    DatabaseReference refCred = userRef.child(name).child("debits").push();
+                    DatabaseReference refCred = userRef.child(name).child("debits").child(key);
                     refCred.child("Group").setValue(IDGroup);
                     refCred.child("Paying").setValue(et_author);
                     refCred.child("Money").setValue(priceEach);

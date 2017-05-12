@@ -106,8 +106,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
                         +"/contacts");
 
-        // TODO da controllare dove viene aggiunto l'amico e creare il ramo contact decidendo quali info
-
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
