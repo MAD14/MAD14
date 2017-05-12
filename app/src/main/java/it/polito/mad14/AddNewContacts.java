@@ -70,8 +70,9 @@ public class AddNewContacts extends AppCompatActivity {
                             data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
                             data.child("Email").getValue().toString()));
                 }
-                nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
 
+                nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
+              
                 AlterAdapter();
 
                 nameCapture.addTextChangedListener(new TextWatcher() {
