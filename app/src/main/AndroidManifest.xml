@@ -46,24 +46,19 @@
             android:name=".NewGroupActivityPhase2"
             android:label="@string/title_activity_new_group_phase2"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".ProfileActivity" />
-
-        <activity android:name=".OtherProfileActivity"/>
-
+        <activity android:name=".OtherProfileActivity" />
         <activity
             android:name=".AddNewContacts"
             android:label="@string/title_activity_add_new_contacts"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity
             android:name=".InviteToJoinCommunity"
             android:label="@string/title_activity_invite_to_join_community"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".JoinGroupActivity" />
-
-        <activity android:name=".LoadingActivity"/>
+        <activity android:name=".LoadingActivity" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>

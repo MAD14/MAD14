@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/backgroundDark">
@@ -7,6 +8,23 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab_finished"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="15dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginTop="10dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_gravity="end|top"
+            app:elevation="0dp"
+            app:srcCompat="@mipmap/check_icon"
+            android:clickable="true"
+            android:onClick="onClickCompletedAction"
+            />
 
         <ImageView
             android:id="@+id/header_cover_image"
@@ -38,15 +56,6 @@
             android:paddingBottom="24dp">
 
 
-            <!--<ImageView
-                android:id="@+id/drop_down_option_menu"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_alignParentRight="true"
-                android:layout_marginLeft="16dp"
-                android:layout_marginTop="16dp"
-                android:src="@mipmap/ic_action_overflow" />-->
-
             <TextView
                 android:id="@+id/user_profile_name"
                 android:layout_width="wrap_content"
@@ -58,7 +67,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <TextView
+            <EditText
                 android:id="@+id/user_profile_short_bio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +75,10 @@
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="12dp"
                 android:textColor="#fff"
-                android:textSize="14sp" />
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:inputType="text"
+                android:hint="@string/insert_bio"/>
         </RelativeLayout>
 
 
@@ -96,17 +108,19 @@
                     android:textSize="@dimen/summary"
                     android:layout_alignParentTop="true"/>
 
-                <TextView
+                <EditText
                     android:id="@+id/info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="5dp"
-                    android:clickable="true"
                     android:elevation="4dp"
                     android:padding="20dp"
                     android:textColor="@color/writing"
                     android:textSize="@dimen/summary"
                     android:layout_alignParentRight="true"
+                    android:maxLines="1"
+                    android:inputType="text"
+                    android:hint="@string/username"
                     />
 
                 <TextView
@@ -136,7 +150,7 @@
                     android:layout_below="@id/info1"
                     android:layout_alignParentRight="true"
                     />
-        </RelativeLayout>
+            </RelativeLayout>
 
         </RelativeLayout>
     </RelativeLayout>

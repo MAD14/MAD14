@@ -101,7 +101,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         friends=new ArrayList<>();
 
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
                         +"/contacts");
@@ -181,7 +181,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
 
         friends_added.add(nFriends,MyID);
         nFriends++;

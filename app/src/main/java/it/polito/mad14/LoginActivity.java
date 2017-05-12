@@ -51,6 +51,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -120,6 +121,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
+                .requestProfile()
                 .build();
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
@@ -253,9 +255,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users/"+ acct.getEmail().replace(".",","));
             Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,result.getSignInAccount().getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
             myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
             myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
             myRef.child("Email").setValue(result.getSignInAccount().getEmail());
+            myRef.child("ProfileImage").setValue("no_image");
+            myRef.child("Bio").setValue(getString(R.string.default_bio));
+            myRef.child("Username").setValue(result.getSignInAccount().getGivenName() + "." +result.getSignInAccount().getFamilyName());
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.

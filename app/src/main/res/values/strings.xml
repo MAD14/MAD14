@@ -69,4 +69,7 @@
     <string name="loading">Loading...</string>
 
     <string name="pick_image_intent_text">Select an application to complete the action</string>
+    <string name="action_edit_profile">Edit profile</string>
+    <string name="default_bio">I\'m an artist and I dream to become famous</string>
+    <string name="insert_bio">Insert short bio</string>
 </resources>
