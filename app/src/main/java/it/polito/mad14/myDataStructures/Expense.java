@@ -9,12 +9,15 @@ public class Expense {
     private String value; //double
     private String description;
     private String author;
+    private String group;
 
-    public Expense(String name, String value, String description, String author) {
+
+    public Expense(String name, String value, String description, String author,String group) {
         this.name = name;
         this.value = value;
         this.description = description;
         this.author = author;
+        this.group= group;
     }
 
     public String getName() {
@@ -48,4 +51,11 @@ public class Expense {
     public void setAuthor(String author) {
         this.author = author;
     }
+
+    public String getGroup(){ return group;}
+
+    public void setGroup(String group){ this.group=group;}
+
+
+
 }

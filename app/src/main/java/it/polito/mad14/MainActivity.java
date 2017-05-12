@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
         fab_groups = (FloatingActionButton) findViewById(R.id.fab_groups_page);
         fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
 
+
+
     }
 
 

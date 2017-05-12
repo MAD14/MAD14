@@ -108,8 +108,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         String et_author = auth.getCurrentUser().getEmail().replace(".",",");
 
-        //TODO scrittura su firebase
-
         if(isImportValid(et_import.getText().toString())){
             DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
             DatabaseReference userRef= database.getReference("users");
@@ -132,6 +130,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     //updating of the group's info
                     DatabaseReference newRef = refDebits.push();
                     String key=newRef.getKey();
+                    newRef.child("Product").setValue(et_name.getText().toString());
                     newRef.child("Receiver").setValue(et_author);
                     newRef.child("Sender").setValue(name);
                     newRef.child("Money").setValue(priceEach);

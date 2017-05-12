@@ -1,14 +1,25 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Expense;
@@ -61,6 +72,53 @@ public class CustomAdapterExpenses extends BaseAdapter {
             public void onClick(View view) {
                 Toast.makeText(context,"Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
                 //TODO intent ad attività di informazioni della spesa
+            }
+        });
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
+                dialogAlert.setTitle("");
+                dialogAlert.setMessage("Do you want to delete this item?");
+                dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog,int id) {
+
+                        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+                        final Expense expense=expensesList.get(position);
+                        // remove value from expense list
+                        expensesList.remove(position);
+                        // remove value from group
+                        DatabaseReference myRef=database.getReference("groups/"+expense.getGroup()+"/items");
+                        myRef.child(expense.getName()).removeValue();
+                        DatabaseReference debits=database.getReference("groups/"+expense.getGroup()+"/debits");
+                        debits.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot data : dataSnapshot.getChildren()){
+                                    if(data.child("Product").getValue().toString().equals(expense.getName())){
+                                        String creditor= data.child("Receiver").getValue().toString();
+                                        String debitor=data.child("Sender").getValue().toString();
+                                        database.getReference("users/"+creditor+"/credits/"+data.getKey()).removeValue();
+                                        database.getReference("users/"+debitor+"/debits/"+data.getKey()).removeValue();
+                                        data.getRef().removeValue();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        Toast.makeText(context,"Deleting expense",Toast.LENGTH_SHORT).show();
+                    }
+                });
+                AlertDialog alert=dialogAlert.create();
+                alert.show();
+                //Toast.makeText(context,"LOng click on Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 
