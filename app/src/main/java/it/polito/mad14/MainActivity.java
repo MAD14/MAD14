@@ -183,6 +183,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Summary> creditsList = new ArrayList<>();
         ArrayList<Summary> debitsList = new ArrayList<>();
         ArrayList<Summary> tmpList = new ArrayList<>();
+        Map<String,Summary> tot= new HashMap<>();
 
         private int indexSummary=0;
         private boolean credit;
@@ -264,9 +265,6 @@ public class MainActivity extends AppCompatActivity {
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
-
-                final Map<String,Summary> tot=new HashMap<>();
-                //TODO: riepilogo dei soldi che si devono agli amici
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                 DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                 DatabaseReference myRef_summary_credits = database.getReference("users/" + userID + "/credits");
@@ -279,14 +277,14 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             credit = false; // debits section --> it's a debit
-                            Summary tmp = new Summary(data.child("Paying").getValue().toString(),
+                            Summary tmp = new Summary(data.child("Paying").getValue().toString().replace(",","."),
                                     data.child("Money").getValue().toString(),
                                     credit);
                             indexSummary = debitsList.size();
                             debitsList.add(indexSummary, tmp);
                         }
-                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                        debitsList.addAll(tmpList);
+                        //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                        //debitsList.addAll(tmpList);
 
                         Iterator<Summary> itDeb=creditsList.iterator();
                         while(itDeb.hasNext()){
@@ -303,7 +301,7 @@ public class MainActivity extends AppCompatActivity {
                                 tot.put(sum.getName(),sum);
                             }
                         }
-                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),debitsList));
+                        //list_summary.setAdapter(new CustomAdapterSummary(getContext(),debitsList));
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -316,14 +314,15 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             credit = true; // credits section --> it's a credit
-                            Summary tmp = new Summary(data.child("Debitor").getValue().toString(),
+                            Summary tmp = new Summary(data.child("Debitor").getValue().toString().replace(",","."),
                                     data.child("Money").getValue().toString(),
                                     credit);
                             indexSummary = creditsList.size();
                             creditsList.add(indexSummary, tmp);
                         }
-                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                        creditsList.addAll(tmpList);
+
+                        //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                        //creditsList.addAll(tmpList);
                         Iterator<Summary> itCred=creditsList.iterator();
                         while(itCred.hasNext()){
                             Summary sum=itCred.next();
@@ -337,7 +336,8 @@ public class MainActivity extends AppCompatActivity {
                                 tot.put(sum.getName(),sum);
                             }
                         }
-                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),creditsList));
+                        summaryList=new ArrayList<>(tot.values());
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -347,14 +347,10 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-
-
-
-                summaryList=new ArrayList<>(tot.values());
                 /*creditsList.addAll(debitsList);
                 summaryList = creditsList;*/
-                adapter = new CustomAdapterSummary(getContext(),summaryList);
-                list_summary.setAdapter(adapter);
+              //  adapter = new CustomAdapterSummary(getContext(),summaryList);
+              //  list_summary.setAdapter(adapter);
 
                 //
                 //TODO: possibilità di segnare che si è pagato qualcuno
