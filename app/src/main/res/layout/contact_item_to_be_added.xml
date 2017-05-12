@@ -26,20 +26,22 @@
         android:id="@+id/tv_contact_name_surname_suggestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Name Surname"
+        android:textSize="@dimen/main_text"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
         android:layout_alignTop="@+id/image_person_suggestion"
         android:layout_toRightOf="@+id/image_person_suggestion"
-        android:layout_toEndOf="@+id/image_person_suggestion" />
+        android:layout_toEndOf="@+id/image_person_suggestion"
+        android:textColor="@color/writing"/>
     <TextView
         android:id="@+id/tv_contact_email_suggestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email"
+        android:textSize="@dimen/description"
         android:layout_below="@id/tv_contact_name_surname_suggestion"
         android:layout_alignLeft="@+id/tv_contact_name_surname_suggestion"
-        android:layout_alignStart="@+id/tv_contact_name_surname_suggestion" />
+        android:layout_alignStart="@+id/tv_contact_name_surname_suggestion"
+        android:textColor="@color/writing"/>
 
     <ImageButton
         android:id="@+id/add_contact_suggestion"

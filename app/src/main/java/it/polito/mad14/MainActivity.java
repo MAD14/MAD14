@@ -477,6 +477,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickNewContact(View view) {
         Intent intent = new Intent(view.getContext(), AddNewContacts.class);
         startActivity(intent);
+
     }
 }
 
