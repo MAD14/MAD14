@@ -43,6 +43,7 @@ import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapter;
+import it.polito.mad14.myListView.CustomAdapterContacts;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
 public class MainActivity extends AppCompatActivity {
@@ -180,6 +181,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Summary> creditsList = new ArrayList<>();
         ArrayList<Summary> debitsList = new ArrayList<>();
         ArrayList<Summary> tmpList = new ArrayList<>();
+        ArrayList<Contact> tmpList_contacts = new ArrayList<>();
 
         private int indexSummary=0;
         private boolean credit;
@@ -202,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list,list_summary;
+        private ListView list,list_summary,list_contacts;
 
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -327,20 +329,39 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 // popolamento della pagina
+                list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
                 //TODO: prendere i dati degli amici e visualizzarli qui
                 //con il formato contact_item
                 myRef = database.getReference("users/"+UserID+"/contacts/");
-
                 if (myRef!=null) {
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                             contactsList.add(indexContact,new Contact(data.child("Name").toString(),
-                                     data.child("Surname").toString(),data.child("Username").toString(),
-                                     data.child("Email").toString()));
-                                indexContact++;
+                                Iterator<Contact> it = contactsList.iterator();
+                                boolean flag = false;
+                                while (it.hasNext()) {
+                                    if (it.next().getEmail().equals(data.getKey().replace(",","."))){
+                                        flag = true;
+                                    }
+                                }
+                                if (!flag){
+                                    try {
+                                        String name = data.child("Name").getValue().toString();
+                                        String surname =  data.child("Surname").getValue().toString();
+                                        String username = data.child("Username").getValue().toString();
+                                        String email = data.child("Email").getValue().toString();
+                                        contactsList.add(indexContact,new Contact(name,surname,username,email));
+                                        indexContact++;
+
+                                    }catch(Error e){
+                                        Toast.makeText(getContext(), e.getMessage(),
+                                                Toast.LENGTH_SHORT).show();
+                                    }
+                                }
                             }
+                            list.invalidate();
+                            list.requestLayout();
                         }
 
                         @Override
@@ -350,7 +371,8 @@ public class MainActivity extends AppCompatActivity {
                     });
                 }
 
-
+                CustomAdapterContacts adapter = new CustomAdapterContacts(getContext(),contactsList);
+                list.setAdapter(adapter);
                 return rootView;
             }
         }
