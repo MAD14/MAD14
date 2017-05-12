@@ -43,9 +43,7 @@ import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapter;
-
 import it.polito.mad14.myListView.CustomAdapterContacts;
-
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
 
@@ -184,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Summary> creditsList = new ArrayList<>();
         ArrayList<Summary> debitsList = new ArrayList<>();
         ArrayList<Summary> tmpList = new ArrayList<>();
+        ArrayList<Contact> tmpList_contacts = new ArrayList<>();
 
         private int indexSummary=0;
         private boolean credit;
@@ -206,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list,list_summary;
+        private ListView list,list_summary,list_contacts;
 
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -329,7 +328,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 // popolamento della pagina
-                list = (ListView) rootView.findViewById(R.id.list_view_contacts);
+
+                list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
+
                 //TODO: prendere i dati degli amici e visualizzarli qui
                 //con il formato contact_item
                 myRef = database.getReference("users/"+UserID+"/contacts/");

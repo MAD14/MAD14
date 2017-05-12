@@ -5,7 +5,9 @@
 
 
     <ListView
-        android:id="@+id/list_view_contacts"
+
+        android:id="@+id/lv_contacts_page"
+
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
