@@ -47,7 +47,7 @@
                 android:layout_toLeftOf="@+id/drop_down_option_menu"
                 android:src="@mipmap/ic_action_user_add"
                 android:clickable="true"
-                android:onClick="onClickAddAsFriends"/>
+                android:onClick="onClickAddAsFriend"/>
 
             <ImageView
                 android:id="@+id/drop_down_option_menu"

@@ -265,7 +265,6 @@ public class MainActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
                 // popolamento della pagina
-                //TODO: riepilogo dei soldi che si devono agli amici
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                 DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                 DatabaseReference myRef_summary_credits = database.getReference("users/" + userID + "/credits");

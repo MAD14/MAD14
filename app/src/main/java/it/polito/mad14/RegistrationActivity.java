@@ -120,7 +120,6 @@ public class RegistrationActivity extends AppCompatActivity {
                                     }
                                     mProgressView.setVisibility(View.GONE);
                                     if(userNotUsed) {
-                                        // TODO qui per ora ho messo l'email
                                         DatabaseReference ref = myRef.child(email.replace(".",","));
                                         ref.child("Name").setValue(name);
                                         ref.child("Surname").setValue(surname);
