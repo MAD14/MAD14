@@ -8,20 +8,33 @@
     tools:context="it.polito.mad14.AddNewContacts"
     tools:showIn="@layout/activity_add_new_contacts">
 
-    <EditText
-        android:id="@+id/edit_name_search"
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/text_input_add"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/margin"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
-        />
+        android:paddingTop="16dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/autoCompleteTextView_new_contacts"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/type_name_surname_username"
+            android:layout_marginTop="@dimen/margin"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:maxLines="1"
+            android:textSize="15dp"
+            android:singleLine="true"
+            />
+    </android.support.design.widget.TextInputLayout>
+
+
 
     <ListView
         android:id="@+id/list_view_contact_suggestion"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edit_name_search"
+        android:layout_below="@id/text_input_add"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginRight="@dimen/margin"/>

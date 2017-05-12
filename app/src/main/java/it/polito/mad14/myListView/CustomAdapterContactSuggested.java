@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import it.polito.mad14.AddNewContacts;
 import it.polito.mad14.OtherProfileActivity;
@@ -32,6 +34,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
     Context context;
     ArrayList<Contact> partialNames;
     LayoutInflater inflater;
+    private ListView list;
 
     public CustomAdapterContactSuggested(Context context, ArrayList<Contact> partialNames) {
         this.context = context;

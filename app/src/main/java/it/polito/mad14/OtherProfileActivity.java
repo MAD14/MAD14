@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,10 +25,6 @@ public class OtherProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
-
-        // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
-        ImageButton imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
-        imgbt.bringToFront();
 
         email = getIntent().getStringExtra("email");
 
@@ -53,6 +50,9 @@ public class OtherProfileActivity extends AppCompatActivity {
         TextView tv = (TextView) findViewById(R.id.info2);
         tv.setText(email);
 
+        // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
+        ImageButton imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
+        imgbt.bringToFront();
     }
 
     public void onClickAddAsFriend(View view) {
