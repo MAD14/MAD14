@@ -46,11 +46,13 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
+
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
+
 
     private int nFriends=0;
 
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
     private String IDGroup;
     private String MyID;
     private FirebaseDatabase database;
@@ -85,11 +87,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         IDGroup=getIntent().getStringExtra("IDGroup");
         Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
                 Toast.LENGTH_SHORT).show();
-
         MyID=FirebaseAuth.getInstance().getCurrentUser().getEmail();  // here no replace directly nel for
         // lista temporanea che può essere scritta sul db nel momento in cui si passa alla schermata successiva
         friends_added = new ArrayList<>();
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -164,7 +164,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         }
         if (flag) {
             friends_added.add(nFriends,cont.getEmail().toString());
-            emailsToBeSent.add(nFriends,cont.getEmail());
+
+            emailsToBeSent.add(nFriends,cont.getEmail().toString());
 
             nFriends++;
             list_friends.invalidate();
@@ -178,7 +179,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
 
-        database = FirebaseDatabase.getInstance();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+
         friends_added.add(nFriends,MyID);
         nFriends++;
 
@@ -210,6 +212,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void run() {
                 try {
+
                     String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
                     String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
@@ -218,6 +221,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     inviteMail.set_body("Hi! \n" + displayName + " (email : "+
                             user_email + ") is inviting you to join a group called " + groupName+
                             " whose code is "+IDGroup+".\n\n" +
+
                             "We cannot wait for your association!\n" +
                             "Your MAD14 team");
                     inviteMail.set_to(emailsToBeSent);
@@ -239,3 +243,4 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
 
 }
+
