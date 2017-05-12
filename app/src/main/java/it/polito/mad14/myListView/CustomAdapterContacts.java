@@ -52,8 +52,8 @@ public class CustomAdapterContacts extends BaseAdapter {
 
         TextView tv = (TextView) convertView.findViewById(R.id.tv_contact_name_surname);
         tv.setText(contactsList.get(position).getName() + " " + contactsList.get(position).getSurname());
-        tv = (TextView) convertView.findViewById(R.id.tv_contact_email);
-        tv.setText(contactsList.get(position).getEmail());
+        tv = (TextView) convertView.findViewById(R.id.tv_contact_username);
+        tv.setText(contactsList.get(position).getUsername());
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

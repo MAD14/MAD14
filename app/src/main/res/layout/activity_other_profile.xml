@@ -64,7 +64,6 @@
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="76dp"
-                android:text="Mario Rossi"
                 android:textColor="#fff"
                 android:textSize="24sp"
                 android:textStyle="bold" />

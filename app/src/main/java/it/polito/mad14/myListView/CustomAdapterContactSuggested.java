@@ -63,7 +63,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
         TextView tv = (TextView) convertView.findViewById(R.id.tv_contact_name_surname_suggestion);
         tv.setText(partialNames.get(position).getName() + " " + partialNames.get(position).getSurname());
         tv = (TextView) convertView.findViewById(R.id.tv_contact_email_suggestion);
-        tv.setText(partialNames.get(position).getEmail());
+        tv.setText(partialNames.get(position).getUsername());
 
         ImageButton img = (ImageButton) convertView.findViewById(R.id.add_contact_suggestion);
 

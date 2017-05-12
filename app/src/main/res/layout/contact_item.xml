@@ -25,27 +25,37 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/image_person"
         android:layout_toEndOf="@id/image_person"
-        android:text="Name Surname"
-
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
         android:textSize="@dimen/main_text"
         android:textColor="@color/writing"
-
         />
     <TextView
-        android:id="@+id/tv_contact_email"
+        android:id="@+id/username_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="@string/username_semicolon"
+        android:textSize="@dimen/description"
+        android:textColor="@color/writing"
         android:layout_toRightOf="@id/image_person"
         android:layout_toEndOf="@id/image_person"
         android:layout_below="@id/tv_contact_name_surname"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
-        android:text="Email"
-        android:textSize="@dimen/main_text"
+        />
+    <TextView
+        android:id="@+id/tv_contact_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/username_text"
+        android:layout_toEndOf="@id/username_text"
+        android:layout_below="@id/tv_contact_name_surname"
+        android:layout_marginTop="@dimen/margin"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
+        android:textSize="@dimen/description"
         android:textColor="@color/writing"
         />
 
