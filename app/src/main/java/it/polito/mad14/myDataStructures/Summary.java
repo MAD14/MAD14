@@ -8,7 +8,7 @@ public class Summary {
 
     String name;
     String value;
-    boolean credit; // true è un credito (-> verde); false è un debito (-> rosso)
+    boolean credit;// true è un credito (-> verde); false è un debito (-> rosso)
 
     public Summary(String name, String value, boolean credit) {
         this.name = name;

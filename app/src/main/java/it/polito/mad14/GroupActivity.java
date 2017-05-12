@@ -203,7 +203,7 @@ public class GroupActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
+            final String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             FirebaseDatabase database = FirebaseDatabase.getInstance();
             user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
@@ -224,7 +224,7 @@ public class GroupActivity extends AppCompatActivity {
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Description").getValue().toString(),
-                                        data.child("Author").getValue().toString());
+                                        data.child("Author").getValue().toString(),IDGroup);
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }

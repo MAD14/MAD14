@@ -1,8 +1,10 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,10 +12,19 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import it.polito.mad14.GroupActivity;
 import it.polito.mad14.R;
+import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
 
 /**
@@ -25,6 +36,7 @@ public class CustomAdapter extends BaseAdapter{
     Context context;
     ArrayList<Group> groupList;
     LayoutInflater inflater;
+    Set<String> members=new HashSet<>();
 
     public CustomAdapter(Context context, ArrayList<Group> groupList) {
         this.context = context;
@@ -66,6 +78,76 @@ public class CustomAdapter extends BaseAdapter{
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 context.startActivity(intent);
+            }
+        });
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener(){
+            @Override
+            public boolean onLongClick(View view){
+                AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
+                dialogAlert.setTitle("");
+                dialogAlert.setMessage("Do you want to delete this group?");
+
+                dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog,int id) {
+
+                        final FirebaseDatabase database=FirebaseDatabase.getInstance();
+                        final Group group=groupList.get(position);
+
+                        // remove value from group
+                        final DatabaseReference myRef=database.getReference("groups");
+                        // salvo membri in set
+                        DatabaseReference memRef=database.getReference("groups/"+group.getID()+"/members/");
+                        memRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                                for(DataSnapshot data: dataSnapshot.getChildren())
+                                    members.add(data.getKey().toString());
+
+                                // elimino la ref nei gruppi
+                                myRef.child(group.getID()).removeValue();
+                            }
+
+
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                        DatabaseReference users=database.getReference("users");
+                        users.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for(DataSnapshot data: dataSnapshot.getChildren()){
+                                    if(members.contains(data.getKey().toString())){
+                                        data.child("groups").child(group.getID()).getRef().removeValue();
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        // remove value from group list
+                        groupList.remove(position);
+
+
+                        Toast.makeText(context,"Deleting group",Toast.LENGTH_SHORT).show();
+                    }
+                });
+
+                AlertDialog alert=dialogAlert.create();
+                alert.show();
+                //Toast.makeText(context,"LOng click on Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
+                return true;
             }
         });
 
