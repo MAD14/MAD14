@@ -6,6 +6,9 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.ConnectivityManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -22,6 +25,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Base64;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,8 +51,11 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.net.URI;
 import java.net.URL;
@@ -89,6 +96,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+
+    private boolean found;
+    private FirebaseDatabase database;
 
 
     @Override
@@ -248,14 +258,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         });
     }
 
-    private void handleSignInResult(GoogleSignInResult result) {
+    private void handleSignInResult(final GoogleSignInResult result) {
         if (result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             acct = result.getSignInAccount();
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            database = FirebaseDatabase.getInstance();
             DatabaseReference myRef = database.getReference("users/"+ acct.getEmail().replace(".",","));
-            Toast.makeText(this,myRef.getKey(), Toast.LENGTH_SHORT).show();
-            Toast.makeText(this,result.getSignInAccount().getPhotoUrl().toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(LoginActivity.this,myRef.getKey(), Toast.LENGTH_SHORT).show();
             myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
             myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
             myRef.child("Email").setValue(result.getSignInAccount().getEmail());

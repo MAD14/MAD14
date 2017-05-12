@@ -46,6 +46,19 @@
             android:scaleType="centerCrop"
             />
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@android:drawable/ic_menu_edit"
+            android:layout_toLeftOf="@id/user_profile_photo"
+            android:layout_below="@+id/header_cover_image"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="-30dp"
+            android:elevation="15dp"
+            android:padding="20dp"
+            android:scaleType="centerCrop"
+            />
+
         <RelativeLayout
             android:id="@+id/profile_layout"
             android:layout_width="match_parent"
@@ -67,7 +80,7 @@
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
-            <EditText
+            <TextView
                 android:id="@+id/user_profile_short_bio"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -76,9 +89,18 @@
                 android:layout_marginTop="12dp"
                 android:textColor="#fff"
                 android:textSize="14sp"
-                android:maxLines="1"
-                android:inputType="text"
-                android:hint="@string/insert_bio"/>
+                android:clickable="true"
+                android:onClick="onClickChangeBio"
+                android:text="prova"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@android:drawable/ic_menu_edit"
+                android:layout_toLeftOf="@id/user_profile_short_bio"
+                android:layout_below="@id/user_profile_name"
+                android:layout_margin="5dp"/>
+
         </RelativeLayout>
 
 
@@ -108,7 +130,7 @@
                     android:textSize="@dimen/summary"
                     android:layout_alignParentTop="true"/>
 
-                <EditText
+                <TextView
                     android:id="@+id/info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -118,10 +140,18 @@
                     android:textColor="@color/writing"
                     android:textSize="@dimen/summary"
                     android:layout_alignParentRight="true"
-                    android:maxLines="1"
-                    android:inputType="text"
-                    android:hint="@string/username"
+                    android:clickable="true"
+                    android:onClick="onClickChangeUsername"
                     />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@android:drawable/ic_menu_edit"
+                    android:layout_toLeftOf="@id/info1"
+                    android:layout_marginTop="5dp"
+                    android:elevation="4dp"
+                    android:padding="13dp"/>
 
                 <TextView
                     android:id="@+id/info2_text"

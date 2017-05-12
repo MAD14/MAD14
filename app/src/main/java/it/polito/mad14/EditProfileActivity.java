@@ -1,17 +1,20 @@
 package it.polito.mad14;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,7 +32,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private String email, username, bio, encodedImage, name;
     private ImageButton photo;
-    private EditText editUsername, editBio;
+    private TextView editBio, editUsername;
     private Bitmap imageBitmap;
     private FirebaseDatabase database;
     private boolean hasProfileImage;
@@ -49,7 +52,6 @@ public class EditProfileActivity extends AppCompatActivity {
         });
         fab.bringToFront();
 
-
         hasProfileImage = getIntent().getBooleanExtra("hasProfileImage",false);
         email = getIntent().getStringExtra("userEmail");
         username = getIntent().getStringExtra("username");
@@ -58,13 +60,26 @@ public class EditProfileActivity extends AppCompatActivity {
 
         TextView tv = (TextView) findViewById(R.id.user_profile_name);
         tv.setText(name);
-
-        editBio = (EditText) findViewById(R.id.user_profile_short_bio);
-        editBio.setText(bio);
-        editUsername = (EditText) findViewById(R.id.info1);
-        editUsername.setText(username);
         tv = (TextView) findViewById(R.id.info2);
         tv.setText(email);
+        editBio = (TextView) findViewById(R.id.user_profile_short_bio);
+        editBio.setText(bio);
+        editBio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickChangeBio(view);
+            }
+        });
+
+        editUsername = (TextView) findViewById(R.id.info1);
+        editUsername.setText(username);
+        editUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickChangeUsername(view);
+            }
+        });
+
 
         photo = (ImageButton)findViewById(R.id.user_profile_photo);
         photo.bringToFront();
@@ -116,19 +131,81 @@ public class EditProfileActivity extends AppCompatActivity {
             }catch (FileNotFoundException e){
                 e.printStackTrace();
             }
+            database = FirebaseDatabase.getInstance();
+            DatabaseReference myRef=database.getReference("users/"+
+                    FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+            myRef.child("ProfileImage").setValue(encodedImage);
         }
     }
 
+    public void onClickChangeBio(View view){
+        AlertDialog.Builder changeBioDialogue = new AlertDialog.Builder(EditProfileActivity.this);
+        changeBioDialogue.setTitle(getString(R.string.insert_bio));
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        changeBioDialogue.setView(input);
+        changeBioDialogue.setPositiveButton(getString(R.string.positive_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newBio = input.getText().toString();
+                        editBio.setText(newBio);
+                        database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef=database.getReference("users/"+
+                                FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+                        myRef.child("Bio").setValue(newBio);
+                    }
+                });
+        changeBioDialogue.setNegativeButton(getString(R.string.negative_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        changeBioDialogue.show();
+    }
+
+    public void onClickChangeUsername(View view){
+        AlertDialog.Builder changeUsernameDialogue = new AlertDialog.Builder(EditProfileActivity.this);
+        changeUsernameDialogue.setTitle(getString(R.string.insert_username));
+        final EditText input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        changeUsernameDialogue.setView(input);
+        changeUsernameDialogue.setPositiveButton(getString(R.string.positive_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newUsername = input.getText().toString();
+                        editUsername.setText(newUsername);
+                        database = FirebaseDatabase.getInstance();
+                        DatabaseReference myRef=database.getReference("users/"+
+                                FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+                        myRef.child("Username").setValue(newUsername);
+                    }
+                });
+        changeUsernameDialogue.setNegativeButton(getString(R.string.negative_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        changeUsernameDialogue.show();
+    }
+
     public void onClickCompletedAction(View view) {
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef=database.getReference("users/"+FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
-        myRef.child("Bio").setValue(editBio.getText().toString());
-        myRef.child("Username").setValue(editUsername.getText().toString());
-        myRef.child("ProfileImage").setValue(encodedImage);
+
         Toast.makeText(EditProfileActivity.this,"Changes applied",Toast.LENGTH_SHORT).show();
-        //Intent intent = new Intent(EditProfileActivity.this,ProfileActivity.class);
+        Intent intent = new Intent(EditProfileActivity.this,ProfileActivity.class);
         //intent.putExtra("IDGroup",IDGroup);
-        //startActivity(intent);
+        startActivity(intent);
 
     }
 

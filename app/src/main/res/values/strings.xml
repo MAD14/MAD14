@@ -72,4 +72,7 @@
     <string name="action_edit_profile">Edit profile</string>
     <string name="default_bio">I\'m an artist and I dream to become famous</string>
     <string name="insert_bio">Insert short bio</string>
+    <string name="insert_username">Insert username</string>
+    <string name="positive_button_dialogue">OK</string>
+    <string name="negative_button_dialogue">BACK</string>
 </resources>

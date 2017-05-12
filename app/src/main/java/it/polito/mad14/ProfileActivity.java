@@ -109,6 +109,7 @@ public class ProfileActivity extends AppCompatActivity {
                 intent.putExtra("bio",bio);
                 intent.putExtra("Name", displayName);
                 startActivity(intent);
+                finish();
                 break;
         }
 
