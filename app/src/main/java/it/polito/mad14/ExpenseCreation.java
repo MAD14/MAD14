@@ -145,11 +145,9 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     refCred.child("Paying").setValue(et_author);
                     refCred.child("Money").setValue(priceEach);
                 }
-
-
             }
-
-            Intent intent = new Intent();
+            //notificare che le spese sono cambiate
+            Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
             intent.putExtra("author",et_author);
             intent.putExtra("name",et_name.getText().toString());
             intent.putExtra("import",et_import.getText().toString());
@@ -157,6 +155,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             intent.putExtra("expenseImage",encodedExpenseImage);
             intent.putExtra("IDGroup",IDGroup);
             setResult(RESULT_OK, intent);
+            startActivity(intent);
             finish();
         } else {
             et_import.setError(getString(R.string.error_invalid_import));

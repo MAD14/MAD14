@@ -205,7 +205,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list,list_summary,list_contacts;
+        private ListView list,list_summary;
 
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
@@ -219,31 +219,22 @@ public class MainActivity extends AppCompatActivity {
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        groupsList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
-
-                            Iterator<Group> it = groupsList.iterator();
-                            boolean flag = false;
-                            while (it.hasNext()) {
-                                if (it.next().getID().equals(data.getKey()))
-                                    flag = true;
-                            }
-                            if (!flag) {
-
                                 try {
                                     String id = data.getKey();
                                     String nm = data.child("Name").getValue().toString();
                                     String own = data.child("Author").getValue().toString();
                                     String dat = data.child("Date").getValue().toString();
+                                    indexGroup = groupsList.size();
                                     groupsList.add(indexGroup, new Group(id, nm, own, dat));
-                                    indexGroup++;
                                 }
                                     catch(Error e){
                                         Toast.makeText(getContext(), e.getMessage(),
                                                 Toast.LENGTH_SHORT).show();
                                     }
-
-                            }
                         }
+                        ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
                         list.invalidate();
                         list.requestLayout();
                     }
@@ -254,8 +245,9 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                    CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
-                    list.setAdapter(adapter);
+                CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
+                list.setAdapter(adapter);
+
                     return rootView;
 
             }
@@ -440,6 +432,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickNewGroup(View view) {
         Intent intent = new Intent(view.getContext(), NewGroupActivityPhase1.class);
         startActivity(intent);
+        finish();
     }
 
     public void onClickNewContact(View view) {

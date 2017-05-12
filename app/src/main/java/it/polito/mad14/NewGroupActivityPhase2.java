@@ -181,7 +181,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
                 Toast.LENGTH_SHORT).show();
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
 
         friends_added.add(nFriends,MyID);
         nFriends++;
@@ -240,6 +240,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);
+        finish();
 
     }
 
