@@ -95,4 +95,11 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
         return convertView;
     }
 
+    public ArrayList<Contact> getPartialNames() {
+        return partialNames;
+    }
+
+    public void setPartialNames(ArrayList<Contact> partialNames) {
+        this.partialNames = partialNames;
+    }
 }

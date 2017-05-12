@@ -46,6 +46,7 @@ import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterContacts;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
+
 public class MainActivity extends AppCompatActivity {
 
     /**
@@ -255,7 +256,6 @@ public class MainActivity extends AppCompatActivity {
 
                     CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
                     list.setAdapter(adapter);
-
                     return rootView;
 
             }
@@ -264,7 +264,6 @@ public class MainActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
                 // popolamento della pagina
-                //TODO: riepilogo dei soldi che si devono agli amici
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                 DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                 DatabaseReference myRef_summary_credits = database.getReference("users/" + userID + "/credits");
@@ -329,7 +328,9 @@ public class MainActivity extends AppCompatActivity {
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 // popolamento della pagina
+
                 list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
+
                 //TODO: prendere i dati degli amici e visualizzarli qui
                 //con il formato contact_item
                 myRef = database.getReference("users/"+UserID+"/contacts/");
