@@ -56,15 +56,21 @@ public class OtherProfileActivity extends AppCompatActivity {
     }
 
     public void onClickAddAsFriend(View view) {
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
+                String[] parts = displayName.split(" ");
+                myRef.child("Name").setValue(parts[0]);
+                myRef.child("Surname").setValue(parts[1]);
+                myRef.child("Username").setValue(username);
+                myRef.child("Email").setValue(email);
+            }
+        };
 
-        //TODO gestione invio amicizia nella pagina main
-        String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
-        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
-        String[] parts = displayName.split(" ");
-        myRef.child("Name").setValue(parts[0]);
-        myRef.child("Surname").setValue(parts[1]);
-        myRef.child("Username").setValue(username);
-        myRef.child("Email").setValue(email);
+        Thread t = new Thread(r);
+        t.start();
 
         Toast.makeText(OtherProfileActivity.this, "Added as friend", Toast.LENGTH_SHORT).show();
 

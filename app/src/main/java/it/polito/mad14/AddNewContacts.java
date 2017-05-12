@@ -54,6 +54,10 @@ public class AddNewContacts extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
 
+        list = (ListView) findViewById(R.id.list_view_contact_suggestion);
+        adapter = new CustomAdapterContactSuggested(getApplicationContext(), partialNames);
+        list.setAdapter(adapter);
+
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -61,39 +65,8 @@ public class AddNewContacts extends AppCompatActivity {
                     searchNames.add(new Contact(data.child("Name").getValue().toString(),
                             data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
                             data.child("Email").getValue().toString()));
-
                 }
-
-                list = (ListView) findViewById(R.id.list_view_contact_suggestion);
-                adapter = new CustomAdapterContactSuggested(getApplicationContext(), partialNames);
-                list.setAdapter(adapter);
-
-                nameCapture = (EditText) findViewById(R.id.edit_name_search);
-                //nameCapture.setText("Tom");
-
-                AlterAdapter();
-
-                nameCapture.addTextChangedListener(new TextWatcher() {
-
-                    // As the user types in the search field, the list is
-                    @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-                        AlterAdapter();
-                    }
-
-                    // Not used for this program
-                    @Override
-                    public void afterTextChanged(Editable arg0) {
-
-                    }
-
-                    // Not uses for this program
-                    @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-
-                    }
-                });
+                ((CustomAdapterContactSuggested)list.getAdapter()).setPartialNames(searchNames);
             }
 
             @Override
@@ -102,7 +75,31 @@ public class AddNewContacts extends AppCompatActivity {
             }
         });
 
+        nameCapture = (EditText) findViewById(R.id.edit_name_search);
 
+        AlterAdapter();
+
+        nameCapture.addTextChangedListener(new TextWatcher() {
+
+            // As the user types in the search field, the list is
+            @Override
+            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                AlterAdapter();
+            }
+
+            // Not used for this program
+            @Override
+            public void afterTextChanged(Editable arg0) {
+
+            }
+
+            // Not uses for this program
+            @Override
+            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+
+
+            }
+        });
 
 
     }
