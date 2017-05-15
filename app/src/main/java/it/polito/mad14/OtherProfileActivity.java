@@ -26,7 +26,10 @@ public class OtherProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
 
-        email = getIntent().getStringExtra("email");
+        email = getIntent().getStringExtra("Email");
+        username = getIntent().getStringExtra("Username");
+        displayName = getIntent().getStringExtra("Name") + " " + getIntent().getStringExtra("Surname");
+
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
@@ -34,12 +37,8 @@ public class OtherProfileActivity extends AppCompatActivity {
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                username = dataSnapshot.child("Username").getValue().toString();
-                TextView tv = (TextView) findViewById(R.id.info1);
-                tv.setText(username);
-                displayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
-                tv = (TextView) findViewById(R.id.user_profile_name);
-                tv.setText(displayName);
+                // TODO: lettura da db solo per l'immagine profilo!
+
             }
 
             @Override
@@ -47,7 +46,11 @@ public class OtherProfileActivity extends AppCompatActivity {
             }
         });
 
-        TextView tv = (TextView) findViewById(R.id.info2);
+        TextView tv = (TextView) findViewById(R.id.info1);
+        tv.setText(username);
+        tv = (TextView) findViewById(R.id.user_profile_name);
+        tv.setText(displayName);
+        tv = (TextView) findViewById(R.id.info2);
         tv.setText(email);
 
         // necessario per avere il tondo della foto profilo in primo piano anche con le API<21

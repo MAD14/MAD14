@@ -8,6 +8,5 @@
     <ListView
         android:id="@+id/list_view_main_activity"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="true"/>
+        android:layout_height="wrap_content"/>
 </LinearLayout>

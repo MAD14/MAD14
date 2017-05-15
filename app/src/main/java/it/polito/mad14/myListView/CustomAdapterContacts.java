@@ -1,6 +1,7 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import it.polito.mad14.OtherProfileActivity;
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Contact;
 
@@ -58,8 +60,14 @@ public class CustomAdapterContacts extends BaseAdapter {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"Contact number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
-                //TODO intent to show profile user selected
+                Intent intent = new Intent(context,OtherProfileActivity.class);
+                intent.putExtra("Email",contactsList.get(position).getEmail());
+                intent.putExtra("Surname",contactsList.get(position).getSurname());
+                intent.putExtra("Name",contactsList.get(position).getName());
+                intent.putExtra("Username",contactsList.get(position).getUsername());
+
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
             }
         });
        return convertView;
