@@ -39,25 +39,22 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private int nFriends = 0;
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
+    private FirebaseDatabase database;
+    private Mail inviteMail;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_new_members_to_group);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent myIntent = getIntent();
-        /*IDGroup = myIntent.getStringExtra("IDGroup");
+        IDGroup = myIntent.getStringExtra("IDGroup");
         groupName = getIntent().getStringExtra("Name");
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
-        groupDate= getIntent().getStringExtra("Date");*/
-        IDGroup = myIntent.getStringExtra("IDGroup");
-        groupName = "trenino";
-        groupAuthor= "Elena";
-        groupDescr= "ciuff ciufff";
-        groupDate= "oggi";
-        System.out.println(IDGroup);
+        groupDate= getIntent().getStringExtra("Date");
 
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
@@ -71,7 +68,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
 
         friends=new ArrayList<>();
 
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        database = FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
                 +"/contacts");
@@ -116,8 +113,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         members = new ArrayList<>();
 
 
-        DatabaseReference myRef2 = database.getReference("groups/"+
-                IDGroup+"/members");
+        DatabaseReference myRef2 = database.getReference("groups/"+IDGroup+"/members");
 
         myRef2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -139,7 +135,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     public void onClick(View view){//quando pigio add
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
-        //System.out.println("NAME : "+tmp_name);
         String[] parts = tmp_name.split(" - ");
         if (parts.length == 2){
             String contUsername = parts[1];
@@ -157,7 +152,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                 }
             }
             if (flag && !members.contains(cont.getEmail().toString())) {
-                System.out.println("va bene :)");
                 friends_added.add(nFriends,cont.getEmail().toString());
                 emailsToBeSent.add(nFriends,cont.getEmail().toString());
 
@@ -179,7 +173,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             Toast.makeText(AddNewMembersToGroup.this,"User not found",Toast.LENGTH_SHORT).show();
         }
         Iterator<String> it2=emailsToBeSent.iterator();
-        System.out.println("ON CLICK");
+
         while(it2.hasNext()){
             String cont=it2.next();
             System.out.println(cont);
@@ -187,28 +181,27 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     }
 
     public void onClickCompletedAction(View view) {
-        System.out.println("BRAVO CHE HAI FINITO");
+
         Iterator<String> it2=emailsToBeSent.iterator();
-        System.out.println("ALLA FINE");
+
         while(it2.hasNext()){
             String cont=it2.next();
             System.out.println(cont);
         }
-        Toast.makeText(AddNewMembersToGroup.this, "Members added",
-                Toast.LENGTH_SHORT).show();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        //TODO: implementare!!!
+        Toast.makeText(AddNewMembersToGroup.this, "Members added",Toast.LENGTH_SHORT).show();
+
+        System.out.print("author " + groupAuthor);
+
         // Insertion of the group in each user
         DatabaseReference myRefUser = database.getReference("users");
         for (String user : friends_added) {
-            String newUser=user.replace(".",",");
-            DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
+            String newUser = user.replace(".",",");
+            DatabaseReference ref = myRefUser.child(newUser).child("groups").child(IDGroup);
             ref.child("Name").setValue(groupName);
             ref.child("Author").setValue(groupAuthor);
             ref.child("Description").setValue(groupDescr);
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
-
         }
 
         DatabaseReference myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
@@ -219,8 +212,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         }
         
         //mando le mail
-        final Mail inviteMail = new Mail();
-        final DatabaseReference myRef = database.getReference("users");
+        inviteMail = new Mail();
+
         Runnable r = new Runnable() {
             @Override
             public void run() {

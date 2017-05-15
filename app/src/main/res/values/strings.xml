@@ -71,4 +71,8 @@
     <string name="type_name_surname_username">Type the full name or the username</string>
 
     <string name="pick_image_intent_text">Select an application to complete the action</string>
+    <string name="title_activity_info_group">InfoGroupActivity</string>
+    <string name="date_creation">Creation date</string>
+    <string name="members">Members</string>
+
 </resources>

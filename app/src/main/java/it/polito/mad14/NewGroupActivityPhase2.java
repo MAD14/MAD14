@@ -54,9 +54,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
     private String IDGroup;
-    private String MyID;
+    private String MyID, newUser;
     private FirebaseDatabase database;
-
+    private DatabaseReference temp_reference, myRefGroup;
     private Uri groupImageUri;
     private String noImage = "no_image";
 
@@ -88,7 +88,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
                 Toast.LENGTH_SHORT).show();
         MyID=FirebaseAuth.getInstance().getCurrentUser().getEmail();  // here no replace directly nel for
-        // lista temporanea che può essere scritta sul db nel momento in cui si passa alla schermata successiva
+
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -198,12 +198,35 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         }
 
         //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
-        DatabaseReference myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
+        myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
         for (String user : friends_added) {
-            String newUser = user.replace(".", ",");
+            newUser = user.replace(".", ",");
             myRefGroup.child(newUser).child("Debits").setValue("0");
             myRefGroup.child(newUser).child("Credits").setValue("0");
         }
+
+        //
+
+        myRefGroup = database.getReference("groups/"+ IDGroup + "/members");
+        temp_reference = database.getReference("users");
+        temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (String user : friends_added)
+                {
+                    newUser = user.replace(".", ",");
+                    myRefGroup.child(newUser).child("Name").setValue(dataSnapshot.child(newUser).child("Name").getValue().toString());
+                    myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
+                    myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
+                    myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
+
+
 
         //send e-mail to members
         final Mail inviteMail = new Mail();

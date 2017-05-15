@@ -1,28 +1,22 @@
 package it.polito.mad14;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.design.widget.TabLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,20 +27,17 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
 import it.polito.mad14.myDataStructures.Expense;
-import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
-import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 
 
 public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
-
+    private DatabaseReference myReference;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -63,6 +54,9 @@ public class GroupActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     private String IDGroup;
+    private Intent intent;
+    //TODO: attenzione a questa public variable
+//    public FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -129,30 +123,45 @@ public class GroupActivity extends AppCompatActivity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         switch (id){
             case R.id.silenzioso:
-                System.out.println("silenzioso");
+                //TODO: disattivare le notifiche push
+                Toast.makeText(GroupActivity.this,"Notifications disabled",Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add_members:
-                //Intent intent = new Intent(GroupActivity.this,NewGroupActivityPhase2.class);
-                //startActivity(intent);
-                System.out.println("add members");
+//
+//                myReference = database.getReference("groups/" + IDGroup );
+//                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        groupName = dataSnapshot.child("Name").getValue().toString();
+//                        groupAuthor = dataSnapshot.child("Author").getValue().toString();
+//                        groupDescr = dataSnapshot.child("Description").getValue().toString();
+//                        groupDate = dataSnapshot.child("Date").getValue().toString();
+//
+                        intent = new Intent(GroupActivity.this,AddNewMembersToGroup.class);
+                        intent.putExtra("IDgroup",IDGroup);
+//                        intent.putExtra("Name",groupName);
+//                        intent.putExtra("Author",groupAuthor);
+//                        intent.putExtra("Date",groupDate);
+//                        intent.putExtra("Description",groupDescr);
+                        startActivity(intent);
+//                    }
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//                    }
+//                });
+
                 break;
             case R.id.changes:
-                FirebaseAuth.getInstance().signOut();
-                //intent = new Intent(MainActivity.this,LoginActivity.class);
-                //startActivity(intent);
                 System.out.println("changes");
                 break;
             case R.id.info:
-                //intent = new Intent(MainActivity.this, InviteToJoinCommunity.class);
-                //intent.putExtra("sender",UserID);
-                //startActivity(intent);
-                System.out.println("info");
+                intent = new Intent(GroupActivity.this,InfoGroupActivity.class);
+                intent.putExtra("IDGroup",IDGroup);
+                startActivity(intent);
                 break;
         }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -168,11 +177,12 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Expense> expensesList = new ArrayList<>();
         private int indexExp=0;
         ArrayList<Summary> summaryList = new ArrayList<>();
-        ArrayList<Summary> tmpList = new ArrayList<>();
-        ArrayList<Expense> tmpList_exp = new ArrayList<>();
         private int indexSummary=0;
         private boolean credit;
         private String user;
+
+//TODO: attenzione a questa public variable
+        public FirebaseDatabase database;
 
         public PlaceholderFragment() {
         }
@@ -197,14 +207,15 @@ public class GroupActivity extends AppCompatActivity {
         private View rootView;
         private ListView list_expenses,list_summary;
         private String name;
+        private String IDGroup;
 
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            final String IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
-            FirebaseDatabase database = FirebaseDatabase.getInstance();
+            IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
+            database = FirebaseDatabase.getInstance();
             user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
             DatabaseReference myRef_summary = database.getReference("groups/" + IDGroup + "/debits");
