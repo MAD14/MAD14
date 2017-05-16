@@ -258,9 +258,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             myRef.child("Name").setValue(result.getSignInAccount().getGivenName());
             myRef.child("Surname").setValue(result.getSignInAccount().getFamilyName());
             myRef.child("Email").setValue(result.getSignInAccount().getEmail());
-            myRef.child("ProfileImage").setValue("no_image");
-            myRef.child("Bio").setValue(getString(R.string.default_bio));
-            myRef.child("Username").setValue(result.getSignInAccount().getGivenName() + "." +result.getSignInAccount().getFamilyName());
+            myRef.child("Username").setValue(result.getSignInAccount().getGivenName()
+                    + "." +result.getSignInAccount().getFamilyName());
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.

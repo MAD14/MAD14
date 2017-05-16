@@ -50,17 +50,25 @@ public class OtherProfileActivity extends AppCompatActivity {
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                bio = dataSnapshot.child("Bio").getValue().toString();
+                if (dataSnapshot.hasChild("Bio")){
+                    bio = dataSnapshot.child("Bio").getValue().toString();
+                } else {
+                    bio = getString(R.string.default_bio);
+                }
                 TextView tv = (TextView) findViewById(R.id.user_profile_short_bio);
                 tv.setText(bio);
-                if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
-                    imgbt.setImageResource(R.mipmap.person_icon_white);
+                if (dataSnapshot.hasChild("ProfileImage")){
+                    if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
+                        imgbt.setImageResource(R.mipmap.person_icon_white);
+                    } else {
+                        encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
+                        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                        imgbt.setBackgroundDrawable(bDrawable);
+                    }
                 } else {
-                    encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
-                    byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-                    Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                    imgbt.setBackgroundDrawable(bDrawable);
+                    imgbt.setImageResource(R.mipmap.person_icon_white);
                 }
 
 

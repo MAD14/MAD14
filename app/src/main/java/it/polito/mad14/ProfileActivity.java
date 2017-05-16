@@ -50,17 +50,26 @@ public class ProfileActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 username = dataSnapshot.child("Username").getValue().toString();
-                bio = dataSnapshot.child("Bio").getValue().toString();
-                if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
-                    imgbt.setImageResource(R.mipmap.person_icon_white);
-                    hasProfileImage = false;
+                if (dataSnapshot.hasChild("Bio")){
+                    bio = dataSnapshot.child("Bio").getValue().toString();
                 } else {
-                    encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
-                    byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-                    Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                    imgbt.setBackgroundDrawable(bDrawable);
-                    hasProfileImage = true;
+                    bio = getString(R.string.default_bio);
+                }
+
+                if (dataSnapshot.hasChild("ProfileImage")){
+                    if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
+                        imgbt.setImageResource(R.mipmap.person_icon_white);
+                        hasProfileImage = false;
+                    } else {
+                        encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
+                        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                        imgbt.setBackgroundDrawable(bDrawable);
+                        hasProfileImage = true;
+                    }
+                } else {
+                    imgbt.setImageResource(R.mipmap.person_icon_white);
                 }
                 TextView tv = (TextView) findViewById(R.id.info1);
                 tv.setText(username);
