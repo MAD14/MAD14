@@ -28,22 +28,21 @@ public class ProfileActivity extends AppCompatActivity {
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
         String email = auth.getCurrentUser().getEmail();
+        String email_key = email.replace(".",",");
 
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
 
-        myRef.child(email.replace(".",",")).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.child(email_key).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 username = dataSnapshot.child("Username").getValue().toString();
                 TextView tv = (TextView) findViewById(R.id.info1);
                 tv.setText(username);
             }
-
             @Override
             public void onCancelled(DatabaseError error) { }
         });
-
         String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
         TextView tv = (TextView) findViewById(R.id.user_profile_name);
         tv.setText(displayName);
@@ -51,6 +50,5 @@ public class ProfileActivity extends AppCompatActivity {
         tv.setText(username);
         tv = (TextView) findViewById(R.id.info2);
         tv.setText(email);
-
     }
 }
