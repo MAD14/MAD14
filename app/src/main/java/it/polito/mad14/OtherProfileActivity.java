@@ -1,5 +1,6 @@
 package it.polito.mad14;
 
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -32,8 +33,10 @@ public class OtherProfileActivity extends AppCompatActivity {
 
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
+//        DatabaseReference myRef = database.getReference("users/" + email.replace(".",","));
+//        myRef.addList...
 
+        DatabaseReference myRef = database.getReference("users");
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {

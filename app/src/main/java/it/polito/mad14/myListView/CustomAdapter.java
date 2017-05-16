@@ -68,9 +68,9 @@ public class CustomAdapter extends BaseAdapter{
         TextView tv = (TextView) convertView.findViewById(R.id.group_name);
         tv.setText(groupList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.group_summary1);
-        tv.setText("Credit: " + String.valueOf(position) +"€");
+        tv.setText("Credit: " + groupList.get(position).getCredit() +"€");
         tv = (TextView) convertView.findViewById(R.id.group_summary2);
-        tv.setText("Debit: "+ String.valueOf(position) +"€");
+        tv.setText("Debit: "+ groupList.get(position).getDebit() +"€");
 
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -92,55 +92,45 @@ public class CustomAdapter extends BaseAdapter{
 
                     public void onClick(DialogInterface dialog,int id) {
 
-                        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-                        final Group group=groupList.get(position);
+                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+                        final Group group = groupList.get(position);
 
-                        // remove value from group
-                        final DatabaseReference myRef=database.getReference("groups");
-                        // salvo membri in set
-                        DatabaseReference memRef=database.getReference("groups/"+group.getID()+"/members/");
-                        memRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                                for(DataSnapshot data: dataSnapshot.getChildren())
-                                    members.add(data.getKey().toString());
-
-                                // elimino la ref nei gruppi
-                                myRef.child(group.getID()).removeValue();
-                            }
-
-
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-
-                        DatabaseReference users=database.getReference("users");
-                        users.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot data: dataSnapshot.getChildren()){
-                                    if(members.contains(data.getKey().toString())){
-                                        data.child("groups").child(group.getID()).getRef().removeValue();
+                        if (groupList.get(position).getCredit().equals("0") && groupList.get(position).getDebit().equals("0")) {
+                            // remove value from group
+                            final DatabaseReference myRef = database.getReference("groups");
+                            // salvo membri in set
+                            DatabaseReference memRef = database.getReference("groups/" + group.getID() + "/members/");
+                            memRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren())
+                                        members.add(data.getKey().toString());
+                                    // elimino la ref nei gruppi
+                                    myRef.child(group.getID()).removeValue();
+                                }
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+                            DatabaseReference users = database.getReference("users");
+                            users.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        if (members.contains(data.getKey().toString())) {
+                                            data.child("groups").child(group.getID()).getRef().removeValue();
+                                        }
                                     }
                                 }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-
-                        // remove value from group list
-                        groupList.remove(position);
-
-
-                        Toast.makeText(context,"Deleting group",Toast.LENGTH_SHORT).show();
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) { }
+                            });
+                            // remove value from group list
+                            groupList.remove(position);
+                            Toast.makeText(context, "Deleting group", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(context,"You can not delete this group. \n You must balance your status before.",Toast.LENGTH_LONG).show();
+                        }
                     }
                 });
 

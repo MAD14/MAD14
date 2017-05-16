@@ -77,19 +77,14 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         refMembers.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 nMembers=dataSnapshot.getChildrenCount();
-
                 // collecting into a set the names of the members
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     contacts.add(data.getKey().toString());
                 }
-
-
             }
             @Override
             public void onCancelled(DatabaseError error) {
-
             }
         });
 
@@ -105,7 +100,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
 
     public void onClick(View v){
-
         String et_author = auth.getCurrentUser().getEmail().replace(".",",");
 
         if(isImportValid(et_import.getText().toString())){
@@ -129,7 +123,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 if(!name.equals(et_author)) {
                     //updating of the group's info
                     DatabaseReference newRef = refDebits.push();
-                    String key=newRef.getKey();
+
+                    //TODO punto 1
+                    String key = newRef.getKey();
+
                     newRef.child("Product").setValue(et_name.getText().toString());
                     newRef.child("Receiver").setValue(et_author);
                     newRef.child("Sender").setValue(name);

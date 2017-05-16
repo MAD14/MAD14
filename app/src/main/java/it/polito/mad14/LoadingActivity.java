@@ -74,7 +74,9 @@ public class LoadingActivity extends AppCompatActivity {
                             String nm = data.child("Name").getValue().toString();
                             String own = data.child("Author").getValue().toString();
                             String dat = data.child("Date").getValue().toString();
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat));
+                            String credit = data.child("Credit").getValue().toString();
+                            String debit = data.child("Debit").getValue().toString();
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit));
                             indexGroup++;
                         } catch (Error e) {
                             Toast.makeText(LoadingActivity.this, e.getMessage(),

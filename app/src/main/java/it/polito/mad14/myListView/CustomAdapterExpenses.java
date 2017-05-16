@@ -2,6 +2,7 @@ package it.polito.mad14.myListView;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
 
+import it.polito.mad14.InfoExpenseActivity;
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Expense;
 
@@ -64,14 +66,20 @@ public class CustomAdapterExpenses extends BaseAdapter {
         tv.setText(expensesList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.expense_import);
         tv.setText(expensesList.get(position).getValue());
-        tv = (TextView) convertView.findViewById(R.id.expense_description);
-        tv.setText(expensesList.get(position).getDescription());
+
+        //TODO aggiungere immagine
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
-                //TODO intent ad attività di informazioni della spesa
+                Intent intent = new Intent(context, InfoExpenseActivity.class);
+                intent.putExtra("Name",expensesList.get(position).getName());
+                intent.putExtra("Import",expensesList.get(position).getValue());
+                intent.putExtra("Description",expensesList.get(position).getDescription());
+                intent.putExtra("Author",expensesList.get(position).getAuthor().replace(",","."));
+//                intent.putExtra("Image",expensesList.get(position).getImage());
+                context.startActivity(intent);
+
             }
         });
 

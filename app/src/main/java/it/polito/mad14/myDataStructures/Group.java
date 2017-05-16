@@ -9,13 +9,17 @@ public class Group {
     String name;
     String author;
     String date;
+    String credit;
+    String debit;
 
 
-    public Group(String ID,String name, String author, String date) {
+    public Group(String ID,String name, String author, String date, String credit, String debit) {
         this.ID=ID;
         this.name = name;
         this.author = author;
         this.date = date;
+        this.credit = credit;
+        this.debit = debit;
     }
     public String getID() {
         return ID;
@@ -59,5 +63,21 @@ public class Group {
             return true;
         else
             return false;
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public void setCredit(String credit) {
+        this.credit = credit;
+    }
+
+    public String getDebit() {
+        return debit;
+    }
+
+    public void setDebit(String debit) {
+        this.debit = debit;
     }
 }
