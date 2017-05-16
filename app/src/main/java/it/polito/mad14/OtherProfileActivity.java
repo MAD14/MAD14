@@ -46,10 +46,6 @@ public class OtherProfileActivity extends AppCompatActivity {
 
 
         DatabaseReference myRef = database.getReference("users");
-        myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-        Toast.makeText(OtherProfileActivity.this, email +"\n"+ username +"\n"+ displayName,Toast.LENGTH_LONG).show();
 
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -106,4 +102,5 @@ public class OtherProfileActivity extends AppCompatActivity {
         Toast.makeText(OtherProfileActivity.this, "Added as friend", Toast.LENGTH_SHORT).show();
 
     }
-}
+    }
+

@@ -1,11 +1,8 @@
 package it.polito.mad14;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v4.media.session.PlaybackStateCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -22,12 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.firebase.ui.database.FirebaseRecyclerAdapter;
-import com.google.android.gms.common.api.BooleanResult;
-import com.google.firebase.FirebaseException;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -38,11 +31,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import it.polito.mad14.myDataStructures.Contact;
-import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapter;
@@ -190,14 +181,9 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference myRef_summary_debits,myRef_summary_credits;
         Map<String,Summary> tot= new HashMap<>();
 
-        ArrayList<Contact> tmpList_contacts = new ArrayList<>();
-
-
         private int indexSummary=0;
         private boolean credit;
-
-        //DatabaseReference myRefGroup = database.getReference("groups");
-
+        
         public PlaceholderFragment() {
         }
 
@@ -263,6 +249,7 @@ public class MainActivity extends AppCompatActivity {
 
             }
             else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
+
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
