@@ -3,6 +3,7 @@ package it.polito.mad14.myListView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,7 +91,10 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context,OtherProfileActivity.class);
-                intent.putExtra("email",partialNames.get(position).getEmail());
+                intent.putExtra("Email",partialNames.get(position).getEmail());
+                intent.putExtra("Username",partialNames.get(position).getUsername());
+                intent.putExtra("Name",partialNames.get(position).getName());
+                intent.putExtra("Surname",partialNames.get(position).getSurname());
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }
