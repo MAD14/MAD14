@@ -1,8 +1,10 @@
 package it.polito.mad14;
 
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
@@ -39,10 +41,14 @@ public class OtherProfileActivity extends AppCompatActivity {
 
         // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
         imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
-
+      
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
 
+
+        DatabaseReference myRef = database.getReference("users");
+        myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
         Toast.makeText(OtherProfileActivity.this, email +"\n"+ username +"\n"+ displayName,Toast.LENGTH_LONG).show();
 
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -60,6 +66,7 @@ public class OtherProfileActivity extends AppCompatActivity {
                     BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
                     imgbt.setBackgroundDrawable(bDrawable);
                 }
+
 
             }
 

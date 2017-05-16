@@ -65,7 +65,14 @@
         <activity
             android:name=".AddNewMembersToGroup"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <activity
+            android:name=".InfoExpenseActivity"
+            android:label="@string/title_activity_info_expense"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <activity android:name=".EditProfileActivity"></activity>
+
     </application>
 
 </manifest>

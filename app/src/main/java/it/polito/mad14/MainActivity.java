@@ -187,7 +187,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Summary> creditsList = new ArrayList<>();
         ArrayList<Summary> debitsList = new ArrayList<>();
         ArrayList<Summary> tmpList = new ArrayList<>();
-
+        DatabaseReference myRef_summary_debits,myRef_summary_credits;
         Map<String,Summary> tot= new HashMap<>();
 
         ArrayList<Contact> tmpList_contacts = new ArrayList<>();
@@ -235,8 +235,10 @@ public class MainActivity extends AppCompatActivity {
                                     String nm = data.child("Name").getValue().toString();
                                     String own = data.child("Author").getValue().toString();
                                     String dat = data.child("Date").getValue().toString();
+                                    String credit = data.child("Credit").getValue().toString();
+                                    String debit = data.child("Debit").getValue().toString();
                                     indexGroup = groupsList.size();
-                                    groupsList.add(indexGroup, new Group(id, nm, own, dat));
+                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit));
                                 }
                                     catch(Error e){
                                         Toast.makeText(getContext(), e.getMessage(),
@@ -265,8 +267,8 @@ public class MainActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
 
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
-                DatabaseReference myRef_summary_debits = database.getReference("users/" + userID + "/debits");
-                DatabaseReference myRef_summary_credits = database.getReference("users/" + userID + "/credits");
+                myRef_summary_debits = database.getReference("users/" + userID + "/debits");
+                myRef_summary_credits = database.getReference("users/" + userID + "/credits");
 
                 CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
                 list_summary.setAdapter(adapter);
@@ -287,20 +289,22 @@ public class MainActivity extends AppCompatActivity {
 
                         Iterator<Summary> itDeb=creditsList.iterator();
                         while(itDeb.hasNext()){
-                            Summary sum=itDeb.next();
+                            Summary sum = itDeb.next();
                             if(tot.containsKey(sum.getName())){
-                                Float past=Float.valueOf(tot.get(sum.getName()).getValue());
-                                Float newtot=past-Float.valueOf(sum.getValue());
-                                boolean flag=true;
-                                if(newtot<0)
-                                    flag=false;
+                                Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                Float newtot = past-Float.valueOf(sum.getValue());
+                                boolean flag = true;
+                                if(newtot < 0)
+                                    flag = false;
                                 tot.put(sum.getName(),new Summary(sum.getName(),Float.toString(newtot),flag));
 
                             }else{
                                 tot.put(sum.getName(),sum);
                             }
                         }
-                        //list_summary.setAdapter(new CustomAdapterSummary(getContext(),debitsList));
+                        summaryList = new ArrayList<>(tot.values());
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
+
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -335,7 +339,7 @@ public class MainActivity extends AppCompatActivity {
                                 tot.put(sum.getName(),sum);
                             }
                         }
-                        summaryList=new ArrayList<>(tot.values());
+                        summaryList = new ArrayList<>(tot.values());
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
                     }
                     @Override
@@ -346,12 +350,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-                /*creditsList.addAll(debitsList);
-                summaryList = creditsList;*/
-              //  adapter = new CustomAdapterSummary(getContext(),summaryList);
-              //  list_summary.setAdapter(adapter);
 
-                //
                 //TODO: possibilità di segnare che si è pagato qualcuno
                 //TODO: grafico riepilogo crediti/debiti
 
