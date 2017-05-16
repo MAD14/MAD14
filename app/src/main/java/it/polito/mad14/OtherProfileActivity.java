@@ -1,7 +1,11 @@
 package it.polito.mad14;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -20,6 +24,9 @@ public class OtherProfileActivity extends AppCompatActivity {
     private String username;
     private String email;
     private String displayName;
+    private String bio;
+    private String encodedImage;
+    private ImageButton imgbt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,14 +37,29 @@ public class OtherProfileActivity extends AppCompatActivity {
         username = getIntent().getStringExtra("Username");
         displayName = getIntent().getStringExtra("Name") + " " + getIntent().getStringExtra("Surname");
 
+        // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
+        imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
 
+        Toast.makeText(OtherProfileActivity.this, email +"\n"+ username +"\n"+ displayName,Toast.LENGTH_LONG).show();
+
         myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                // TODO: lettura da db solo per l'immagine profilo!
+                bio = dataSnapshot.child("Bio").getValue().toString();
+                TextView tv = (TextView) findViewById(R.id.user_profile_short_bio);
+                tv.setText(bio);
+                if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
+                    imgbt.setImageResource(R.mipmap.person_icon_white);
+                } else {
+                    encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
+                    byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                    Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                    imgbt.setBackgroundDrawable(bDrawable);
+                }
 
             }
 
@@ -53,8 +75,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.info2);
         tv.setText(email);
 
-        // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
-        ImageButton imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
+
         imgbt.bringToFront();
     }
 

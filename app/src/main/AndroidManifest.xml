@@ -37,7 +37,6 @@
         <activity
             android:name=".ExpenseCreation"
             android:label="@string/title_expense_creation" />
-
         <activity android:name=".RegistrationActivity" />
         <activity
             android:name=".NewGroupActivityPhase1"
@@ -47,11 +46,8 @@
             android:name=".NewGroupActivityPhase2"
             android:label="@string/title_activity_new_group_phase2"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".ProfileActivity" />
-
         <activity android:name=".OtherProfileActivity" />
-
         <activity
             android:name=".AddNewContacts"
             android:label="@string/title_activity_add_new_contacts"
@@ -60,18 +56,16 @@
             android:name=".InviteToJoinCommunity"
             android:label="@string/title_activity_invite_to_join_community"
             android:theme="@style/AppTheme.NoActionBar" />
-
         <activity android:name=".JoinGroupActivity" />
-
         <activity android:name=".LoadingActivity" />
-
         <activity
             android:name=".InfoGroupActivity"
             android:label="@string/title_activity_info_group"
-            android:theme="@style/AppTheme.NoActionBar"/>
-
-        <activity android:name=".AddNewMembersToGroup"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".AddNewMembersToGroup"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".EditProfileActivity"></activity>
     </application>
 
 </manifest>
