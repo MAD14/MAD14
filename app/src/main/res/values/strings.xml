@@ -84,6 +84,7 @@
     <string name="positive_button_dialogue">OK</string>
     <string name="negative_button_dialogue">BACK</string>
     <string name="not_possible_to_change_username">Not possible to change username.\nNot allowed to Google users</string>
-
+    <string name="insert_description">Insert a description</string>
+    <string name="insert_group_name">Insert a name</string>
 
 </resources>

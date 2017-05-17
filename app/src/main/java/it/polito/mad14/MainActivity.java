@@ -183,7 +183,7 @@ public class MainActivity extends AppCompatActivity {
 
         private int indexSummary=0;
         private boolean credit;
-        
+
         public PlaceholderFragment() {
         }
 
