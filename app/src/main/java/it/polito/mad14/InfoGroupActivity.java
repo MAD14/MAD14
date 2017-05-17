@@ -1,15 +1,19 @@
 package it.polito.mad14;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -70,7 +74,11 @@ public class InfoGroupActivity extends AppCompatActivity {
                 setSupportActionBar(toolbar);
                 setTitle(groupName);
                 tvDate.setText(dateCreation);
-                tvDescription.setText(description);
+                if (!description.equals("")){
+                    tvDescription.setText(description);
+                } else {
+                    tvDescription.setText("-");
+                }
             }
 
             @Override
@@ -103,9 +111,16 @@ public class InfoGroupActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, getIntent().getStringExtra("groupID"), Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                Intent intent = new Intent(InfoGroupActivity.this, EditGroupActivity.class);
+                intent.putExtra("IDGroup",IDGroup);
+                intent.putExtra("Name",groupName);
+                intent.putExtra("Date",dateCreation);
+                intent.putExtra("Description",description);
+                startActivity(intent);
+                finish();
             }
         });
     }
+
+
 }

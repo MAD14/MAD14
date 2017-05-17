@@ -1,5 +1,6 @@
 package it.polito.mad14.myListView;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -78,6 +79,8 @@ public class CustomAdapter extends BaseAdapter{
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 context.startActivity(intent);
+                ((Activity)context).finish();
+
             }
         });
 

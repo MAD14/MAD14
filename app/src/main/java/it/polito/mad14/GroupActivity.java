@@ -100,6 +100,14 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onBackPressed() {
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        setResult(RESULT_OK, intent);
+        super.onBackPressed();
+    }
+
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EXPENSE_CREATION){
             if (resultCode == RESULT_OK){
@@ -153,9 +161,13 @@ public class GroupActivity extends AppCompatActivity {
 //                });
 
                 break;
-            case R.id.changes:
-                System.out.println("changes");
+            case R.id.action_edit_group:
+                intent = new Intent(GroupActivity.this, EditGroupActivity.class);
+
+                startActivity(intent);
+                finish();
                 break;
+                
             case R.id.info:
                 intent = new Intent(GroupActivity.this,InfoGroupActivity.class);
                 intent.putExtra("IDGroup",IDGroup);

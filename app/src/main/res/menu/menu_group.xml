@@ -14,7 +14,7 @@
         android:title="Silence"
         app:showAsAction="never" />
     <item
-        android:id="@+id/changes"
+        android:id="@+id/action_edit_group"
         android:orderInCategory="100"
         android:title="Changes"
         app:showAsAction="never" />

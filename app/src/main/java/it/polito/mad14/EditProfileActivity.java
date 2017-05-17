@@ -51,6 +51,8 @@ public class EditProfileActivity extends AppCompatActivity {
         encodedImage = "no_image";
         googleUser = false;
 
+        findViewById(R.id.edit_image).bringToFront();
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : user.getProviderData()){
             providerId = profile.getProviderId();
@@ -109,7 +111,7 @@ public class EditProfileActivity extends AppCompatActivity {
             }
         });
 
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        database=FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference("users");
 
         myRef.child(email.replace(".",",")).addListenerForSingleValueEvent(new ValueEventListener() {
