@@ -3,11 +3,14 @@ package it.polito.mad14;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.BaseAdapter;
 import android.widget.Button;
@@ -25,6 +28,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -50,12 +54,16 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private String encodedExpenseImage;
 
     private EditText et_import, et_name, et_description;
+    private String finalDescription;
+    private boolean hasImage;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R .layout.activity_expense_creation);
+        encodedExpenseImage = getString(R.string.no_image);
+        hasImage = false;
 
         bt = (Button) findViewById(R.id.expense_button);
         bt.setOnClickListener(this);
@@ -92,8 +100,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         getExpenseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                startActivityForResult(cameraIntent, 0);
+                //Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //startActivityForResult(cameraIntent, 0);
+                Intent chooseImageIntent = ImagePicker.getPickImageIntent(ExpenseCreation.this);
+                startActivityForResult(chooseImageIntent, 1);
             }
         });
     }
@@ -102,12 +112,17 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v){
         String et_author = auth.getCurrentUser().getEmail().replace(".",",");
 
-        if(isImportValid(et_import.getText().toString())){
+        if(isImportValid(et_import.getText().toString()) && hasName(et_name.getText().toString())){
             DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
             DatabaseReference userRef= database.getReference("users");
             DatabaseReference ref=myRef.child(et_name.getText().toString());
             ref.child("Price").setValue(et_import.getText().toString());
-            ref.child("Description").setValue(et_description.getText().toString());
+            if (!et_description.getText().toString().isEmpty()){
+                finalDescription = et_description.getText().toString();
+            } else {
+                finalDescription = getString(R.string.no_expense_description);
+            }
+            ref.child("Description").setValue(finalDescription);
             ref.child("Name").setValue(et_name.getText().toString());
             ref.child("Author").setValue(et_author);
             ref.child("ExpenseImage").setValue(encodedExpenseImage);
@@ -148,20 +163,29 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             intent.putExtra("author",et_author);
             intent.putExtra("name",et_name.getText().toString());
             intent.putExtra("import",et_import.getText().toString());
-            intent.putExtra("description",et_description.getText().toString());
-            intent.putExtra("expenseImage",encodedExpenseImage);
+            intent.putExtra("description",finalDescription);
+            intent.putExtra("expenseImage",hasImage);
             intent.putExtra("IDGroup",IDGroup);
             setResult(RESULT_OK, intent);
             startActivity(intent);
             finish();
         } else {
-            et_import.setError(getString(R.string.error_invalid_import));
-            et_import.requestFocus();
+            if(!isImportValid(et_import.getText().toString())){
+                et_import.setError(getString(R.string.error_invalid_import));
+                et_import.requestFocus();
+            } else if (et_import.getText().toString().isEmpty()){
+                et_import.setError((getString(R.string.error_field_required)));
+                et_import.requestFocus();
+            }
+            if(!hasName(et_name.getText().toString())){
+                et_name.setError(getString(R.string.error_field_required));
+                et_name.requestFocus();
+            }
         }
 
     }
 
-    @Override
+    /*@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK){
@@ -173,6 +197,33 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             byte[] byteArrayImage = baos.toByteArray();
             encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
         }
+    }*/
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK){
+            Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
+            try {
+                expenseImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
+                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), expenseImageBitmap);
+                getExpenseImage.setBackgroundDrawable(bDrawable);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG,25,baos);
+                byte[] byteArrayImage = baos.toByteArray();
+                encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                hasImage = true;
+                Log.d("IMAGE",encodedExpenseImage);
+            }catch (FileNotFoundException e){
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private boolean hasName(String name){
+        if (name.isEmpty()) return false;
+        else return true;
     }
 
     private boolean isImportValid(String value) {

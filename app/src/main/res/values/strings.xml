@@ -85,5 +85,8 @@
     <string name="negative_button_dialogue">BACK</string>
     <string name="not_possible_to_change_username">Not possible to change username.\nNot allowed to Google users</string>
 
+    <string name="no_expense_description">No description</string>
+    <string name="no_image">no_image</string>
+
 
 </resources>
