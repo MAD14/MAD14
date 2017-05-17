@@ -100,8 +100,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         getExpenseImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                //startActivityForResult(cameraIntent, 0);
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(ExpenseCreation.this);
                 startActivityForResult(chooseImageIntent, 1);
             }
@@ -184,20 +182,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         }
 
     }
-
-    /*@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            expenseImageBitmap = (Bitmap) data.getExtras().get("data");
-            BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(),expenseImageBitmap);
-            getExpenseImage.setBackgroundDrawable(bDrawable);
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG,100,baos);
-            byte[] byteArrayImage = baos.toByteArray();
-            encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-        }
-    }*/
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

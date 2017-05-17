@@ -69,6 +69,7 @@
     <string name="username_semicolon">Username:</string>
     <string name="loading">Loading...</string>
     <string name="type_name_surname_username">Type the full name or the username</string>
+    <string name="type_of_password">The password has to be at least 7 characters long</string>
 
     <string name="pick_image_intent_text">Select an application to complete the action</string>
     <string name="title_activity_info_group">InfoGroupActivity</string>
@@ -78,7 +79,7 @@
     <string name="title_activity_info_expense">InfoExpenseActivity</string>
     <string name="value">Amount</string>
     <string name="action_edit_profile">Edit profile</string>
-    <string name="default_bio">I\'m an artist and I dream to become famous</string>
+    <string name="default_bio">Hi! I\'m there and I\'m using Shared Pockets!</string>
     <string name="insert_bio">Insert short bio</string>
     <string name="insert_username">Insert username</string>
     <string name="positive_button_dialogue">OK</string>

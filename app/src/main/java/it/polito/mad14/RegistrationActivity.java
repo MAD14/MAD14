@@ -11,6 +11,8 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -40,6 +42,7 @@ public class RegistrationActivity extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     private FirebaseAuth.AuthStateListener mAuthListener;
+    private DatabaseReference myRef;
     private EditText nameView;
     private EditText surnameView;
     private EditText emailView;
@@ -47,32 +50,29 @@ public class RegistrationActivity extends AppCompatActivity {
     private EditText userView;
     private String name,surname,username,email,password;
     private static final String TAG = RegistrationActivity.class.getName();
-    private boolean userNotUsed;
+    //private boolean userNotUsed;
 
     private View mProgressView;
     private View focusView = null;
+    private Button mEmailRegisterButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registration);
-
-        Intent intent = getIntent();
-        String emailRequested = intent.getStringExtra("emailRequested");
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         nameView = (EditText) findViewById(R.id.name);
         surnameView = (EditText) findViewById(R.id.surname);
         userView = (EditText) findViewById(R.id.username);
         emailView = (EditText) findViewById(R.id.email);
-        emailView.setText(emailRequested);
         passView = (EditText) findViewById(R.id.password);
 
         mProgressView = findViewById(R.id.login_progress_registration);
 
         mAuth=FirebaseAuth.getInstance();
 
-
-        final Button mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
+        mEmailRegisterButton = (Button) findViewById(R.id.email_register_button);
         mEmailRegisterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -86,9 +86,10 @@ public class RegistrationActivity extends AppCompatActivity {
                     focusView.requestFocus();
                 } else {
                     mProgressView.setVisibility(View.VISIBLE);
+                    InputMethodManager imm = (InputMethodManager)getSystemService(RegistrationActivity.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                     createAccount();
                 }
-
             }
         });
     }
@@ -105,7 +106,129 @@ public class RegistrationActivity extends AppCompatActivity {
                             Log.d(TAG, "createUserWithEmail:success");
 
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
-                            final DatabaseReference myRef = database.getReference("users");
+                            myRef = database.getReference("users");
+
+                            DatabaseReference ref = myRef.child(email.replace(".",","));
+                            ref.child("Name").setValue(name);
+                            ref.child("Surname").setValue(surname);
+                            ref.child("Email").setValue(email);
+                            ref.child("Password").setValue(password);
+                            ref.child("Username").setValue(username);
+                            ref.child("ProfileImage").setValue("no_image");
+                            ref.child("Bio").setValue(getString(R.string.default_bio));
+                            Toast.makeText(RegistrationActivity.this, getString(R.string.default_bio),
+                                    Toast.LENGTH_SHORT).show();
+
+                            UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+                                    .setDisplayName(name+"."+surname).build();
+                            FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
+
+                            Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
+                                    Toast.LENGTH_SHORT).show();
+                            mProgressView.setVisibility(View.GONE);
+
+                            mainActivityCall();
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "createUserWithEmail:failure", task.getException());
+                            Toast.makeText(RegistrationActivity.this, task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            mProgressView.setVisibility(View.GONE);
+                        }
+                    }
+
+
+                });
+    }
+
+    public boolean checkDataForRegistration() {
+
+        boolean check = false;
+        if (name.isEmpty() || surname.isEmpty() || username.isEmpty() || email.isEmpty() || password.isEmpty()){
+            if (password.isEmpty()) {
+                passView.setError(getString(R.string.error_field_required));
+                focusView = passView;
+            }
+            if (email.isEmpty()) {
+                emailView.setError(getString(R.string.error_field_required));
+                focusView = emailView;
+            }
+            if (username.isEmpty()) {
+                userView.setError(getString(R.string.error_field_required));
+                focusView = userView;
+            }
+            if (surname.isEmpty()) {
+                surnameView.setError(getString(R.string.error_field_required));
+                focusView = surnameView;
+            }
+            if (name.isEmpty()) {
+                nameView.setError(getString(R.string.error_field_required));
+                focusView = nameView;
+            }
+            check = true;
+        } else if (!isEmailValid(email)){
+            emailView.setError(getString(R.string.error_invalid_email));
+            focusView = emailView;
+            check = true;
+        } else if (!isPasswordValid(password)) {
+            passView.setError(getString(R.string.error_invalid_password));
+            focusView = passView;
+            Toast.makeText(RegistrationActivity.this, getString(R.string.type_of_password), Toast.LENGTH_SHORT).show();
+            check = true;
+        }
+        return check;
+    }
+
+    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
+            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
+
+    private boolean isEmailValid(String email) {
+        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
+        return matcher.find();
+    }
+
+    private boolean isPasswordValid(String password) {
+        //TODO: Replace this with your own logic
+        return password.length() > 6;
+    }
+
+    public void mainActivityCall(){
+        Intent intent = new Intent(this,MainActivity.class);
+        intent.putExtra("email",email);
+        startActivity(intent);
+    }
+    /*
+    @Override
+    public void onResume(){
+        super.onResume();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        if(mAuthListener != null){
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }*/
+
+    /**
+     * Old version of createAccount with a check on the username
+     */
+    /*public void createAccount() {
+
+        mAuth.createUserWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "createUserWithEmail:success");
+
+                            FirebaseDatabase database = FirebaseDatabase.getInstance();
+                            myRef = database.getReference("users");
                             userNotUsed = true;
 
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -169,76 +292,14 @@ public class RegistrationActivity extends AppCompatActivity {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(RegistrationActivity.this, "Authentication failed.",
-                                    Toast.LENGTH_SHORT).show();
-
+                            Toast.makeText(RegistrationActivity.this, task.getException().getMessage(),
+                                    Toast.LENGTH_LONG).show();
+                            mProgressView.setVisibility(View.GONE);
                         }
                     }
 
 
                 });
-    }
-
-    public boolean checkDataForRegistration() {
-
-        boolean check = false;
-        if (username.isEmpty() || email.isEmpty() || password.isEmpty()){
-            if (password.isEmpty()) {
-                passView.setError(getString(R.string.error_field_required));
-                focusView = passView;
-            }
-            if (email.isEmpty()) {
-                emailView.setError(getString(R.string.error_field_required));
-                focusView = emailView;
-            }
-            if (username.isEmpty()) {
-                userView.setError(getString(R.string.error_field_required));
-                focusView = userView;
-            }
-            check = true;
-        } else if (!isEmailValid(email)){
-            emailView.setError(getString(R.string.error_invalid_email));
-            focusView = emailView;
-            check = true;
-        } else if (!isPasswordValid(password)) {
-            passView.setError(getString(R.string.error_invalid_password));
-            focusView = passView;
-            check = true;
-        }
-        return check;
-    }
-
-    public static final Pattern VALID_EMAIL_ADDRESS_REGEX =
-            Pattern.compile("^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,6}$", Pattern.CASE_INSENSITIVE);
-
-    private boolean isEmailValid(String email) {
-        Matcher matcher = VALID_EMAIL_ADDRESS_REGEX .matcher(email);
-        return matcher.find();
-    }
-
-    private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 6;
-    }
-
-    public void mainActivityCall(){
-        Intent intent = new Intent(this,MainActivity.class);
-        intent.putExtra("email",email);
-        startActivity(intent);
-    }
-    /*
-    @Override
-    public void onResume(){
-        super.onResume();
-        mAuth.addAuthStateListener(mAuthListener);
-    }
-
-    @Override
-    public void onStop(){
-        super.onStop();
-        if(mAuthListener != null){
-            mAuth.removeAuthStateListener(mAuthListener);
-        }
     }*/
 
 

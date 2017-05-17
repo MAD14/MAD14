@@ -26,6 +26,7 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -104,6 +105,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
             finish();
         }
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
 
         setContentView(R.layout.activity_login);
 
@@ -173,7 +175,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             // the auth state listener will be notified and logic to handle the
                             // signed in user can be handled in the listener.
                             mProgressView.setVisibility(View.GONE);
-                            if (!task.isSuccessful()) {
+                            if(task.isSuccessful()){
+                                startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
+                                finish();
+                            } else {
+                                Toast.makeText(LoginActivity.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+                            }
+                            /*if (!task.isSuccessful()) {
                                 // there was an error
                                 if (!isNetworkConnected()){
                                     Toast.makeText(LoginActivity.this, getString(R.string.no_network_connection), Toast.LENGTH_LONG).show();
@@ -185,7 +193,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //                                startActivity(intent);
                                 startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
                                 finish();
-                            }
+                            }*/
                         }
                     });
                 }
