@@ -279,11 +279,11 @@ public class MainActivity extends AppCompatActivity {
                             Summary sum = itDeb.next();
                             if(tot.containsKey(sum.getName())){
                                 Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                Float newtot = past-Float.valueOf(sum.getValue());
+                                Double newtot=Math.round(past-Float.valueOf(sum.getValue())*100.0)/100.0;
                                 boolean flag = true;
                                 if(newtot < 0)
                                     flag = false;
-                                tot.put(sum.getName(),new Summary(sum.getName(),Float.toString(newtot),flag));
+                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),flag));
 
                             }else{
                                 tot.put(sum.getName(),sum);
@@ -318,9 +318,9 @@ public class MainActivity extends AppCompatActivity {
                             Summary sum=itCred.next();
                             if(tot.containsKey(sum.getName())){
                                 Float past=Float.valueOf(tot.get(sum.getName()).getValue());
-                                Float newtot=past+Float.valueOf(sum.getValue());
+                                Double newtot=Math.round(past+Float.valueOf(sum.getValue())*100.0)/100.0;
 
-                                tot.put(sum.getName(),new Summary(sum.getName(),Float.toString(newtot),true));
+                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),true));
 
                             }else{
                                 tot.put(sum.getName(),sum);
