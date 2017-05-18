@@ -34,6 +34,7 @@ public class LoadingActivity extends AppCompatActivity {
     private static DatabaseReference myRef;
     private ArrayList<Group> groupsList = new ArrayList<>();
     private int indexGroup = 0;
+    private String noImage = "no_image";
 
 
     @Override
@@ -76,7 +77,13 @@ public class LoadingActivity extends AppCompatActivity {
                             String dat = data.child("Date").getValue().toString();
                             String credit = data.child("Credit").getValue().toString();
                             String debit = data.child("Debit").getValue().toString();
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit));
+                            String image;
+                            if (data.child("Image").getValue().toString().equals(noImage) ) {
+                                image = null;
+                            } else {
+                                image = data.child("Image").getValue().toString();
+                            }
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image));
                             indexGroup++;
                         } catch (Error e) {
                             Toast.makeText(LoadingActivity.this, e.getMessage(),

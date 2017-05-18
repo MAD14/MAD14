@@ -68,7 +68,8 @@ public class AddNewContacts extends AppCompatActivity {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     searchNames.add(new Contact(data.child("Name").getValue().toString(),
                             data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
-                            data.child("Email").getValue().toString()));
+                            data.child("Email").getValue().toString(),
+                            data.child("Image").getValue().toString()));
                 }
 
                 nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);

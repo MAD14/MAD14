@@ -53,15 +53,6 @@ public class InfoGroupActivity extends AppCompatActivity {
 
         list = (ListView) findViewById(R.id.lv_members_group);
         list.setAdapter(new CustomAdapterInfoGroup(InfoGroupActivity.this,membersList));
-        list.setOnTouchListener(new View.OnTouchListener() {
-            // Setting on Touch Listener for handling the touch inside ScrollView
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                // Disallow the touch request for parent scroll on touch of child view
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-                return false;
-            }
-        });
 
         myRefName = database.getReference("groups/" + IDGroup );
         myRefName.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -80,7 +71,6 @@ public class InfoGroupActivity extends AppCompatActivity {
                     tvDescription.setText("-");
                 }
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -94,7 +84,8 @@ public class InfoGroupActivity extends AppCompatActivity {
                     Contact tmp = new Contact(data.child("Name").getValue().toString(),
                             data.child("Surname").getValue().toString(),
                             data.child("Username").getValue().toString(),
-                            data.child("Email").getValue().toString());
+                            data.child("Email").getValue().toString(),
+                            data.child("Image").getValue().toString());
                     indexMembers = membersList.size();
                     membersList.add(indexMembers, tmp);
                 }
@@ -120,6 +111,17 @@ public class InfoGroupActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        list.setOnTouchListener(new View.OnTouchListener() {
+            // Setting on Touch Listener for handling the touch inside ScrollView
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                // Disallow the touch request for parent scroll on touch of child view
+                v.getParent().requestDisallowInterceptTouchEvent(true);
+                return false;
+            }
+        });
+
     }
 
 

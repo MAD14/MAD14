@@ -91,7 +91,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             dict.put("Image", encodedImage);
                             myRef.setValue(dict);
 
-                            String IDGroup=myRef.getKey().toString();
+                            String IDGroup = myRef.getKey().toString();
 
 
                             Intent intent = new Intent(NewGroupActivityPhase1.this, NewGroupActivityPhase2.class);

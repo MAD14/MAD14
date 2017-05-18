@@ -29,6 +29,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -64,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private static DatabaseReference myRef;
     private FloatingActionButton fab_groups;
     private FloatingActionButton fab_contacts;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -180,6 +182,7 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Summary> tmpList = new ArrayList<>();
         DatabaseReference myRef_summary_debits,myRef_summary_credits;
         Map<String,Summary> tot= new HashMap<>();
+        private String noImage = "no_image";
 
         private int indexSummary=0;
         private boolean credit;
@@ -202,6 +205,7 @@ public class MainActivity extends AppCompatActivity {
         private View rootView;
         private ListView list,list_summary;
 
+
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
@@ -223,14 +227,29 @@ public class MainActivity extends AppCompatActivity {
                                     String dat = data.child("Date").getValue().toString();
                                     String credit = data.child("Credit").getValue().toString();
                                     String debit = data.child("Debit").getValue().toString();
+                                    String image;
+                                    if (data.child("Image").getValue().toString().equals(noImage) ) {
+                                        image = null;
+                                    } else {
+                                        image = data.child("Image").getValue().toString();
+                                    }
                                     indexGroup = groupsList.size();
-                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit));
+                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image));
                                 }
                                     catch(Error e){
                                         Toast.makeText(getContext(), e.getMessage(),
                                                 Toast.LENGTH_SHORT).show();
                                     }
                         }
+//                        groupsList.sort(new Comparator<Group>() {
+//                            @Override
+//                            public int compare(Group group1, Group group2) {
+//                                if (group1.getDate() > group2.getDate()) {
+//                                    return 1;
+//                                }else {
+//                                    return 2;}
+//                            }
+//                        });
                         ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
                         list.invalidate();
                         list.requestLayout();
@@ -371,7 +390,8 @@ public class MainActivity extends AppCompatActivity {
                                         String surname =  data.child("Surname").getValue().toString();
                                         String username = data.child("Username").getValue().toString();
                                         String email = data.child("Email").getValue().toString();
-                                        contactsList.add(indexContact,new Contact(name,surname,username,email));
+                                        String image = data.child("Image").getValue().toString();
+                                        contactsList.add(indexContact,new Contact(name,surname,username,email,image));
                                         indexContact++;
 
                                     }catch(Error e){

@@ -71,7 +71,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
-        if (getIntent().getStringExtra("Image") != noImage){
+        if (!getIntent().getStringExtra("Image").equals(noImage)){
             groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
             try {
                 Bitmap imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(groupImageUri));
@@ -110,8 +110,11 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),data.child("Surname").getValue().toString(),
-                            data.child("Username").getValue().toString(),data.child("Email").getValue().toString()));
+                    friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),
+                            data.child("Surname").getValue().toString(),
+                            data.child("Username").getValue().toString(),
+                            data.child("Email").getValue().toString(),
+                            data.child("Image").getValue().toString()));
                     friendsIndex++;
                 }
                 // adapter per suggerire gli amici in elenco
@@ -196,7 +199,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             ref.child("Image").setValue(groupImage);
             ref.child("Credit").setValue("0");
             ref.child("Debit").setValue("0");
-
         }
 
         //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added

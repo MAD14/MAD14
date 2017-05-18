@@ -2,10 +2,15 @@ package it.polito.mad14.myListView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +28,7 @@ public class CustomAdapterContacts extends BaseAdapter {
     Context context;
     ArrayList<Contact> contactsList;
     LayoutInflater inflater;
+    private String encodedImage;
 
     public CustomAdapterContacts(Context context, ArrayList<Contact> contactsList) {
         this.context = context;
@@ -56,6 +62,18 @@ public class CustomAdapterContacts extends BaseAdapter {
         tv.setText(contactsList.get(position).getName() + " " + contactsList.get(position).getSurname());
         tv = (TextView) convertView.findViewById(R.id.tv_contact_username);
         tv.setText(contactsList.get(position).getUsername());
+
+        ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
+        if (!contactsList.get(position).getImage().equals("no_image")) {
+            encodedImage = contactsList.get(position).getImage();
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
+            imgbt.setImageDrawable(bDrawable);
+        } else {
+            imgbt.setImageResource(R.mipmap.expense_icon);
+
+        }
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -3,11 +3,18 @@ package it.polito.mad14.myListView;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,9 +38,11 @@ import it.polito.mad14.myDataStructures.Expense;
  */
 
 public class CustomAdapterExpenses extends BaseAdapter {
-    Context context;
-    ArrayList<Expense> expensesList;
-    LayoutInflater inflater;
+    private Context context;
+    private ArrayList<Expense> expensesList;
+    private LayoutInflater inflater;
+    private String encodedImage;
+
 
     public CustomAdapterExpenses(Context context, ArrayList<Expense> expensesList) {
         this.context = context;
@@ -67,8 +76,17 @@ public class CustomAdapterExpenses extends BaseAdapter {
         tv = (TextView) convertView.findViewById(R.id.expense_import);
         tv.setText(expensesList.get(position).getValue());
 
-        //TODO aggiungere immagine
+        ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
+        if (!expensesList.get(position).getImage().equals("no_image")) {
+            encodedImage = expensesList.get(position).getImage();
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
+            imgbt.setImageDrawable(bDrawable);
+        } else {
+            imgbt.setImageResource(R.mipmap.person_icon);
 
+        }
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

@@ -123,7 +123,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             ref.child("Description").setValue(finalDescription);
             ref.child("Name").setValue(et_name.getText().toString());
             ref.child("Author").setValue(et_author);
-            ref.child("ExpenseImage").setValue(encodedExpenseImage);
+            ref.child("Image").setValue(encodedExpenseImage);
 
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
             // 2 decimals
