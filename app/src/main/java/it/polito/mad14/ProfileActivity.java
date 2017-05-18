@@ -65,7 +65,12 @@ public class ProfileActivity extends AppCompatActivity {
                         byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
                         Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
                         BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                        imgbt.setBackgroundDrawable(bDrawable);
+                        int sdk = android.os.Build.VERSION.SDK_INT;
+                        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                            imgbt.setBackgroundDrawable(bDrawable);
+                        } else {
+                            imgbt.setBackground(bDrawable);
+                        }
                         hasProfileImage = true;
                     }
                 } else {
