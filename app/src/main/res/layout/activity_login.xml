@@ -131,6 +131,22 @@
                     android:clickable="true"
                     android:onClick="onClick"/>
 
+                <ImageButton
+                    android:id="@+id/italy_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/email_register_button"
+                    android:layout_margin="5dp"
+                    android:background="@mipmap/ic_italy_flag"/>
+
+                <ImageButton
+                    android:id="@+id/uk_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/email_register_button"
+                    android:layout_toRightOf="@id/italy_flag"
+                    android:layout_margin="5dp"
+                    android:background="@mipmap/ic_uk_flag"/>
 
             </RelativeLayout>
 
