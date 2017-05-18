@@ -39,4 +39,8 @@ public class Summary {
     public void setCredit(boolean credit) {
         this.credit = credit;
     }
+
+    public boolean equals(Summary s){
+        return this.name.equals(s.getName());
+    }
 }
