@@ -149,6 +149,7 @@ public class GroupActivity extends AppCompatActivity {
                         groupAuthor = dataSnapshot.child("Author").getValue().toString();
                         groupDescr = dataSnapshot.child("Description").getValue().toString();
                         groupDate = dataSnapshot.child("Date").getValue().toString();
+                        groupImage = dataSnapshot.child("Image").getValue().toString();
 //
                         intent = new Intent(GroupActivity.this,AddNewMembersToGroup.class);
                         intent.putExtra("IDgroup",IDGroup);
@@ -156,6 +157,7 @@ public class GroupActivity extends AppCompatActivity {
                         intent.putExtra("Author",groupAuthor);
                         intent.putExtra("Date",groupDate);
                         intent.putExtra("Description",groupDescr);
+                        intent.putExtra("Image",groupImage);
                         startActivity(intent);
                     }
                     @Override
@@ -174,6 +176,20 @@ public class GroupActivity extends AppCompatActivity {
             case R.id.info:
                 intent = new Intent(GroupActivity.this,InfoGroupActivity.class);
                 intent.putExtra("IDGroup",IDGroup);
+//                myReference = database.getInstance().getReference("groups/" + IDGroup );
+//                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(DataSnapshot dataSnapshot) {
+//                        groupImage = dataSnapshot.child("Image").getValue().toString();
+//                        intent.putExtra("Image",groupImage);
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(DatabaseError databaseError) {
+//
+//                    }
+//                });
+////                intent.putExtra("Image",groupImage);
                 startActivity(intent);
                 break;
         }

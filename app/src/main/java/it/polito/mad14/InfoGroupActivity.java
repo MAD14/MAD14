@@ -1,11 +1,16 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -34,6 +39,7 @@ public class InfoGroupActivity extends AppCompatActivity {
     private String groupName;
     private String description;
     private String dateCreation;
+    private String encodedImage;
     private ListView list;
     private ArrayList<Contact> membersList = new ArrayList<>();
     private FirebaseDatabase database;
@@ -61,14 +67,23 @@ public class InfoGroupActivity extends AppCompatActivity {
                 groupName = dataSnapshot.child("Name").getValue().toString();
                 description = dataSnapshot.child("Description").getValue().toString();
                 dateCreation = dataSnapshot.child("Date").getValue().toString();
-                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-                setSupportActionBar(toolbar);
+                CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
                 setTitle(groupName);
                 tvDate.setText(dateCreation);
                 if (!description.equals("")){
                     tvDescription.setText(description);
                 } else {
                     tvDescription.setText("-");
+                }
+                encodedImage = dataSnapshot.child("Image").getValue().toString();
+                byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                int sdk = android.os.Build.VERSION.SDK_INT;
+                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                    toolbar.setBackgroundDrawable(bDrawable);
+                } else {
+                    toolbar.setBackground(bDrawable);
                 }
             }
             @Override
@@ -85,7 +100,7 @@ public class InfoGroupActivity extends AppCompatActivity {
                             data.child("Surname").getValue().toString(),
                             data.child("Username").getValue().toString(),
                             data.child("Email").getValue().toString(),
-                            data.child("Image").getValue().toString());
+                            data.child("ProfileImage").getValue().toString());
                     indexMembers = membersList.size();
                     membersList.add(indexMembers, tmp);
                 }
@@ -107,6 +122,7 @@ public class InfoGroupActivity extends AppCompatActivity {
                 intent.putExtra("Name",groupName);
                 intent.putExtra("Date",dateCreation);
                 intent.putExtra("Description",description);
+                intent.putExtra("Image",encodedImage);
                 startActivity(intent);
                 finish();
             }

@@ -95,7 +95,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
                 intent.putExtra("Import",expensesList.get(position).getValue());
                 intent.putExtra("Description",expensesList.get(position).getDescription());
                 intent.putExtra("Author",expensesList.get(position).getAuthor().replace(",","."));
-//                intent.putExtra("Image",expensesList.get(position).getImage());
+                intent.putExtra("Image",expensesList.get(position).getImage());
                 context.startActivity(intent);
 
             }

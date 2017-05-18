@@ -56,6 +56,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
+        groupImage = getIntent().getStringExtra("Image");
 
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);

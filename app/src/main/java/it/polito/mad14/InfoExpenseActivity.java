@@ -1,11 +1,16 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
@@ -27,14 +32,25 @@ public class InfoExpenseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_expense);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
 
         Intent intent = getIntent();
+        IDGroup = getIntent().getStringExtra("IDGroup");
         String expenseName = intent.getStringExtra("Name");
         String value = intent.getStringExtra("Import");
         String description = intent.getStringExtra("Description");
         String author = intent.getStringExtra("Author");
+        image = intent.getStringExtra("Image");
+        byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+        int sdk = android.os.Build.VERSION.SDK_INT;
+        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+            toolbar.setBackgroundDrawable(bDrawable);
+        } else {
+            toolbar.setBackground(bDrawable);
+        }
 
         setTitle(expenseName);
         tvAuthor = (TextView)findViewById(R.id.tv_author);
@@ -45,21 +61,7 @@ public class InfoExpenseActivity extends AppCompatActivity {
         if (!description.equals(""))
             tvDescription.setText(description);
 
-        IDGroup = getIntent().getStringExtra("IDGroup");
-        database = FirebaseDatabase.getInstance();
-        DatabaseReference myRefName = database.getReference("groups/" + IDGroup+"/items/"+expenseName+"/ExpenseImage");
-        // TODO:Control image path
-        myRefName.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (!dataSnapshot.getValue().toString().equals(("no_image")))
-                    image=dataSnapshot.getValue().toString();
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
 //        fab.setOnClickListener(new View.OnClickListener() {
