@@ -38,6 +38,7 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
     private DatabaseReference myReference;
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
+    private FirebaseDatabase database;
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -81,6 +82,7 @@ public class GroupActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
+
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -138,27 +140,30 @@ public class GroupActivity extends AppCompatActivity {
                 break;
             case R.id.add_members:
 //
-//                myReference = database.getReference("groups/" + IDGroup );
-//                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        groupName = dataSnapshot.child("Name").getValue().toString();
-//                        groupAuthor = dataSnapshot.child("Author").getValue().toString();
-//                        groupDescr = dataSnapshot.child("Description").getValue().toString();
-//                        groupDate = dataSnapshot.child("Date").getValue().toString();
+                System.out.println("IDGroup : "+IDGroup);
+               // myReference = database.getReference("groups/" + IDGroup );
+                myReference = database.getInstance().getReference("groups/" + IDGroup );
+                System.out.println("id groups : "+IDGroup+" proviamo");
+                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        groupName = dataSnapshot.child("Name").getValue().toString();
+                        groupAuthor = dataSnapshot.child("Author").getValue().toString();
+                        groupDescr = dataSnapshot.child("Description").getValue().toString();
+                        groupDate = dataSnapshot.child("Date").getValue().toString();
 //
                         intent = new Intent(GroupActivity.this,AddNewMembersToGroup.class);
                         intent.putExtra("IDgroup",IDGroup);
-//                        intent.putExtra("Name",groupName);
-//                        intent.putExtra("Author",groupAuthor);
-//                        intent.putExtra("Date",groupDate);
-//                        intent.putExtra("Description",groupDescr);
+                        intent.putExtra("Name",groupName);
+                        intent.putExtra("Author",groupAuthor);
+                        intent.putExtra("Date",groupDate);
+                        intent.putExtra("Description",groupDescr);
                         startActivity(intent);
-//                    }
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//                    }
-//                });
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
 
                 break;
             case R.id.action_edit_group:
