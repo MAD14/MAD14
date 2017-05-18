@@ -30,7 +30,7 @@ import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Mail;
 
 public class AddNewMembersToGroup extends AppCompatActivity {
-    private String IDGroup;
+    private String IDGroup,newUser;
     private ArrayList<String> friends_added;
     private ArrayList<Contact> friends;
     private ArrayList<String> members;
@@ -41,6 +41,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
     private FirebaseDatabase database;
     private Mail inviteMail;
+    private DatabaseReference temp_reference,myRefGroup;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,7 +51,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         Intent myIntent = getIntent();
-        IDGroup = myIntent.getStringExtra("IDGroup");
+        IDGroup = myIntent.getStringExtra("IDgroup");
         groupName = getIntent().getStringExtra("Name");
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
@@ -130,6 +131,12 @@ public class AddNewMembersToGroup extends AppCompatActivity {
 
             }
         });
+        Iterator<String> it2=members.iterator();
+
+        while(it2.hasNext()){
+            String cont=it2.next();
+            System.out.println(cont);
+        }
     }
 
     public void onClick(View view){//quando pigio add
@@ -189,8 +196,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             System.out.println(cont);
         }
         Toast.makeText(AddNewMembersToGroup.this, "Members added",Toast.LENGTH_SHORT).show();
-
-        System.out.print("author " + groupAuthor);
+        //System.out.print("author " + groupAuthor);
 
         // Insertion of the group in each user
         DatabaseReference myRefUser = database.getReference("users");
@@ -204,12 +210,30 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("Image").setValue(groupImage);
         }
 
-        DatabaseReference myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
+        myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
         for (String user : friends_added) {
             String newUser = user.replace(".", ",");
             myRefGroup.child(newUser).child("Debits").setValue("0");
             myRefGroup.child(newUser).child("Credits").setValue("0");
         }
+        myRefGroup = database.getReference("groups/"+ IDGroup + "/members");
+        temp_reference = database.getReference("users");
+        temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (String user : friends_added)
+                {
+                    newUser = user.replace(".", ",");
+                    myRefGroup.child(newUser).child("Name").setValue(dataSnapshot.child(newUser).child("Name").getValue().toString());
+                    myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
+                    myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
+                    myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) { }
+        });
         
         //mando le mail
         inviteMail = new Mail();
