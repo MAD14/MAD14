@@ -11,15 +11,17 @@ public class Group {
     String date;
     String credit;
     String debit;
+    String image;
 
 
-    public Group(String ID,String name, String author, String date, String credit, String debit) {
+    public Group(String ID,String name, String author, String date, String credit, String debit, String image) {
         this.ID=ID;
         this.name = name;
         this.author = author;
         this.date = date;
         this.credit = credit;
         this.debit = debit;
+        this.image = image;
     }
     public String getID() {
         return ID;
@@ -79,5 +81,21 @@ public class Group {
 
     public void setDebit(String debit) {
         this.debit = debit;
+    }
+
+    public boolean hasImage(){
+        if (image != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

@@ -108,14 +108,6 @@ public class GroupActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-        setResult(RESULT_OK, intent);
-        super.onBackPressed();
-    }
-
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == EXPENSE_CREATION){
             if (resultCode == RESULT_OK){
@@ -260,7 +252,9 @@ public class GroupActivity extends AppCompatActivity {
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Description").getValue().toString(),
-                                        data.child("Author").getValue().toString(),IDGroup);
+                                        data.child("Author").getValue().toString(),
+                                        IDGroup,
+                                        data.child("Image").getValue().toString());
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }
@@ -368,6 +362,9 @@ public class GroupActivity extends AppCompatActivity {
                 return rootView;
             }
         }
+
+
+
     }
 
     /**
@@ -405,4 +402,5 @@ public class GroupActivity extends AppCompatActivity {
             return null;
         }
     }
+
 }

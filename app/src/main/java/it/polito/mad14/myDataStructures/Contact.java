@@ -10,12 +10,14 @@ public class Contact {
     private String surname;
     private String username;
     private String email;
+    private String image;
 
-    public Contact(String name, String surname, String username, String email) {
+    public Contact(String name, String surname, String username, String email,String image) {
         this.name = name;
         this.surname = surname;
         this.username = username;
         this.email = email;
+        this.image = image;
     }
 
     public String toString(){ return name + " " + surname + " - " + username; }
@@ -50,5 +52,19 @@ public class Contact {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public boolean hasImage(){
+        if (image != null)
+            return true;
+        return false;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
     }
 }

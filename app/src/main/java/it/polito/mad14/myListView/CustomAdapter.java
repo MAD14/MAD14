@@ -4,12 +4,18 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +44,9 @@ public class CustomAdapter extends BaseAdapter{
     ArrayList<Group> groupList;
     LayoutInflater inflater;
     Set<String> members=new HashSet<>();
+
+    private String encodedImage;
+
 
     public CustomAdapter(Context context, ArrayList<Group> groupList) {
         this.context = context;
@@ -73,14 +82,25 @@ public class CustomAdapter extends BaseAdapter{
         tv = (TextView) convertView.findViewById(R.id.group_summary2);
         tv.setText("Debit: "+ groupList.get(position).getDebit() +"€");
 
+        ImageView imgbt = (ImageView) convertView.findViewById(R.id.group_icon);
+        if (groupList.get(position).hasImage()) {
+            encodedImage = groupList.get(position).getImage();
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
+            imgbt.setImageDrawable(bDrawable);
+        } else {
+            imgbt.setImageResource(R.mipmap.group_icon);
+
+        }
+
+
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view){
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 context.startActivity(intent);
-                ((Activity)context).finish();
-
             }
         });
 
