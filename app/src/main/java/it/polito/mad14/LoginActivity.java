@@ -5,8 +5,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.net.ConnectivityManager;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -32,6 +36,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -54,6 +59,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,10 +98,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private FirebaseDatabase database;
 
+    private ImageButton italy, uk;
+    private SharedPreferences prefs;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Resources res = getResources();
+        Configuration conf = res.getConfiguration();
+        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+        String def = Locale.getDefault().getDisplayLanguage();
+        String lang = prefs.getString("LANGUAGE", def);
+        conf.locale = new Locale(lang);
+        Log.v("myapp", lang+" = "+conf.locale+" = "+conf.locale.getDisplayName());
+        res.updateConfiguration(conf, res.getDisplayMetrics());
 
         // before setting the view
         //Get Firebase auth instance
@@ -117,6 +136,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        italy = (ImageButton) findViewById(R.id.italy_flag);
+        italy.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangeToItalian();
+            }
+        });
+        uk = (ImageButton) findViewById(R.id.uk_flag);
+        uk.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ChangeToEnglish();
+            }
+        });
 
 
         // Configure sign-in to request the user's ID, email address, and basic
@@ -273,6 +307,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Signed out, show unauthenticated UI.
             Toast.makeText(this,"Sign in unsuccessfull"+result.getStatus().toString(), Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void ChangeToItalian(){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("LANGUAGE", "it");
+        editor.commit();
+        recreate();
+    }
+
+    private void ChangeToEnglish(){
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString("LANGUAGE", "en");
+        editor.commit();
+        recreate();
     }
 
     @Override

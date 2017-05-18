@@ -22,6 +22,7 @@ public class InfoExpenseActivity extends AppCompatActivity {
     private TextView tvValue,tvDescription,tvAuthor;
     private String IDGroup;
     private FirebaseDatabase database;
+    private String image;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,7 +35,6 @@ public class InfoExpenseActivity extends AppCompatActivity {
         String value = intent.getStringExtra("Import");
         String description = intent.getStringExtra("Description");
         String author = intent.getStringExtra("Author");
-//        String image = intent.getStringExtra("Image");
 
         setTitle(expenseName);
         tvAuthor = (TextView)findViewById(R.id.tv_author);
@@ -47,12 +47,13 @@ public class InfoExpenseActivity extends AppCompatActivity {
 
         IDGroup = getIntent().getStringExtra("IDGroup");
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRefName = database.getReference("groups/" + IDGroup);
+        DatabaseReference myRefName = database.getReference("groups/" + IDGroup+"/items/"+expenseName+"/ExpenseImage");
+        // TODO:Control image path
         myRefName.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                //TODO: prendere dal db l'immagine della spesa
-
+                if (!dataSnapshot.getValue().toString().equals(("no_image")))
+                    image=dataSnapshot.getValue().toString();
             }
 
             @Override

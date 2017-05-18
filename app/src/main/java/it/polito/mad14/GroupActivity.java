@@ -27,6 +27,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Summary;
@@ -186,6 +192,8 @@ public class GroupActivity extends AppCompatActivity {
         ArrayList<Expense> expensesList = new ArrayList<>();
         private int indexExp=0;
         ArrayList<Summary> summaryList = new ArrayList<>();
+        ArrayList<Summary> newSummaryList = new ArrayList<>();
+        private int newIndexSummary=0;
         private int indexSummary=0;
         private boolean credit;
         private String user;
@@ -275,6 +283,7 @@ public class GroupActivity extends AppCompatActivity {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             if (data.child("Receiver").getValue().toString().equals(user) ||
                                     data.child("Sender").getValue().toString().equals(user)) {
+
                                 if (data.child("Receiver").getValue().toString().equals(user)) {
                                     credit = true;
                                     name = data.child("Sender").getValue().toString();
@@ -282,13 +291,60 @@ public class GroupActivity extends AppCompatActivity {
                                     credit = false;
                                     name = data.child("Receiver").getValue().toString();
                                 }
-                                Summary tmp = new Summary(name,
-                                        data.child("Money").getValue().toString(),
-                                        credit);
-                                summaryList.add(indexSummary, tmp);
-                                indexSummary++;
+
+                                boolean flag = false;
+                                for (int i = 0; i < summaryList.size(); i++) {
+                                    if (summaryList.get(i).getName().equals((name))) {
+                                        flag = true;
+                                        newIndexSummary = i;
+                                        break;
+                                    }
+                                }
+
+                                if (flag) {
+                                    if (credit) {
+                                        Summary old = summaryList.get(newIndexSummary);
+                                        Float val=Float.valueOf(old.getValue());
+                                        // old is a debit
+                                        if(!old.getCredit())
+                                            val=val*(-1);
+
+                                        Double fin = Math.round((val + Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
+                                        if (fin > 0) {
+                                            summaryList.remove(newIndexSummary);
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), credit));
+                                        }else {
+                                            summaryList.remove(newIndexSummary);
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), false));
+                                        }
+
+                                    } else {
+                                        Summary old = summaryList.get(newIndexSummary);
+                                        Float val=Float.valueOf(old.getValue());
+                                        // old is a debit
+                                        if(!old.getCredit())
+                                            val=val*(-1);
+                                        Double fin = Math.round((val - Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
+                                        if (fin < 0) {
+                                            summaryList.remove(newIndexSummary);
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), credit));
+                                        }
+                                        else {
+                                            summaryList.remove(newIndexSummary);
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), true));
+                                        }
+                                    }
+                                } else {
+                                    Summary tmp = new Summary(name,
+                                            data.child("Money").getValue().toString(),
+                                            credit);
+                                    summaryList.add(indexSummary, tmp);
+                                    indexSummary++;
+                                }
                             }
                         }
+
+
 //                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
 //                        summaryList.addAll(tmpList);
 //                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
