@@ -9,29 +9,16 @@
     tools:context="it.polito.mad14.MainActivity"
     android:clickable="true">
 
-    <ImageView
-        android:id="@+id/image_person_suggestion"
-        android:layout_width="@dimen/icon_dimension_group"
-        android:layout_height="@dimen/icon_dimension_group"
-        android:src="@mipmap/person_icon"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginStart="@dimen/margin"
-        />
 
     <TextView
         android:id="@+id/tv_contact_name_surname_suggestion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="@dimen/main_text"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginStart="@dimen/margin"
-        android:layout_alignTop="@+id/image_person_suggestion"
-        android:layout_toRightOf="@+id/image_person_suggestion"
-        android:layout_toEndOf="@+id/image_person_suggestion"
+        android:layout_marginLeft="@dimen/margin_double"
+        android:layout_marginStart="@dimen/margin_double"
+        android:layout_marginTop="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin"
         android:textColor="@color/writing"/>
     <TextView
         android:id="@+id/tv_contact_email_suggestion"
@@ -39,8 +26,9 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/description"
         android:layout_below="@id/tv_contact_name_surname_suggestion"
-        android:layout_alignLeft="@+id/tv_contact_name_surname_suggestion"
-        android:layout_alignStart="@+id/tv_contact_name_surname_suggestion"
+        android:layout_marginLeft="@dimen/margin_double"
+        android:layout_marginStart="@dimen/margin_double"
+        android:layout_marginBottom="@dimen/margin_double"
         android:textColor="@color/writing"/>
 
     <ImageButton
@@ -49,9 +37,10 @@
         android:layout_height="@dimen/icon_dimension"
         android:src="@mipmap/plus_icon"
         android:background="@color/background"
+        android:foregroundGravity="center_vertical"
+        android:layout_marginRight="@dimen/margin_double"
+        android:layout_marginEnd="@dimen/margin_double"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/margin"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginBottom="@dimen/margin"
+
         />
 </RelativeLayout>

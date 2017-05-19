@@ -160,7 +160,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         String[] parts = tmp_name.split(" - ");
         String contUsername = parts[1];
         et.setText("");
-        //TODO check se prende il nome completo selezionato o solo la stringa scritta
         Iterator<Contact> it=friends.iterator();
 
         boolean flag=false;
@@ -194,84 +193,97 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         friends_added.add(nFriends,MyID);
         nFriends++;
 
-        // Insertion of the group in each user
-        DatabaseReference myRefUser = database.getReference("users");
-        for (String user : friends_added) {
-            String newUser=user.replace(".",",");
-            DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
-            ref.child("Name").setValue(groupName);
-            ref.child("Author").setValue(groupAuthor);
-            ref.child("Description").setValue(groupDescr);
-            ref.child("Date").setValue(groupDate);
-            ref.child("Image").setValue(groupImage);
-            ref.child("Credit").setValue("0");
-            ref.child("Debit").setValue("0");
-        }
-
-        //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
-        myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
-        for (String user : friends_added) {
-            newUser = user.replace(".", ",");
-            myRefGroup.child(newUser).child("Debits").setValue("0");
-            myRefGroup.child(newUser).child("Credits").setValue("0");
-        }
-
-        //
-
-        myRefGroup = database.getReference("groups/"+ IDGroup + "/members");
-        temp_reference = database.getReference("users");
-        temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (String user : friends_added)
-                {
-                    newUser = user.replace(".", ",");
-                    myRefGroup.child(newUser).child("Name").setValue(dataSnapshot.child(newUser).child("Name").getValue().toString());
-                    myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
-                    myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
-                    myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) { }
-        });
-
-
-
-        //send e-mail to members
-        final Mail inviteMail = new Mail();
-        final DatabaseReference myRef = database.getReference("users");
         Runnable r = new Runnable() {
             @Override
             public void run() {
-                try {
-
-                    String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                    String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
-
-                    database = FirebaseDatabase.getInstance();
-//                    Log.e("SendMail", "set_to " + listAddress[0]);
-                    inviteMail.set_body("Hi! \n" + displayName + " (email : "+
-                            user_email + ") is inviting you to join a group called " + groupName+
-                            " whose code is "+IDGroup+".\n\n" +
-
-                            "We cannot wait for your association!\n" +
-                            "Your MAD14 team");
-                    inviteMail.set_to(emailsToBeSent);
-                    inviteMail.set_subject("Invite to join MAD14");
-                    inviteMail.send();
-                } catch (Exception e) {
-                    Log.e("SendMail", e.getMessage(), e);
+                // Insertion of the group in each user
+                DatabaseReference myRefUser = database.getReference("users");
+                for (String user : friends_added) {
+                    String newUser=user.replace(".",",");
+                    DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
+                    ref.child("Name").setValue(groupName);
+                    ref.child("Author").setValue(groupAuthor);
+                    ref.child("Description").setValue(groupDescr);
+                    ref.child("Date").setValue(groupDate);
+                    ref.child("Image").setValue(groupImage);
+                    ref.child("Credit").setValue("0");
+                    ref.child("Debit").setValue("0");
                 }
+
+                //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
+                myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
+                for (String user : friends_added) {
+                    newUser = user.replace(".", ",");
+                    myRefGroup.child(newUser).child("Debits").setValue("0");
+                    myRefGroup.child(newUser).child("Credits").setValue("0");
+                }
+
+                //
+
+                myRefGroup = database.getReference("groups/"+ IDGroup + "/members");
+                temp_reference = database.getReference("users");
+                temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (String user : friends_added)
+                        {
+                            newUser = user.replace(".", ",");
+                            myRefGroup.child(newUser).child("Name").setValue(dataSnapshot.child(newUser).child("Name").getValue().toString());
+                            myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
+                            myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
+                            myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) { }
+                });
             }
         };
         Thread t = new Thread(r);
         t.start();
 
+
+
+
+
+//        //send e-mail to members
+//        final Mail inviteMail = new Mail();
+//        final DatabaseReference myRef = database.getReference("users");
+//        Runnable r = new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                    String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+//                    String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
+//
+//                    database = FirebaseDatabase.getInstance();
+////                    Log.e("SendMail", "set_to " + listAddress[0]);
+//                    inviteMail.set_body("Hi! \n" + displayName + " (email : "+
+//                            user_email + ") is inviting you to join a group called " + groupName+
+//                            " whose code is "+IDGroup+".\n\n" +
+//
+//                            "We cannot wait for your association!\n" +
+//                            "Your MAD14 team");
+//                    inviteMail.set_to(emailsToBeSent);
+//                    inviteMail.set_subject("Invite to join MAD14");
+//                    inviteMail.send();
+//                } catch (Exception e) {
+//                    Log.e("SendMail", e.getMessage(), e);
+//                }
+//            }
+//        };
+//        Thread t = new Thread(r);
+//        t.start();
+
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
-        startActivity(intent);
+        intent.putExtra("Image",groupImage);
+        intent.putExtra("Author",groupAuthor);
+        intent.putExtra("Date",groupDate);
+        intent.putExtra("Description",groupDescr);
+        setResult(RESULT_OK,intent);
         finish();
 
     }

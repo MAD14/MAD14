@@ -32,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import it.polito.mad14.myDataStructures.Contact;
@@ -43,7 +44,6 @@ import it.polito.mad14.myListView.CustomAdapterSummary;
 
 
 public class MainActivity extends AppCompatActivity {
-
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
      * fragments for each of the sections. We use a
@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity {
     private static DatabaseReference myRef;
     private FloatingActionButton fab_groups;
     private FloatingActionButton fab_contacts;
+    final static int GROUP_CREATION = 1;
 
 
     @Override
@@ -146,10 +147,10 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("sender",UserID);
                 startActivity(intent);
                 break;
-            case R.id.action_join_a_group:
-                intent = new Intent(MainActivity.this, JoinGroupActivity.class);
-                startActivity(intent);
-                break;
+//            case R.id.action_join_a_group:
+//                intent = new Intent(MainActivity.this, JoinGroupActivity.class);
+//                startActivity(intent);
+//                break;
         }
 
         return super.onOptionsItemSelected(item);
@@ -227,12 +228,7 @@ public class MainActivity extends AppCompatActivity {
                                     String dat = data.child("Date").getValue().toString();
                                     String credit = data.child("Credit").getValue().toString();
                                     String debit = data.child("Debit").getValue().toString();
-                                    String image;
-                                    if (data.child("Image").getValue().toString().equals(noImage) ) {
-                                        image = null;
-                                    } else {
-                                        image = data.child("Image").getValue().toString();
-                                    }
+                                    String image = data.child("Image").getValue().toString();
                                     indexGroup = groupsList.size();
                                     groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image));
                                 }
@@ -482,8 +478,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void onClickNewGroup(View view) {
         Intent intent = new Intent(view.getContext(), NewGroupActivityPhase1.class);
-        startActivity(intent);
-        finish();
+        startActivityForResult(intent,GROUP_CREATION);
     }
 
     public void onClickNewContact(View view) {
@@ -491,6 +486,29 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
 
     }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == GROUP_CREATION) {
+            if(resultCode == RESULT_OK){
+                ListView list = (ListView) findViewById(R.id.lv_contacts_page);
+
+                Group tmp = new Group(getIntent().getStringExtra("IDGroup"),
+                        getIntent().getStringExtra("Name"),
+                        getIntent().getStringExtra("Author"),
+                        getIntent().getStringExtra("Date"),
+                        "0",
+                        "0",
+                        getIntent().getStringExtra("Image"));
+                CustomAdapter cst = (CustomAdapter) list.getAdapter();
+                ArrayList<Group> groupList = cst.getGroupList();
+                groupList.add(tmp);
+                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
+               ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
+            }
+        }
+    }
+
 }
 
 

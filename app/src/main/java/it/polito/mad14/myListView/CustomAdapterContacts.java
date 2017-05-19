@@ -65,7 +65,7 @@ public class CustomAdapterContacts extends BaseAdapter {
         tv = (TextView) convertView.findViewById(R.id.tv_contact_username);
         tv.setText(contactsList.get(position).getUsername());
 
-        ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
+        ImageView imgbt = (ImageView) convertView.findViewById(R.id.image_person);
         if (!contactsList.get(position).getImage().equals("no_image")) {
             encodedImage = contactsList.get(position).getImage();
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -73,10 +73,7 @@ public class CustomAdapterContacts extends BaseAdapter {
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
         } else {
-            Drawable bDrawable = context.getDrawable(R.drawable.person_icon_deawable);
-            imgbt.setImageDrawable(bDrawable);
-
-
+            imgbt.setBackgroundResource(R.mipmap.person_icon);
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {

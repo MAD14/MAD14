@@ -9,10 +9,12 @@ import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,9 +26,9 @@ import com.google.firebase.database.ValueEventListener;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    private String username, email, bio, encodedImage, displayName;
-    private ImageButton imgbt;
+    private String email, bio, encodedImage, displayName, username, profileImage;
     private boolean hasProfileImage;
+    private ImageView imgbt;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,8 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
-        imgbt = (ImageButton)findViewById(R.id.user_profile_photo);
+        imgbt = (ImageView) findViewById(R.id.user_profile_photo);
+
         imgbt.bringToFront();
 
         FirebaseAuth auth=FirebaseAuth.getInstance();
@@ -42,11 +45,10 @@ public class ProfileActivity extends AppCompatActivity {
         email = auth.getCurrentUser().getEmail();
         String email_key = email.replace(".",",");
 
-
         FirebaseDatabase database=FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
+        DatabaseReference myRef = database.getReference("users/" + email_key);
 
-        myRef.child(email_key).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 username = dataSnapshot.child("Username").getValue().toString();
@@ -55,36 +57,26 @@ public class ProfileActivity extends AppCompatActivity {
                 } else {
                     bio = getString(R.string.default_bio);
                 }
-
-                if (dataSnapshot.hasChild("ProfileImage")){
-                    if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
-                        imgbt.setImageResource(R.mipmap.person_icon_white);
-                        hasProfileImage = false;
-                    } else {
-                        encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
-                        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-                        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-                        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                        int sdk = android.os.Build.VERSION.SDK_INT;
-                        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                            imgbt.setBackgroundDrawable(bDrawable);
-                        } else {
-                            imgbt.setBackground(bDrawable);
-                        }
-                        hasProfileImage = true;
-                    }
-                } else {
-                    imgbt.setImageResource(R.mipmap.person_icon_white);
-                }
                 TextView tv = (TextView) findViewById(R.id.info1);
                 tv.setText(username);
                 tv = (TextView) findViewById(R.id.user_profile_short_bio);
                 tv.setText(bio);
+
+                profileImage = dataSnapshot.child("ProfileImage").getValue().toString();
+                if (profileImage.equals("no_image")) {
+                    imgbt.setImageResource(R.mipmap.person_icon);
+                } else {
+                    encodedImage = profileImage;
+                    byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                    Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                    imgbt.setImageDrawable(bDrawable);
+                }
             }
             @Override
             public void onCancelled(DatabaseError error) { }
         });
-      
+
         displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
         TextView tv = (TextView) findViewById(R.id.user_profile_name);

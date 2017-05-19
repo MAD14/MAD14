@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,7 +47,9 @@ public class CustomAdapter extends BaseAdapter{
     Set<String> members=new HashSet<>();
 
     private String encodedImage;
-
+    private DatabaseReference memRef;
+    private FirebaseDatabase database;
+    private Group group;
 
     public CustomAdapter(Context context, ArrayList<Group> groupList) {
         this.context = context;
@@ -83,15 +86,14 @@ public class CustomAdapter extends BaseAdapter{
         tv.setText("Debit: "+ groupList.get(position).getDebit() +"€");
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.group_icon);
-        if (groupList.get(position).hasImage()) {
+        if (groupList.get(position).getImage().equals("no_image")) {
+            imgbt.setImageResource(R.mipmap.person_icon);
+        } else {
             encodedImage = groupList.get(position).getImage();
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
             Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
-        } else {
-            imgbt.setImageResource(R.mipmap.group_icon);
-
         }
 
 
@@ -115,41 +117,40 @@ public class CustomAdapter extends BaseAdapter{
 
                     public void onClick(DialogInterface dialog,int id) {
 
-                        final FirebaseDatabase database = FirebaseDatabase.getInstance();
-                        final Group group = groupList.get(position);
+                        database = FirebaseDatabase.getInstance();
+                        group = groupList.get(position);
 
                         if (groupList.get(position).getCredit().equals("0") && groupList.get(position).getDebit().equals("0")) {
-                            // remove value from group
-                            final DatabaseReference myRef = database.getReference("groups");
-                            // salvo membri in set
-                            DatabaseReference memRef = database.getReference("groups/" + group.getID() + "/members/");
-                            memRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                            Runnable r = new Runnable() {
                                 @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren())
-                                        members.add(data.getKey().toString());
-                                    // elimino la ref nei gruppi
-                                    myRef.child(group.getID()).removeValue();
-                                }
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-                                }
-                            });
-                            DatabaseReference users = database.getReference("users");
-                            users.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        if (members.contains(data.getKey().toString())) {
-                                            data.child("groups").child(group.getID()).getRef().removeValue();
+                                public void run() {
+                                    // remove value from group
+                                    final DatabaseReference myRef = database.getReference("groups");
+                                    // salvo membri in set
+                                    memRef = database.getReference("groups/" + group.getID() + "/members/");
+                                    final DatabaseReference users = database.getReference("users");
+                                    memRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                // elimino la ref negi membri
+                                                users.child(data.getKey()).child("groups").child(group.getID()).removeValue();
+                                            }
+                                            // elimino la ref nei gruppi
+                                            myRef.child(group.getID()).removeValue();
+
                                         }
-                                    }
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+                                        }
+                                    });
+
+                                    // remove value from group list
+                                    groupList.remove(position);
                                 }
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) { }
-                            });
-                            // remove value from group list
-                            groupList.remove(position);
+                            };
+                            Thread t = new Thread(r);
+                            t.start();
                             Toast.makeText(context, "Deleting group", Toast.LENGTH_SHORT).show();
                         } else {
                             Toast.makeText(context,"You can not delete this group. \n You must balance your status before.",Toast.LENGTH_LONG).show();

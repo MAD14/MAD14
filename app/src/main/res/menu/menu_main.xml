@@ -8,11 +8,11 @@
         android:title="@string/action_settings"
         app:showAsAction="never" />
 
-    <item
+    <!--<item
         android:id="@+id/action_join_a_group"
         android:orderInCategory="3"
         android:title="@string/action_join_a_group"
-        app:showAsAction="never"/>
+        app:showAsAction="never"/> -->
 
     <item
         android:id="@+id/action_personal_profile"

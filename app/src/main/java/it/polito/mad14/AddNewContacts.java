@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
@@ -36,7 +37,8 @@ public class AddNewContacts extends AppCompatActivity {
     // Adapter for myList
     private CustomAdapterContactSuggested adapter;
 
-    private String name,surname,username,email,image;
+    private DatabaseReference myRef;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +48,7 @@ public class AddNewContacts extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("users");
+        myRef = database.getReference("users");
 
         list = (ListView) findViewById(R.id.list_view_contact_suggestion);
         adapter = new CustomAdapterContactSuggested(getApplicationContext(), partialNames);
@@ -56,21 +58,12 @@ public class AddNewContacts extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    if (data.hasChild("Image")) {
-                        searchNames.add(
-                                new Contact(data.child("Name").getValue().toString(),
-                                data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
-                                data.child("Email").getValue().toString(),
-                                data.child("Image").getValue().toString()));
-                    } else{
-                        searchNames.add(
-                                new Contact(data.child("Name").getValue().toString(),
-                                data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
-                                data.child("Email").getValue().toString(),
-                                "no_image"));
-                    }
+                    searchNames.add(
+                            new Contact(data.child("Name").getValue().toString(),
+                                    data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
+                                    data.child("Email").getValue().toString(),
+                                    "no_image"));
                 }
-
                 nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
               
                 AlterAdapter();
@@ -107,6 +100,7 @@ public class AddNewContacts extends AppCompatActivity {
                 if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase())) {
                     partialNames.add(searchNames.get(i));
                     adapter.notifyDataSetChanged();
+
                 }
                 adapter.notifyDataSetChanged();
             }
