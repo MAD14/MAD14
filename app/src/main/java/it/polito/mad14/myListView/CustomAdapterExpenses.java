@@ -84,9 +84,9 @@ public class CustomAdapterExpenses extends BaseAdapter {
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
         } else {
-            imgbt.setImageResource(R.mipmap.person_icon);
-
+            imgbt.setBackgroundResource(R.mipmap.expense_icon);
         }
+
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
