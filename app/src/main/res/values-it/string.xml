@@ -102,4 +102,13 @@
     <string name="tab_expenses">SPESE</string>
     <string name="tab_report">SOMMARIO</string>
 
+    <string name="hi">Ciao!</string>
+    <string name="mail_body_1">ti ha invitato ad unirti alla community di "Shared Expenses".\n
+        Puoi scaricare l\'applicazione dal Google Play Store (o al link: www.chesssonoforte.it).\n
+        Questa applicazione ti permetterà di gestire facilmente le spese che condividi con i tuoi amici.\n\n
+        Cosa aspetti a unirti a noi?!\n
+        Il team MAD14</string>
+    <string name="invitation_mail_subject">Invito a unirti a MAD14</string>
+    <string name="emails_sent">Email inviate</string>
+
 </resources>

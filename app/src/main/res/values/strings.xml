@@ -102,5 +102,15 @@
     <string name="tab_expenses">EXPENSES</string>
     <string name="tab_report">REPORT</string>
 
+    <string name="hi">Hi!</string>
+    <string name="mail_body_1">invites you to join "Shared Expenses" Community.\n
+        You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n
+        This application will allow you to easily manage expenses shared with your friends.\n\n
+        We cannot wait for your association!\n
+        Your MAD14 team</string>
+    <string name="invitation_mail_subject">Invite to join MAD14</string>
+    <string name="emails_sent">Emails have been sent</string>
+
+
 
 </resources>

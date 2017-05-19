@@ -35,6 +35,7 @@ public class InviteToJoinCommunity extends AppCompatActivity {
     private String[] listAddress = {""};
     private ListView list_invitation;
     private FirebaseDatabase database;
+    private Mail inviteMail;
 
 
     @Override
@@ -53,7 +54,7 @@ public class InviteToJoinCommunity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final Mail inviteMail = new Mail();
+                inviteMail = new Mail();
                 //new InviteMail("madapplication14@gmail.com","mobilecourse17");
                 // Possibility2 (P2)
                 Runnable r = new Runnable() {
@@ -70,13 +71,10 @@ public class InviteToJoinCommunity extends AppCompatActivity {
 
 
 //                            Log.e("SendMail", "set_to " + listAddress[0]);
-                            inviteMail.set_body("Hi! \n" +
-                                    displayName + " (" + user_email + ")" + " invites you to join \"Shared Expenses\" Community. You can do it downloading the application from the store (or at this link: www.chesssonoforte.it).\n" +
-                                    "This application will allow you to easily manage expenses shared with your friends.\n\n" +
-                                    "We cannot wait for your association!\n" +
-                                    "Your MAD14 team");
+                            inviteMail.set_body(getString(R.string.hi) + "\n" +
+                                    displayName + " (" + user_email + ") " + getString(R.string.mail_body_1));
                             inviteMail.set_to(emailsToBeSent);
-                            inviteMail.set_subject("Invite to join MAD14");
+                            inviteMail.set_subject(getString(R.string.invitation_mail_subject));
                             inviteMail.send();
                         } catch (Exception e) {
                             Log.e("SendMail", e.getMessage(), e);
@@ -87,7 +85,7 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 t.start();
                 // end P2
 
-                Toast.makeText(InviteToJoinCommunity.this, "Emails have been sent.", Toast.LENGTH_SHORT).show();
+                Toast.makeText(InviteToJoinCommunity.this, getString(R.string.emails_sent), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(InviteToJoinCommunity.this,MainActivity.class);
                 startActivity(intent);
             }
