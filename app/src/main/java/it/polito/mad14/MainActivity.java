@@ -390,8 +390,12 @@ public class MainActivity extends AppCompatActivity {
                                         String surname =  data.child("Surname").getValue().toString();
                                         String username = data.child("Username").getValue().toString();
                                         String email = data.child("Email").getValue().toString();
-                                        String image = data.child("Image").getValue().toString();
-                                        contactsList.add(indexContact,new Contact(name,surname,username,email,image));
+                                        if (data.hasChild("Image")) {
+                                            contactsList.add(indexContact,new Contact(name,surname,username,email,data.child("Image").getValue().toString()));
+
+                                        }else {
+                                            contactsList.add(indexContact,new Contact(name,surname,username,email,"no_image"));                                        }
+
                                         indexContact++;
 
                                     }catch(Error e){

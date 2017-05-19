@@ -54,7 +54,6 @@ public class InviteToJoinCommunity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 final Mail inviteMail = new Mail();
-                //new InviteMail("madapplication14@gmail.com","mobilecourse17");
                 // Possibility2 (P2)
                 Runnable r = new Runnable() {
                     @Override

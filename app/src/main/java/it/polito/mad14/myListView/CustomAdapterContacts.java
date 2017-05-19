@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -71,7 +73,9 @@ public class CustomAdapterContacts extends BaseAdapter {
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
         } else {
-            imgbt.setImageResource(R.mipmap.expense_icon);
+            Drawable bDrawable = context.getDrawable(R.drawable.person_icon_deawable);
+            imgbt.setImageDrawable(bDrawable);
+
 
         }
 
@@ -83,6 +87,7 @@ public class CustomAdapterContacts extends BaseAdapter {
                 intent.putExtra("Surname",contactsList.get(position).getSurname());
                 intent.putExtra("Name",contactsList.get(position).getName());
                 intent.putExtra("Username",contactsList.get(position).getUsername());
+                intent.putExtra("Image",contactsList.get(position).getImage());
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);

@@ -36,7 +36,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import it.polito.mad14.myDataStructures.Contact;
-import it.polito.mad14.myDataStructures.InviteMail;
 import it.polito.mad14.myDataStructures.Mail;
 
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
@@ -110,11 +109,19 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),
-                            data.child("Surname").getValue().toString(),
-                            data.child("Username").getValue().toString(),
-                            data.child("Email").getValue().toString(),
-                            data.child("Image").getValue().toString()));
+                    if (data.hasChild("Image")) {
+                        friends.add(
+                                new Contact(data.child("Name").getValue().toString(),
+                                        data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
+                                        data.child("Email").getValue().toString(),
+                                        data.child("Image").getValue().toString()));
+                    } else{
+                        friends.add(
+                                new Contact(data.child("Name").getValue().toString(),
+                                        data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
+                                        data.child("Email").getValue().toString(),
+                                        "no_image"));
+                    }
                     friendsIndex++;
                 }
                 // adapter per suggerire gli amici in elenco
