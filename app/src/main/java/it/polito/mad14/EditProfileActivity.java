@@ -148,13 +148,14 @@ public class EditProfileActivity extends AppCompatActivity {
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                 byte[] byteArrayImage = baos.toByteArray();
                 encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef=database.getReference("users/"+
+                        FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
+                myRef.child("ProfileImage").setValue(encodedImage);
             }catch (FileNotFoundException e){
                 e.printStackTrace();
             }
-            database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef=database.getReference("users/"+
-                    FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
-            myRef.child("ProfileImage").setValue(encodedImage);
+
         }
     }
 

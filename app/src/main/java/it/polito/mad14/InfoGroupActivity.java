@@ -11,6 +11,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -37,8 +38,9 @@ public class InfoGroupActivity extends AppCompatActivity {
 
     private String IDGroup;
     private String groupName;
-    private String description;
+    private String groupDescription;
     private String dateCreation;
+    private String groupAuthor;
     private String encodedImage;
     private ListView list;
     private ArrayList<Contact> membersList = new ArrayList<>();
@@ -60,36 +62,23 @@ public class InfoGroupActivity extends AppCompatActivity {
         list = (ListView) findViewById(R.id.lv_members_group);
         list.setAdapter(new CustomAdapterInfoGroup(InfoGroupActivity.this,membersList));
 
-        myRefName = database.getReference("groups/" + IDGroup );
-        myRefName.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                groupName = dataSnapshot.child("Name").getValue().toString();
-                description = dataSnapshot.child("Description").getValue().toString();
-                dateCreation = dataSnapshot.child("Date").getValue().toString();
-                CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-                setTitle(groupName);
-                tvDate.setText(dateCreation);
-                if (!description.equals("")){
-                    tvDescription.setText(description);
-                } else {
-                    tvDescription.setText("-");
-                }
-                encodedImage = dataSnapshot.child("Image").getValue().toString();
-                byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-                Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                int sdk = android.os.Build.VERSION.SDK_INT;
-                if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                    toolbar.setBackgroundDrawable(bDrawable);
-                } else {
-                    toolbar.setBackground(bDrawable);
-                }
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-            }
-        });
+        groupName = getIntent().getStringExtra("Name");
+        groupDescription = getIntent().getStringExtra("Description");
+        dateCreation = getIntent().getStringExtra("Date");
+        groupAuthor = getIntent().getStringExtra("Author");
+        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+        setTitle(groupName);
+        tvDate.setText(dateCreation);
+//        if (!description.equals("")){
+            tvDescription.setText(groupDescription);
+//        } else {
+//            tvDescription.setText("-");
+//        }
+        encodedImage = getIntent().getStringExtra("Image");
+        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+        toolbar.setBackground(bDrawable);
 
         myRef = database.getReference("groups/" + IDGroup + "/members");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -121,7 +110,7 @@ public class InfoGroupActivity extends AppCompatActivity {
                 intent.putExtra("IDGroup",IDGroup);
                 intent.putExtra("Name",groupName);
                 intent.putExtra("Date",dateCreation);
-                intent.putExtra("Description",description);
+                intent.putExtra("Description",groupDescription);
                 intent.putExtra("Image",encodedImage);
                 startActivity(intent);
                 finish();

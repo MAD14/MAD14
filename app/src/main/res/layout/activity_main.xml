@@ -49,7 +49,9 @@
         android:layout_margin="@dimen/fab_margin"
         app:srcCompat="@mipmap/add_group_icon"
         android:clickable="true"
-        android:onClick="onClickNewGroup" />
+        android:onClick="onClickNewGroup"
+        app:rippleColor="@color/colorPrimary"
+        />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_contacts_page"

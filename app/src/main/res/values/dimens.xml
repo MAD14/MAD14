@@ -5,6 +5,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="appbar_padding_top">8dp</dimen>
     <dimen name="margin">10dp</dimen>
+    <dimen name="margin_double">20dp</dimen>
     <dimen name="icon_dimension">35dp</dimen>
     <dimen name="icon_dimension_group">60dp</dimen>
     <dimen name="list_view_dimension_group">90dp</dimen>

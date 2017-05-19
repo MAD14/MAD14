@@ -123,8 +123,8 @@ public class RegistrationActivity extends AppCompatActivity {
                                     .setDisplayName(name+"."+surname).build();
                             FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
 
-                            Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
-                                    Toast.LENGTH_SHORT).show();
+//                            Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
+//                                    Toast.LENGTH_SHORT).show();
                             mProgressView.setVisibility(View.GONE);
 
                             mainActivityCall();

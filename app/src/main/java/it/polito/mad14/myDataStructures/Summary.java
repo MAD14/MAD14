@@ -9,11 +9,13 @@ public class Summary {
     String name;
     String value;
     boolean credit;// true è un credito (-> verde); false è un debito (-> rosso)
+//    String image;
 
     public Summary(String name, String value, boolean credit) {
         this.name = name;
         this.value = value;
         this.credit = credit;
+//        this.image = image;
     }
 
     public String getName() {
@@ -43,4 +45,18 @@ public class Summary {
     public boolean equals(Summary s){
         return this.name.equals(s.getName());
     }
+
+//    public boolean hasImage(){
+//        if (image != null)
+//            return true;
+//        return false;
+//    }
+//
+//    public String getImage() {
+//        return image;
+//    }
+//
+//    public void setImage(String image) {
+//        this.image = image;
+//    }
 }

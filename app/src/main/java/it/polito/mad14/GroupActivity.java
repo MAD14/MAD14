@@ -43,7 +43,7 @@ import it.polito.mad14.myListView.CustomAdapterSummary;
 public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
     private DatabaseReference myReference;
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
+    private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator;
     private FirebaseDatabase database;
 
     /**
@@ -147,16 +147,16 @@ public class GroupActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         groupName = dataSnapshot.child("Name").getValue().toString();
                         groupAuthor = dataSnapshot.child("Author").getValue().toString();
-                        groupDescr = dataSnapshot.child("Description").getValue().toString();
+                        groupDescription = dataSnapshot.child("Description").getValue().toString();
                         groupDate = dataSnapshot.child("Date").getValue().toString();
                         groupImage = dataSnapshot.child("Image").getValue().toString();
-//
+
                         intent = new Intent(GroupActivity.this,AddNewMembersToGroup.class);
                         intent.putExtra("IDgroup",IDGroup);
                         intent.putExtra("Name",groupName);
                         intent.putExtra("Author",groupAuthor);
                         intent.putExtra("Date",groupDate);
-                        intent.putExtra("Description",groupDescr);
+                        intent.putExtra("Description",groupDescription);
                         intent.putExtra("Image",groupImage);
                         startActivity(intent);
                     }
@@ -166,30 +166,39 @@ public class GroupActivity extends AppCompatActivity {
                 });
 
                 break;
-            case R.id.action_edit_group:
-                intent = new Intent(GroupActivity.this, EditGroupActivity.class);
-
-                startActivity(intent);
-                finish();
-                break;
+//            case R.id.action_edit_group:
+//                intent = new Intent(GroupActivity.this, EditGroupActivity.class);
+//
+//                startActivity(intent);
+//                finish();
+//                break;
                 
             case R.id.info:
                 intent = new Intent(GroupActivity.this,InfoGroupActivity.class);
                 intent.putExtra("IDGroup",IDGroup);
-//                myReference = database.getInstance().getReference("groups/" + IDGroup );
-//                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(DataSnapshot dataSnapshot) {
-//                        groupImage = dataSnapshot.child("Image").getValue().toString();
-//                        intent.putExtra("Image",groupImage);
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(DatabaseError databaseError) {
-//
-//                    }
-//                });
-////                intent.putExtra("Image",groupImage);
+                myReference = database.getInstance().getReference("groups/" + IDGroup );
+                myReference.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        groupImage = dataSnapshot.child("Image").getValue().toString();
+                        groupName = dataSnapshot.child("Name").getValue().toString();
+                        groupDescription = dataSnapshot.child("Description").getValue().toString();
+                        groupDate = dataSnapshot.child("Date").getValue().toString();
+                        groupAuthor = dataSnapshot.child("Author").getValue().toString();
+                        groupImage = dataSnapshot.child("Image").getValue().toString();
+                        intent.putExtra("Image",groupImage);
+                        intent.putExtra("Name",groupName);
+                        intent.putExtra("Date",groupDate);
+                        intent.putExtra("Author",groupAuthor);
+                        intent.putExtra("Image",groupImage);
+                        intent.putExtra("Description",groupDescription);
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
                 startActivity(intent);
                 break;
         }

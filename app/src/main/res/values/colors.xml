@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#105b3d</color>
-    <color name="colorPrimaryDark">#2c8136</color>
+    <color name="colorPrimary">#107ce7</color>
+    <color name="colorPrimaryDark">#176ec2</color>
     <color name="colorAccent">#f5471b</color>
-    <color name="background">#eff1ef</color>
+    <color name="background">#dee5ea</color>
     <color name="backgroundDark">#dbdeda</color>
     <color name="writing">#000000</color>
     <color name="red">#f90303</color>
     <color name="green">#2ac119</color>
     <color name="lightgrey">#a3aca1</color>
     <color name="padding">#23a3ac</color>
+    <color name="last_frame">#212fa6</color>
 </resources>

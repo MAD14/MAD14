@@ -5,6 +5,8 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,7 +65,7 @@ public class CustomAdapterContacts extends BaseAdapter {
         tv = (TextView) convertView.findViewById(R.id.tv_contact_username);
         tv.setText(contactsList.get(position).getUsername());
 
-        ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
+        ImageView imgbt = (ImageView) convertView.findViewById(R.id.image_person);
         if (!contactsList.get(position).getImage().equals("no_image")) {
             encodedImage = contactsList.get(position).getImage();
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -71,8 +73,7 @@ public class CustomAdapterContacts extends BaseAdapter {
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
         } else {
-            imgbt.setImageResource(R.mipmap.expense_icon);
-
+            imgbt.setBackgroundResource(R.mipmap.person_icon);
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +84,7 @@ public class CustomAdapterContacts extends BaseAdapter {
                 intent.putExtra("Surname",contactsList.get(position).getSurname());
                 intent.putExtra("Name",contactsList.get(position).getName());
                 intent.putExtra("Username",contactsList.get(position).getUsername());
+                intent.putExtra("Image",contactsList.get(position).getImage());
 
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);

@@ -19,8 +19,8 @@
             android:id="@+id/value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_marginTop="10dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginTop="30dp"
             android:clickable="true"
             android:elevation="4dp"
             android:text="@string/Import"
@@ -31,19 +31,22 @@
             android:id="@+id/tv_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
             android:clickable="true"
             android:elevation="4dp"
+            android:layout_margin="@dimen/margin"
             android:textColor="@color/writing"
             android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/value"/>
+            android:layout_alignBaseline="@+id/value"
+            android:layout_alignBottom="@+id/value" />
 
         <TextView
             android:id="@+id/author"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
             android:clickable="true"
             android:elevation="4dp"
             android:text="@string/Author"
@@ -59,14 +62,17 @@
             android:elevation="4dp"
             android:textColor="@color/writing"
             android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
-            android:layout_below="@id/author"/>
+            android:layout_alignBaseline="@+id/author"
+            android:layout_alignBottom="@+id/author"/>
 
         <TextView
             android:id="@+id/description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
             android:clickable="true"
             android:elevation="4dp"
             android:text="@string/Description"
@@ -82,9 +88,11 @@
             android:elevation="4dp"
             android:textColor="@color/writing"
             android:textSize="@dimen/summary"
-            android:layout_below="@id/description"
-            android:text="-"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/description"
+            android:layout_alignBottom="@+id/description"
+            android:text="-"
             />
     </RelativeLayout>
 

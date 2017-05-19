@@ -64,7 +64,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static android.Manifest.permission.READ_CONTACTS;
-import static android.R.attr.tag;
 
 /**
  * A login screen that offers login via email/password.

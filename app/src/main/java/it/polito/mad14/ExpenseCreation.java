@@ -125,6 +125,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             ref.child("Author").setValue(et_author);
             ref.child("Image").setValue(encodedExpenseImage);
 
+
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
             // 2 decimals
             double priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
@@ -137,7 +138,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     //updating of the group's info
                     DatabaseReference newRef = refDebits.push();
 
-                    //TODO punto 1
                     String key = newRef.getKey();
 
                     newRef.child("Product").setValue(et_name.getText().toString());

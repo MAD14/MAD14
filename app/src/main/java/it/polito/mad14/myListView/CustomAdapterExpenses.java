@@ -110,6 +110,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
                 dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
 
+                        //TODO: posso cancellare la spesa solo se l'ho creata io!
                         final FirebaseDatabase database=FirebaseDatabase.getInstance();
                         final Expense expense=expensesList.get(position);
                         // remove value from expense list

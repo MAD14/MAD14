@@ -3,6 +3,10 @@ package it.polito.mad14.myListView;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +19,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +43,9 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
     ArrayList<Contact> partialNames;
     LayoutInflater inflater;
     private ListView list;
+    private String encodedImage;
+    private DatabaseReference myRef;
+    private String image;
 
     public CustomAdapterContactSuggested(Context context, ArrayList<Contact> partialNames) {
         this.context = context;
@@ -75,14 +85,37 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context,"Friends added",Toast.LENGTH_SHORT).show();
-                //TODO gestione invio amicizia nella pagina main
-                String UserID=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
-                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/"+UserID+"/contacts/"+partialNames.get(position).getEmail().replace(".",","));
-                myRef.child("Name").setValue(partialNames.get(position).getName());
-                myRef.child("Surname").setValue(partialNames.get(position).getSurname());
-                myRef.child("Username").setValue(partialNames.get(position).getUsername());
-                myRef.child("Email").setValue(partialNames.get(position).getEmail());
 
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        String UserID=FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+                        myRef = FirebaseDatabase.getInstance().getReference("users/"+UserID+"/contacts/"+partialNames.get(position).getEmail().replace(".",","));
+                        DatabaseReference currentUser = FirebaseDatabase.getInstance().getReference("users/"+partialNames.get(position).getEmail().replace(".",","));
+
+                        myRef.child("Name").setValue(partialNames.get(position).getName());
+                        myRef.child("Surname").setValue(partialNames.get(position).getSurname());
+                        myRef.child("Username").setValue(partialNames.get(position).getUsername());
+                        myRef.child("Email").setValue(partialNames.get(position).getEmail());
+
+                        currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                image = dataSnapshot.child("ProfileImage").getValue().toString();
+                                myRef.child("Image").setValue(image);
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+                };
+                Thread t = new Thread(r);
+                t.start();
 
             }
         });
@@ -95,6 +128,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
                 intent.putExtra("Username",partialNames.get(position).getUsername());
                 intent.putExtra("Name",partialNames.get(position).getName());
                 intent.putExtra("Surname",partialNames.get(position).getSurname());
+                intent.putExtra("Image",image);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 context.startActivity(intent);
             }

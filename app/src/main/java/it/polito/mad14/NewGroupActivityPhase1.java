@@ -88,7 +88,11 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             dict.put("Description",groupDescription);
                             dict.put("Author",author);
                             dict.put("Date",date);
-                            dict.put("Image", encodedImage);
+                            if (encodedImage == null) {
+                                dict.put("Image", "no_image");
+                            } else {
+                                dict.put("Image",encodedImage);
+                            }
                             myRef.setValue(dict);
 
                             String IDGroup = myRef.getKey().toString();

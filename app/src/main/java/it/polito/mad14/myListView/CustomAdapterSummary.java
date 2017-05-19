@@ -1,11 +1,16 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.ContextCompat;
+import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -22,6 +27,7 @@ public class CustomAdapterSummary extends BaseAdapter {
     Context context;
     ArrayList<Summary> summaryList;
     LayoutInflater inflater;
+    private String encodedImage;
 
     public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList) {
         this.context = context;
@@ -63,6 +69,7 @@ public class CustomAdapterSummary extends BaseAdapter {
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
             tv.setText("-"+summaryList.get(position).getValue().toString());
         }
+
 
         return convertView;
     }

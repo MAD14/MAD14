@@ -240,34 +240,34 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) { }
         });
         
-        //mando le mail
-        inviteMail = new Mail();
-
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                try {
-
-                    //String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
-                    //String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
-
-//                    Log.e("SendMail", "set_to " + listAddress[0]);
-                    inviteMail.set_body("Hi! \n"  + " (email : "+
-                             ") is inviting you to join a group called " + groupName+
-                            " whose code is "+IDGroup+".\n\n" +
-
-                            "We cannot wait for your association!\n" +
-                            "Your MAD14 team");
-                    inviteMail.set_to(emailsToBeSent);
-                    inviteMail.set_subject("Invite to join MAD14");
-                    inviteMail.send();
-                } catch (Exception e) {
-                    Log.e("SendMail", e.getMessage(), e);
-                }
-            }
-        };
-        Thread t = new Thread(r);
-        t.start();
+//        //mando le mail
+//        inviteMail = new Mail();
+//
+//        Runnable r = new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+//
+//                    //String user_email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+//                    //String displayName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
+//
+////                    Log.e("SendMail", "set_to " + listAddress[0]);
+//                    inviteMail.set_body("Hi! \n"  + " (email : "+
+//                             ") is inviting you to join a group called " + groupName+
+//                            " whose code is "+IDGroup+".\n\n" +
+//
+//                            "We cannot wait for your association!\n" +
+//                            "Your MAD14 team");
+//                    inviteMail.set_to(emailsToBeSent);
+//                    inviteMail.set_subject("Invite to join MAD14");
+//                    inviteMail.send();
+//                } catch (Exception e) {
+//                    Log.e("SendMail", e.getMessage(), e);
+//                }
+//            }
+//        };
+//        Thread t = new Thread(r);
+//        t.start();
 
         Intent intent = new Intent(AddNewMembersToGroup.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
