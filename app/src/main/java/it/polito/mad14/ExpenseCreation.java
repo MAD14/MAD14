@@ -27,6 +27,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -42,6 +43,7 @@ import java.util.regex.Pattern;
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private Button bt;
+    final static int GET_IMAGE = 1;
 
     private FirebaseAuth auth;
     private Set<String> contacts;
@@ -51,7 +53,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private ImageButton getExpenseImage;
     private Bitmap expenseImageBitmap;
-    private String encodedExpenseImage;
+    private String encodedExpenseImage,strImageUri;
 
     private EditText et_import, et_name, et_description;
     private String finalDescription;
@@ -186,22 +188,41 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
-            try {
-                expenseImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), expenseImageBitmap);
-                getExpenseImage.setBackgroundDrawable(bDrawable);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG,25,baos);
-                byte[] byteArrayImage = baos.toByteArray();
-                encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-                hasImage = true;
-                Log.d("IMAGE",encodedExpenseImage);
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }
+        if (requestCode == GET_IMAGE){
+            if (resultCode == RESULT_OK){
+                Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
+                strImageUri = imageUri.toString();
 
+                CropImage.activity(imageUri)
+                        .setMinCropResultSize(100,100)
+                        .setMaxCropResultSize(1000,1000)
+                        .start(this);
+
+//                Intent intent = CropImage.activity(imageUri).getIntent(NewGroupActivityPhase1.this);
+//                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
+
+//                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
+
+            }
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    expenseImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(resultUri));
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), expenseImageBitmap);
+                    getExpenseImage.setBackgroundDrawable(bDrawable);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                    byte[] byteArrayImage = baos.toByteArray();
+                    encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                    hasImage = true;
+                    Log.d("IMAGE", encodedExpenseImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

@@ -70,6 +70,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
+        groupImage = getIntent().getStringExtra("Image");
         if (!getIntent().getStringExtra("Image").equals(noImage)){
             groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
             try {

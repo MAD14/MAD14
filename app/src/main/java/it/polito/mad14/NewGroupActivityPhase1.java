@@ -1,5 +1,6 @@
 package it.polito.mad14;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -25,6 +26,8 @@ import android.widget.Toast;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.theartofdev.edmodo.cropper.CropImage;
+import com.theartofdev.edmodo.cropper.CropImageView;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -34,7 +37,7 @@ import java.util.Map;
 import java.util.Calendar;
 
 public class NewGroupActivityPhase1 extends AppCompatActivity {
-
+    final static int GET_IMAGE = 1;
     private Button createGroup;
     private ImageButton insertImage;
     private EditText editName;
@@ -65,8 +68,10 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         insertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(NewGroupActivityPhase1.this);
-                startActivityForResult(chooseImageIntent, 1);
+                startActivityForResult(chooseImageIntent, GET_IMAGE);
+
             }
         });
 
@@ -123,22 +128,45 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
-            strImageUri = imageUri.toString();
-            try {
-                targetImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), targetImageBitmap);
-                insertImage.setBackgroundDrawable(bDrawable);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                targetImageBitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-                byte[] byteArrayImage = baos.toByteArray();
-                encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
+        if (requestCode == GET_IMAGE){
+            if (resultCode == RESULT_OK){
+                Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
+                strImageUri = imageUri.toString();
+
+                CropImage.activity(imageUri)
+                        .setMinCropResultSize(100,100)
+                        .setMaxCropResultSize(1000,1000)
+                        .start(this);
+
+//                Intent intent = CropImage.activity(imageUri).getIntent(NewGroupActivityPhase1.this);
+//                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
+
+//                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
+
             }
         }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    targetImageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(resultUri));
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), targetImageBitmap);
+                    insertImage.setImageDrawable(bDrawable);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    targetImageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                    byte[] byteArrayImage = baos.toByteArray();
+                    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                }catch (FileNotFoundException e){
+                    e.printStackTrace();
+                }
+            } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
+                Exception error = result.getError();
+            }
+
+        }
     }
+
 
     private boolean EditIsAlphanumeric(String ToControl) {
         //TODO: Replace this with your own logic

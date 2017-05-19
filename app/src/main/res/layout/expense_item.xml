@@ -8,7 +8,7 @@
     android:onClick="onClick"
     android:id="@+id/tv_expense">
 
-    <ImageView
+    <it.polito.mad14.myDataStructures.CircularImageView
         android:id="@+id/expense_icon"
         android:layout_width="@dimen/icon_dimension_group"
         android:layout_height="@dimen/icon_dimension_group"
@@ -19,9 +19,7 @@
         android:layout_alignBottom="@+id/expense_description"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
-         />
-
+        android:layout_marginRight="@dimen/margin"/>
 
     <TextView
         android:id="@+id/expense_name"
