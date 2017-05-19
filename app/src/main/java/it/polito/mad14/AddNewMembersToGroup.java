@@ -42,6 +42,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private FirebaseDatabase database;
     private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup;
+    private AutoCompleteTextView actv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +88,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     friendsIndex++;
                 }
                 // adapter per suggerire gli amici in elenco
-                final AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
-                tv.setAdapter(new ArrayAdapter<>(
+                actv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
+                actv.setAdapter(new ArrayAdapter<>(
                         AddNewMembersToGroup.this,android.R.layout.simple_list_item_single_choice,friends));
                 list_friends = (ListView) findViewById(R.id.lv_friends);
                 list_friends.setAdapter(new BaseAdapter() {
@@ -171,17 +172,17 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                 list_friends.requestLayout();
             } else {
                 if(members.contains(cont.getEmail().toString())){
-                    Toast.makeText(AddNewMembersToGroup.this,"Member already in the group",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddNewMembersToGroup.this,getString(R.string.member_already_in_the_group),Toast.LENGTH_SHORT).show();
                 }
                 else{
                     System.out.println("non trovato");
-                    Toast.makeText(AddNewMembersToGroup.this,"User not found",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddNewMembersToGroup.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
                 }
             }
         }
         else{
             //System.out.println("ti ho presoooo :P");
-            Toast.makeText(AddNewMembersToGroup.this,"User not found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(AddNewMembersToGroup.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
         }
         Iterator<String> it2=emailsToBeSent.iterator();
 
@@ -199,7 +200,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             String cont=it2.next();
             System.out.println(cont);
         }
-        Toast.makeText(AddNewMembersToGroup.this, "Members added",Toast.LENGTH_SHORT).show();
+        Toast.makeText(AddNewMembersToGroup.this, getString(R.string.members_added),Toast.LENGTH_SHORT).show();
         //System.out.print("author " + groupAuthor);
 
         // Insertion of the group in each user

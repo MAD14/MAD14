@@ -229,7 +229,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     public void onClickCompletedAction(View view) {
 
-        Toast.makeText(EditProfileActivity.this,"Changes applied",Toast.LENGTH_SHORT).show();
+        Toast.makeText(EditProfileActivity.this,getString(R.string.changes_applied),Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(EditProfileActivity.this,ProfileActivity.class);
         //intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);

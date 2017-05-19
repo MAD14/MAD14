@@ -94,6 +94,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private String insertedPassword;
 
     private FirebaseDatabase database;
 
@@ -173,8 +174,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 boolean cancel = false;
                 View focusView = null;
                 String email = mEmailView.getText().toString();
-                final String password = mPasswordView.getText().toString();
-                if (email.isEmpty() && password.isEmpty()){
+                insertedPassword = mPasswordView.getText().toString();
+                if (email.isEmpty() && insertedPassword.isEmpty()){
                     mEmailView.setError(getString(R.string.error_field_required));
                     mPasswordView.setError(getString(R.string.error_field_required));
                     focusView = mEmailView;
@@ -183,7 +184,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     mEmailView.setError(getString(R.string.error_field_required));
                     focusView = mEmailView;
                     cancel = true;
-                } else if (password.isEmpty()) {
+                } else if (insertedPassword.isEmpty()) {
                     mPasswordView.setError(getString(R.string.error_field_required));
                     focusView = mPasswordView;
                     cancel = true;
@@ -191,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     mEmailView.setError(getString(R.string.error_invalid_email));
                     focusView = mEmailView;
                     cancel = true;
-                } else if (!isPasswordValid(password)) {
+                } else if (!isPasswordValid(insertedPassword)) {
                     mPasswordView.setError(getString(R.string.error_invalid_password));
                     focusView = mPasswordView;
                     cancel = true;
@@ -201,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 } else {
                     mProgressView.setVisibility(View.VISIBLE);
                     //authenticate user
-                    auth.signInWithEmailAndPassword(email, password).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                    auth.signInWithEmailAndPassword(email, insertedPassword).addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                         @Override
                         public void onComplete(@NonNull Task<AuthResult> task) {
                             // If sign in fails, display a message to the user. If sign in succeeds
@@ -263,15 +264,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result);
-        }else{
-            Toast.makeText(this,"Problems", Toast.LENGTH_SHORT).show();
+        } else{
+            Toast.makeText(this,getString(R.string.problems), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(),null);
-        final GoogleSignInAccount acct = account;
         auth.signInWithCredential(credential).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
@@ -282,7 +282,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     startActivity(intent);
                 } else {
                     // If sign in fails, display a message to the user.
-                    Toast.makeText(LoginActivity.this, "Authentication failed.",
+                    Toast.makeText(LoginActivity.this, getString(R.string.authentication_failed),
                             Toast.LENGTH_SHORT).show();
                 }
             }
@@ -304,7 +304,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             firebaseAuthWithGoogle(acct);
         } else {
             // Signed out, show unauthenticated UI.
-            Toast.makeText(this,"Sign in unsuccessfull"+result.getStatus().toString(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,getString(R.string.authentication_failed)+": "+result.getStatus().toString(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -327,7 +327,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // An unresolvable error has occurred and Google APIs (including Sign-In) will not
         // be available.
         Log.d(TAG, "onConnectionFailed:" + connectionResult);
-        Toast.makeText(this, "Google Play Services error.", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.google_play_services_error), Toast.LENGTH_SHORT).show();
     }
 
     private void populateAutoComplete() {
