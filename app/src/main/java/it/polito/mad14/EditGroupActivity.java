@@ -158,7 +158,7 @@ public class EditGroupActivity extends AppCompatActivity {
 
     public void onClickCompletedAction(View view) {
 
-        Toast.makeText(EditGroupActivity.this,"Changes applied",Toast.LENGTH_SHORT).show();
+        Toast.makeText(EditGroupActivity.this,getString(R.string.changes_applied),Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(EditGroupActivity.this,InfoGroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);

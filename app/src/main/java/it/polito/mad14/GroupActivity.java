@@ -410,9 +410,9 @@ public class GroupActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "EXPENSES";
+                    return getString(R.string.tab_expenses);
                 case 1:
-                    return "REPORT";
+                    return getString(R.string.tab_report);
 
             }
             return null;

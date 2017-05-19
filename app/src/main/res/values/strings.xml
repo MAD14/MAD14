@@ -94,5 +94,13 @@
     <string name="member_already_in_the_group">Member already in the group</string>
     <string name="user_not_found">User not found</string>
     <string name="members_added">Members added</string>
+    <string name="changes_applied">Changes applied</string>
+    <string name="problems">Problems</string>
+    <string name="authentication_failed">Authentication failed</string>
+    <string name="google_play_services_error">Google Play Services Error</string>
+
+    <string name="tab_expenses">EXPENSES</string>
+    <string name="tab_report">REPORT</string>
+
 
 </resources>
