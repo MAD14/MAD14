@@ -79,6 +79,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1090817053466-uocqb5m46ofvptc3lmheqggljqc2fvbd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "it.polito.mad14",
+            "certificate_hash": "140463709fd9783ec2f1d70f1b2fe9d07012303c"
+          }
+        },
+        {
           "client_id": "1090817053466-jm9r4c8s2qa15v9ufmjhk3huki7tjv93.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
