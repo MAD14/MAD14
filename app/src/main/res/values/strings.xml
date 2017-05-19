@@ -91,4 +91,8 @@
     <string name="no_expense_description">No description</string>
     <string name="no_image">no_image</string>
 
+    <string name="member_already_in_the_group">Member already in the group</string>
+    <string name="user_not_found">User not found</string>
+    <string name="members_added">Members added</string>
+
 </resources>
