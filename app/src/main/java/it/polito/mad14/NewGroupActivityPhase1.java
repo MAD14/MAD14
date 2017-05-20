@@ -149,7 +149,9 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
 
 //                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
 
+
             }
+
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
             CropImage.ActivityResult result = CropImage.getActivityResult(data);
