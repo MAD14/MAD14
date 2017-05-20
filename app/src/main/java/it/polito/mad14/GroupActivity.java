@@ -62,8 +62,6 @@ public class GroupActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private String IDGroup;
     private Intent intent;
-    //TODO: attenzione a questa public variable
-//    public FirebaseDatabase database;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,12 +184,15 @@ public class GroupActivity extends AppCompatActivity {
                         groupDate = dataSnapshot.child("Date").getValue().toString();
                         groupAuthor = dataSnapshot.child("Author").getValue().toString();
                         groupImage = dataSnapshot.child("Image").getValue().toString();
+
                         intent.putExtra("Image",groupImage);
                         intent.putExtra("Name",groupName);
                         intent.putExtra("Date",groupDate);
                         intent.putExtra("Author",groupAuthor);
                         intent.putExtra("Image",groupImage);
                         intent.putExtra("Description",groupDescription);
+                        startActivity(intent);
+
                     }
 
                     @Override
@@ -199,7 +200,6 @@ public class GroupActivity extends AppCompatActivity {
 
                     }
                 });
-                startActivity(intent);
                 break;
         }
         return super.onOptionsItemSelected(item);

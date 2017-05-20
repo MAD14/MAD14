@@ -57,8 +57,10 @@ public class OtherProfileActivity extends AppCompatActivity {
                 }
                 TextView tv = (TextView) findViewById(R.id.user_profile_short_bio);
                 tv.setText(bio);
+
                 if (dataSnapshot.hasChild("ProfileImage")){
                     if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
+                        encodedImage = "no_image";
                         imgbt.setImageResource(R.mipmap.person_icon_white);
                     } else {
                         encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
@@ -68,6 +70,7 @@ public class OtherProfileActivity extends AppCompatActivity {
                         imgbt.setBackgroundDrawable(bDrawable);
                     }
                 } else {
+                    encodedImage = "no_image";
                     imgbt.setImageResource(R.mipmap.person_icon_white);
                 }
 
@@ -101,6 +104,7 @@ public class OtherProfileActivity extends AppCompatActivity {
                 myRef.child("Surname").setValue(parts[1]);
                 myRef.child("Username").setValue(username);
                 myRef.child("Email").setValue(email);
+                myRef.child("Image").setValue(encodedImage);
             }
         };
 

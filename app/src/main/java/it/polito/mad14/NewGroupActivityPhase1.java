@@ -15,6 +15,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -32,6 +33,7 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Calendar;
@@ -49,6 +51,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
     private String encodedImage;
     private String strImageUri, noImage = "no_image";
     private FirebaseAuth mAuth;
+    private String date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +62,8 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         encodedImage = null;
         strImageUri = noImage;
 
+        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyy");
+        date = format1.format(Calendar.getInstance().getTime());
 
         createGroup = (Button) findViewById(R.id.group_create_button);
         editName = (EditText) findViewById(R.id.group_name);
@@ -87,12 +92,13 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("groups").push();
                             String author = mAuth.getCurrentUser().getEmail().toString();
-                            String date = Calendar.getInstance().getTime().toString();
+
                             Map<String,String> dict = new HashMap<>();
                             dict.put("Name",groupName);
                             dict.put("Description",groupDescription);
                             dict.put("Author",author);
                             dict.put("Date",date);
+
                             if (encodedImage == null) {
                                 dict.put("Image", "no_image");
                             } else {

@@ -1,15 +1,20 @@
 package it.polito.mad14;
 
+import android.animation.ObjectAnimator;
+import android.animation.PropertyValuesHolder;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -35,7 +40,7 @@ public class LoadingActivity extends AppCompatActivity {
     private ArrayList<Group> groupsList = new ArrayList<>();
     private int indexGroup = 0;
     private String noImage = "no_image";
-
+    private ImageView img;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,16 +50,11 @@ public class LoadingActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
 
-        RotateAnimation anim = new RotateAnimation(0f, 350f, 15f, 15f);
-        anim.setInterpolator(new LinearInterpolator());
-        anim.setRepeatCount(Animation.INFINITE);
-        anim.setDuration(700);
 
-        // Start animating the image
-        ImageView img = (ImageView) findViewById(R.id.splash);
-        Animation animation = AnimationUtils.loadAnimation(LoadingActivity.this, R.anim.zoom_in_animation);
-        img.startAnimation(animation);
-
+//        // Start animating the image
+        img = (ImageView) findViewById(R.id.splash);
+        final Animation translateAnim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translation_to_middle_screen);
+        img.startAnimation(translateAnim);
 
         myRef = database.getReference("users/" + UserID + "/groups/");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -104,14 +104,11 @@ public class LoadingActivity extends AppCompatActivity {
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
-                // Actions to do after 10 seconds
-                // Later.. stop the animation
-//                splash.setAnimation(null);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 startActivity(intent);
                 finish();
             }
-        }, 3500);
+        }, 4500);
 
 
     }

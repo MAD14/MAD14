@@ -120,7 +120,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
         if (auth.getCurrentUser() != null) {
-            //startActivity(new Intent(LoginActivity.this, MainActivity.class));
             startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
             finish();
         }
@@ -505,9 +504,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 if (pieces[0].equals(mEmail)) {
                     // Account exists, return true if the password matches.
                     startActivity(new Intent(LoginActivity.this, LoadingActivity.class));
-
-//                    Intent intent = new Intent(getApplicationContext(),MainActivity.class);
-//                    startActivity(intent);
                     return pieces[1].equals(mPassword);
                 }
             }
