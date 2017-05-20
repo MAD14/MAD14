@@ -27,18 +27,20 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 
 public class EditProfileActivity extends AppCompatActivity {
 
-    private String email, username, bio, encodedImage, name, providerId;
-    private ImageButton photo;
+    final static int GET_IMAGE = 1;
+
+    private String email, username, bio, encodedImage, name, providerId,strImageUri;
+    private ImageView photo;
     private TextView editBio, editUsername;
     private Bitmap imageBitmap;
     private FirebaseDatabase database;
-    private boolean hasProfileImage;
 
     private String googleProviderId = "google.com";
     private boolean googleUser;
@@ -72,7 +74,6 @@ public class EditProfileActivity extends AppCompatActivity {
         });
         fab.bringToFront();
 
-        hasProfileImage = getIntent().getBooleanExtra("hasProfileImage",false);
         email = getIntent().getStringExtra("userEmail");
         username = getIntent().getStringExtra("username");
         bio = getIntent().getStringExtra("bio");
@@ -101,13 +102,13 @@ public class EditProfileActivity extends AppCompatActivity {
         });
 
 
-        photo = (ImageButton)findViewById(R.id.user_profile_photo);
+        photo = (ImageView)findViewById(R.id.user_profile_photo);
         photo.bringToFront();
         photo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditProfileActivity.this);
-                startActivityForResult(chooseImageIntent, 1);
+                startActivityForResult(chooseImageIntent, GET_IMAGE);
             }
         });
 
@@ -117,12 +118,13 @@ public class EditProfileActivity extends AppCompatActivity {
         myRef.child(email.replace(".",",")).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (hasProfileImage){
+                if (dataSnapshot.hasChild("ProfileImage")){
                     encodedImage = dataSnapshot.child("ProfileImage").getValue().toString();
                     byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
                     Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
                     BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                    photo.setBackgroundDrawable(bDrawable);
+//                    photo.setBackgroundDrawable(bDrawable);
+                    photo.setImageDrawable(bDrawable);
                 } else {
                     photo.setImageResource(R.mipmap.person_icon_white);
                 }
@@ -137,25 +139,39 @@ public class EditProfileActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
-            Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
-            try {
-                imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), imageBitmap);
-                photo.setBackgroundDrawable(bDrawable);
-                photo.setImageResource(android.R.color.transparent);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-                byte[] byteArrayImage = baos.toByteArray();
-                encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-                database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef=database.getReference("users/"+
-                        FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","));
-                myRef.child("ProfileImage").setValue(encodedImage);
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }
 
+        if (requestCode == GET_IMAGE){
+            if (resultCode == RESULT_OK) {
+                Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
+                strImageUri = imageUri.toString();
+
+                CropImage.activity(imageUri)
+                        .setMinCropResultSize(100, 100)
+                        .setMaxCropResultSize(1000, 1000)
+                        .start(this);
+            }
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(resultUri));
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), imageBitmap);
+                    photo.setBackgroundDrawable(bDrawable);
+                    photo.setImageResource(android.R.color.transparent);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                    byte[] byteArrayImage = baos.toByteArray();
+                    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                    database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("users/" +
+                            FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ","));
+                    myRef.child("ProfileImage").setValue(encodedImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+        }
         }
     }
 

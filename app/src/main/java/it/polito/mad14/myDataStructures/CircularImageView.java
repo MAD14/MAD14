@@ -14,13 +14,15 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ImageView;
 
 /**
  * Created by Utente on 19/05/2017.
  */
-public class CircularImageView extends ImageView {
+public class CircularImageView extends AppCompatImageView {
 
     public CircularImageView(Context context, AttributeSet attributeSet){
         super(context,attributeSet);
@@ -38,13 +40,16 @@ public class CircularImageView extends ImageView {
         if (getWidth() == 0 || getHeight() == 0) {
             return;
         }
-        Bitmap b = ((BitmapDrawable) drawable).getBitmap();
-        Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+        try {
+            Bitmap b = ((BitmapDrawable) drawable).getBitmap();
+            Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
+            int w = getWidth(), h = getHeight();
+            Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w);
+            canvas.drawBitmap(roundBitmap, 0, 0, null);
+        } catch (ClassCastException c) {
+            Log.e("exception", c.getMessage());
+        }
 
-        int w = getWidth(), h = getHeight();
-
-        Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w);
-        canvas.drawBitmap(roundBitmap, 0, 0, null);
 
     }
 

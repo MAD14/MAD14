@@ -66,30 +66,49 @@ public class InfoGroupActivity extends AppCompatActivity {
         groupDescription = getIntent().getStringExtra("Description");
         dateCreation = getIntent().getStringExtra("Date");
         groupAuthor = getIntent().getStringExtra("Author");
+
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-        setTitle(groupName);
+        toolbar.setTitle(groupName);
+
         tvDate.setText(dateCreation);
-//        if (!description.equals("")){
+
+        if (!groupDescription.equals("")){
             tvDescription.setText(groupDescription);
-//        } else {
-//            tvDescription.setText("-");
-//        }
+        } else {
+            tvDescription.setText("-");
+        }
+
         encodedImage = getIntent().getStringExtra("Image");
-        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-        toolbar.setBackground(bDrawable);
+
+        if (encodedImage.equals("no_image")) {
+            toolbar.setBackgroundColor(getApplicationContext().getResources().getColor(R.color.backgroundDark));
+            toolbar.getBackground().setAlpha(3);
+        } else {
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+            toolbar.setBackground(bDrawable);
+        }
 
         myRef = database.getReference("groups/" + IDGroup + "/members");
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data: dataSnapshot.getChildren()) {
-                    Contact tmp = new Contact(data.child("Name").getValue().toString(),
-                            data.child("Surname").getValue().toString(),
-                            data.child("Username").getValue().toString(),
-                            data.child("Email").getValue().toString(),
-                            data.child("ProfileImage").getValue().toString());
+                    Contact tmp;
+                    if (data.hasChild("ProfileImage")) {
+                        tmp = new Contact(data.child("Name").getValue().toString(),
+                                data.child("Surname").getValue().toString(),
+                                data.child("Username").getValue().toString(),
+                                data.child("Email").getValue().toString(),
+                                data.child("ProfileImage").getValue().toString());
+                    } else {
+                        tmp = new Contact(data.child("Name").getValue().toString(),
+                                data.child("Surname").getValue().toString(),
+                                data.child("Username").getValue().toString(),
+                                data.child("Email").getValue().toString(),
+                                "no_image");
+                    }
                     indexMembers = membersList.size();
                     membersList.add(indexMembers, tmp);
                 }
@@ -102,7 +121,8 @@ public class InfoGroupActivity extends AppCompatActivity {
             public void onCancelled(DatabaseError databaseError) { }
         });
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_info_group);
+        fab.bringToFront();
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

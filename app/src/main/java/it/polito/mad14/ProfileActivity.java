@@ -27,7 +27,6 @@ import com.google.firebase.database.ValueEventListener;
 public class ProfileActivity extends AppCompatActivity {
 
     private String email, bio, encodedImage, displayName, username, profileImage;
-    private boolean hasProfileImage;
     private ImageView imgbt;
 
     @Override
@@ -62,15 +61,19 @@ public class ProfileActivity extends AppCompatActivity {
                 tv = (TextView) findViewById(R.id.user_profile_short_bio);
                 tv.setText(bio);
 
-                profileImage = dataSnapshot.child("ProfileImage").getValue().toString();
-                if (profileImage.equals("no_image")) {
-                    imgbt.setImageResource(R.mipmap.person_icon);
+                if (dataSnapshot.hasChild("ProfileImage")) {
+                    profileImage = dataSnapshot.child("ProfileImage").getValue().toString();
+                    if (profileImage.equals("no_image")) {
+                        imgbt.setImageResource(R.mipmap.person_icon_white);
+                    } else {
+                        encodedImage = profileImage;
+                        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+                        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+                        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+                        imgbt.setImageDrawable(bDrawable);
+                    }
                 } else {
-                    encodedImage = profileImage;
-                    byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
-                    Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-                    imgbt.setImageDrawable(bDrawable);
+                    imgbt.setImageResource(R.mipmap.person_icon_white);
                 }
             }
             @Override
@@ -112,7 +115,6 @@ public class ProfileActivity extends AppCompatActivity {
                 intent = new Intent(ProfileActivity.this, EditProfileActivity.class);
                 intent.putExtra("userEmail",email);
                 intent.putExtra("username",username);
-                intent.putExtra("hasProfileImage", hasProfileImage);
                 intent.putExtra("bio",bio);
                 intent.putExtra("Name", displayName);
                 startActivity(intent);
