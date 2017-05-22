@@ -145,6 +145,15 @@ public class CustomAdapterExpenses extends BaseAdapter {
                         Toast.makeText(context,context.getString(R.string.deleting_expense),Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                dialogAlert.setNegativeButton(context.getString(R.string.negative_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
                 AlertDialog alert=dialogAlert.create();
                 alert.show();
                 //Toast.makeText(context,"LOng click on Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();

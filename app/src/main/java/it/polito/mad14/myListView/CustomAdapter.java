@@ -161,6 +161,14 @@ public class CustomAdapter extends BaseAdapter{
                     }
                 });
 
+                dialogAlert.setNegativeButton(context.getString(R.string.negative_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
                 AlertDialog alert=dialogAlert.create();
                 alert.show();
 
