@@ -517,11 +517,12 @@ public class MainActivity extends AppCompatActivity {
                         "0",
                         "0",
                         getIntent().getStringExtra("Image"));
-                CustomAdapter cst = (CustomAdapter) list.getAdapter();
-                ArrayList<Group> groupList = cst.getGroupList();
-                groupList.add(tmp);
-                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
+                ((CustomAdapter) list.getAdapter()).getGroupList().add(tmp);
+
+//                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
                ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
+//                list.invalidate();
+//                list.requestLayout();
             }
         }
     }

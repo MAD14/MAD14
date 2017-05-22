@@ -10,6 +10,7 @@ import android.util.Log;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -38,7 +39,7 @@ public class AddNewContacts extends AppCompatActivity {
     private CustomAdapterContactSuggested adapter;
 
     private DatabaseReference myRef;
-
+    private String actualName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,8 @@ public class AddNewContacts extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_contacts);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users");
@@ -97,7 +100,8 @@ public class AddNewContacts extends AppCompatActivity {
         else {
             partialNames.clear();
             for (int i = 0; i < searchNames.size(); i++) {
-                if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase())) {
+                if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase()) &&
+                        !(searchNames.get(i).toString().toUpperCase().contains(actualName.toUpperCase()))) {
                     partialNames.add(searchNames.get(i));
                     adapter.notifyDataSetChanged();
 

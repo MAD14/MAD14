@@ -11,15 +11,17 @@ public class Expense {
     private String author;
     private String group;
     private String image;
+    private String date;
 
 
-    public Expense(String name, String value, String description, String author,String group, String image) {
+    public Expense(String name, String value, String description, String author,String group, String image, String date) {
         this.name = name;
         this.value = value;
         this.description = description;
         this.author = author;
         this.group= group;
         this.image = image;
+        this.date = date;
     }
 
     public String getName() {
@@ -70,5 +72,13 @@ public class Expense {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
     }
 }

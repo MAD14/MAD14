@@ -119,6 +119,7 @@
     <string name="no_contact">In questa pagina puoi visualizzare i tuoi contatti</string>
     <string name="no_expenses">In questa pagina puoi visualizzare le spese di questo gruppo</string>
     <string name="no_report">In questa pagina puoi visualizzare il resoconto di questo gruppo</string>
+    <string name="date">Data</string>
 
 
 </resources>
