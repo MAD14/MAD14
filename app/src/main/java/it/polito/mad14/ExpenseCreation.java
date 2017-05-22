@@ -58,6 +58,12 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private EditText et_import, et_name, et_description;
     private String finalDescription;
     private boolean hasImage;
+    private double oldValue;
+    private double oldDebit;
+    private DatabaseReference refUserDebit;
+    private DatabaseReference creditBranch;
+    private Double priceEach;
+    private Double totCredit;
 
 
     @Override
@@ -127,10 +133,30 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             ref.child("Author").setValue(et_author);
             ref.child("Image").setValue(encodedExpenseImage);
 
+            // Calculation of credits and debits
+            priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
+            // Total credit the owner should receive
+            totCredit=priceEach*(nMembers-1);
 
+            // Updating credit field into creditor's group branch
+            creditBranch=database.getReference("/users/"+et_author+"/groups/"+IDGroup+"/Credit/");
+            creditBranch.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                    // Update the value
+                    dataSnapshot.getRef().setValue(oldValue+totCredit);
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+            // Updating debits branch of the group
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
-            // 2 decimals
-            double priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
 
             Iterator<String> it=contacts.iterator();
             while(it.hasNext()){
@@ -140,22 +166,39 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     //updating of the group's info
                     DatabaseReference newRef = refDebits.push();
 
+                    // Unique key that identify the transaction
                     String key = newRef.getKey();
-
                     newRef.child("Product").setValue(et_name.getText().toString());
                     newRef.child("Receiver").setValue(et_author);
                     newRef.child("Sender").setValue(name);
                     newRef.child("Money").setValue(priceEach);
+
                     //updating debitors list inside the author
                     DatabaseReference refDeb = userRef.child(et_author).child("credits").child(key);
                     refDeb.child("Group").setValue(IDGroup);
                     refDeb.child("Debitor").setValue(name);
                     refDeb.child("Money").setValue(priceEach);
+
                     //updating each creditor
                     DatabaseReference refCred = userRef.child(name).child("debits").child(key);
                     refCred.child("Group").setValue(IDGroup);
                     refCred.child("Paying").setValue(et_author);
                     refCred.child("Money").setValue(priceEach);
+                    refUserDebit = userRef.child(name).child("groups").child(IDGroup).child("Debit");
+                    refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            oldDebit=Double.valueOf(dataSnapshot.getValue().toString());
+                            // Updating each summary field for the general GroupView
+                            dataSnapshot.getRef().setValue(oldDebit+priceEach);
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+
+                    });
                 }
             }
             //notificare che le spese sono cambiate

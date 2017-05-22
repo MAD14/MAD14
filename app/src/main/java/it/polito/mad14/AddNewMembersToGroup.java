@@ -80,12 +80,21 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if(data.child("Image").getValue()!=null){
                     friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),
                             data.child("Surname").getValue().toString(),
                             data.child("Username").getValue().toString(),
                             data.child("Email").getValue().toString(),
                             data.child("Image").getValue().toString()));
-                    friendsIndex++;
+                    friendsIndex++;}
+                    else{
+                        friends.add(friendsIndex,new Contact(data.child("Name").getValue().toString(),
+                                data.child("Surname").getValue().toString(),
+                                data.child("Username").getValue().toString(),
+                                data.child("Email").getValue().toString(),
+                                "no_image"));
+
+                    }
                 }
                 // adapter per suggerire gli amici in elenco
                 actv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);

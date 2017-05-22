@@ -102,7 +102,8 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 image = dataSnapshot.child("ProfileImage").getValue().toString();
-                                myRef.child("Image").setValue(image);
+                                if(image!=null)
+                                    myRef.child("Image").setValue(image);
                             }
 
                             @Override
