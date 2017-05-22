@@ -11,5 +11,13 @@
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"
         />
-
+    <TextView
+        android:id="@+id/noSummary_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:text="@string/no_summary"
+        android:visibility="gone"
+        android:textSize="@dimen/description"
+        android:layout_margin="@dimen/margin_double"/>
 </LinearLayout>

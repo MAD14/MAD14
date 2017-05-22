@@ -17,6 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,13 +28,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
-
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
@@ -223,17 +217,10 @@ public class GroupActivity extends AppCompatActivity {
         private boolean credit;
         private String user;
 
-//TODO: attenzione a questa public variable
         public FirebaseDatabase database;
 
         public PlaceholderFragment() {
         }
-
-        /**
-         * ELENA:
-         *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
-         *  popolate tramite la lettura dal database!
-         */
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -250,6 +237,7 @@ public class GroupActivity extends AppCompatActivity {
         private ListView list_expenses,list_summary;
         private String name;
         private String IDGroup;
+        private TextView noExpense_textView, noReport_textView;
 
 
         @Override
@@ -265,6 +253,7 @@ public class GroupActivity extends AppCompatActivity {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
                 list_expenses = (ListView) rootView.findViewById(R.id.list_view_expenses);
+                noExpense_textView = (TextView) rootView.findViewById(R.id.noExpenses_tv);
 
                 CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(), expensesList);
                 list_expenses.setAdapter(adapter);
@@ -286,6 +275,9 @@ public class GroupActivity extends AppCompatActivity {
                         ((CustomAdapterExpenses) list_expenses.getAdapter()).setExpensesList(expensesList);
                         list_expenses.invalidate();
                         list_expenses.requestLayout();
+                        if (list_expenses.getAdapter().getCount() == 0){
+                            noExpense_textView.setVisibility(View.VISIBLE);
+                        }
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -298,6 +290,7 @@ public class GroupActivity extends AppCompatActivity {
             else { // summary page
                 rootView = inflater.inflate(R.layout.summary_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
+                noReport_textView = (TextView) rootView.findViewById(R.id.noReport_tv);
 
                 CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
                 list_summary.setAdapter(adapter);
@@ -376,6 +369,9 @@ public class GroupActivity extends AppCompatActivity {
                         ((CustomAdapterSummary) list_summary.getAdapter()).setSummaryList(summaryList);
                         list_summary.invalidate();
                         list_summary.requestLayout();
+                        if (list_summary.getAdapter().getCount() == 0){
+                            noReport_textView.setVisibility(View.VISIBLE);
+                        }
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
