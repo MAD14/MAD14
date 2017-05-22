@@ -60,6 +60,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private EditText et_import, et_name, et_description;
     private String finalDescription;
     private boolean hasImage;
+    private String date;
 
     private double oldValue;
     private double oldDebit;
@@ -169,7 +170,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             // Updating debits branch of the group
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
-
 
             Iterator<String> it=contacts.iterator();
             while(it.hasNext()){

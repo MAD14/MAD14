@@ -131,6 +131,7 @@
     <string name="no_report">In questa pagina puoi visualizzare il resoconto di questo gruppo</string>
     <string name="date">Data</string>
 
+    <string name="search_users">Caricando i contatti...</string>
     <string name="credit">Credito</string>
     <string name="debit">Debito</string>
     <string name="delete_group_request">Cancellare questa gruppo?</string>

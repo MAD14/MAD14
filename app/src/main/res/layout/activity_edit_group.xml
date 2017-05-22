@@ -29,6 +29,7 @@
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
@@ -68,5 +69,6 @@
         android:clickable="true"
         android:onClick="onClickChangePhoto"
         android:background="@color/colorPrimary"/>
+
 
 </android.support.design.widget.CoordinatorLayout>

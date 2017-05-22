@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Handler;
 import android.provider.ContactsContract;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -19,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,7 +40,7 @@ import it.polito.mad14.myListView.CustomAdapterInfoGroup;
 
 public class EditGroupActivity extends AppCompatActivity {
 
-    private String IDGroup, groupName, dateCreation, description, encodedImage;
+    private String IDGroup, groupName, dateCreation, description, encodedImage,groupAuthor;
     private Bitmap imageBitmap;
     private ImageButton imgbt;
     private ImageButton photo;
@@ -50,6 +52,8 @@ public class EditGroupActivity extends AppCompatActivity {
     private int indexMembers;
     private ArrayList<Contact> membersList = new ArrayList<>();
     private ListView list;
+    private String groupPhoto;
+    private ProgressBar progressBar;
 
 
     @Override
@@ -61,6 +65,8 @@ public class EditGroupActivity extends AppCompatActivity {
         groupName = getIntent().getStringExtra("Name");
         dateCreation = getIntent().getStringExtra("Date");
         description = getIntent().getStringExtra("Description");
+        groupPhoto = getIntent().getStringExtra("Image");
+        groupAuthor = getIntent().getStringExtra("Author");
 
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolbar.setTitle(groupName);
@@ -90,34 +96,16 @@ public class EditGroupActivity extends AppCompatActivity {
             }
         });
 
-
-// TODO: bisogna inserire l'immagine anche nell'attività base
-//        photo = (ImageButton)findViewById(R.id.group_photo);
-//        photo.bringToFront();
-//        photo.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditGroupActivity.this);
-//                startActivityForResult(chooseImageIntent, 1);
-//            }
-//        });
-
-
 //        findViewById(R.id.edit_image).bringToFront();
 
         database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference("groups");
-        myRef.child(IDGroup).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-               // TODO management of the image
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
+        //TODO l'immagine va decodificata e messa come sfondo della collapsing toolbar
+        encodedImage = groupPhoto;
+        byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+        toolbar.setBackground(bDrawable);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_finished_edit);
@@ -141,28 +129,47 @@ public class EditGroupActivity extends AppCompatActivity {
             try {
                 imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
                 BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), imageBitmap);
-                photo.setBackgroundDrawable(bDrawable);
-                photo.setImageResource(android.R.color.transparent);
+                CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                toolbar.setBackground(bDrawable);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                 byte[] byteArrayImage = baos.toByteArray();
                 encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                groupPhoto = encodedImage;
+                database = FirebaseDatabase.getInstance();
+                DatabaseReference myRef=database.getReference("groups/"+IDGroup);
+                myRef.child("Image").setValue(encodedImage);
             }catch (FileNotFoundException e){
                 e.printStackTrace();
             }
-            database = FirebaseDatabase.getInstance();
-            DatabaseReference myRef=database.getReference("groups/"+IDGroup);
-            myRef.child("GroupImage").setValue(encodedImage);
+
         }
     }
 
     public void onClickCompletedAction(View view) {
+        progressBar = (ProgressBar)findViewById(R.id.progressBar_edit);
+        progressBar.setVisibility(View.VISIBLE);
 
-        Toast.makeText(EditGroupActivity.this,getString(R.string.changes_applied),Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(EditGroupActivity.this,InfoGroupActivity.class);
-        intent.putExtra("IDGroup",IDGroup);
-        startActivity(intent);
-        finish();
+        // TODO devo aggiornare il gruppo nell'utente corrente e poi sganciare il thread che aggiorni glialtri utenti!
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(EditGroupActivity.this,getString(R.string.changes_applied),Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(EditGroupActivity.this,InfoGroupActivity.class);
+                intent.putExtra("IDGroup",IDGroup);
+                intent.putExtra("Image",groupPhoto);
+                intent.putExtra("Name",groupName);
+                intent.putExtra("Date",dateCreation);
+                intent.putExtra("Author",groupAuthor);
+                intent.putExtra("Description",description);
+                startActivity(intent);
+                progressBar.setVisibility(View.GONE);
+                finish();
+            }
+        },2000);
+
 
     }
 
@@ -232,7 +239,7 @@ public class EditGroupActivity extends AppCompatActivity {
     }
 
     public void onClickChangePhoto(View view){
-        //TODO manage the change of the group image
-
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditGroupActivity.this);
+        startActivityForResult(chooseImageIntent, 1);
     }
 }
