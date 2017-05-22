@@ -316,39 +316,35 @@ public class MainActivity extends AppCompatActivity {
                         summaryList = new ArrayList<>(tot.values());
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
 
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        Log.w("Failed to read value.", error.toException());
-                    }
-                });
+                        myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                    credit = true; // credits section --> it's a credit
+                                    Summary tmp = new Summary(data.child("Debitor").getValue().toString().replace(",","."),
+                                            data.child("Money").getValue().toString(),
+                                            credit);
+                                    indexSummary = creditsList.size();
+                                    creditsList.add(indexSummary, tmp);
+                                }
 
-                myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                            credit = true; // credits section --> it's a credit
-                            Summary tmp = new Summary(data.child("Debitor").getValue().toString().replace(",","."),
-                                    data.child("Money").getValue().toString(),
-                                    credit);
-                            indexSummary = creditsList.size();
-                            creditsList.add(indexSummary, tmp);
-                        }
+                                //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                                //creditsList.addAll(tmpList);
+                                Iterator<Summary> itCred=creditsList.iterator();
+                                while(itCred.hasNext()){
+                                    Summary sum=itCred.next();
+                                    if(tot.containsKey(sum.getName())){
+                                        Float past=Float.valueOf(tot.get(sum.getName()).getValue());
+                                        Double newtot=Math.round(past+Float.valueOf(sum.getValue())*100.0)/100.0;
 
-                        //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                        //creditsList.addAll(tmpList);
-                        Iterator<Summary> itCred=creditsList.iterator();
-                        while(itCred.hasNext()){
-                            Summary sum=itCred.next();
-                            if(tot.containsKey(sum.getName())){
-                                Float past=Float.valueOf(tot.get(sum.getName()).getValue());
-                                Double newtot=Math.round(past+Float.valueOf(sum.getValue())*100.0)/100.0;
+                                        tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),true));
 
-                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),true));
+                                    }else{
+                                        tot.put(sum.getName(),sum);
+                                    }
+                  
 
-                            }else{
-                                tot.put(sum.getName(),sum);
-                            }
+
                         }
                         summaryList = new ArrayList<>(tot.values());
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
@@ -356,21 +352,20 @@ public class MainActivity extends AppCompatActivity {
                         if (list_summary.getAdapter().getCount() == 0){
                             noSummary_textView.setVisibility(View.VISIBLE);
                         }
+
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
                         Log.w("Failed to read value.", error.toException());
-
                     }
                 });
-
-
 
                 //TODO: possibilità di segnare che si è pagato qualcuno
                 //TODO: grafico riepilogo crediti/debiti
 
                 //in questa vista possiamo aggiungere un bottone con scritto "salda/saldato" in modo da linkare subito alla conferma di pagamento effettuato/ricevuto
                 return rootView;
+
 
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
