@@ -84,7 +84,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(context,"Friends added",Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,context.getString(R.string.friends_added),Toast.LENGTH_SHORT).show();
 
                 Runnable r = new Runnable() {
                     @Override
