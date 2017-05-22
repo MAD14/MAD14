@@ -94,6 +94,35 @@
             android:layout_alignBottom="@+id/description"
             android:text="-"
             />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:text="@string/date"
+            android:textSize="@dimen/summary"
+            android:layout_below="@id/tv_description"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:elevation="4dp"
+            android:textColor="@color/writing"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/date"
+            android:layout_alignBottom="@+id/date"
+            android:text="-"
+            />
+
     </RelativeLayout>
 
 

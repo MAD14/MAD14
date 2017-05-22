@@ -24,10 +24,11 @@ import org.w3c.dom.Text;
 
 public class InfoExpenseActivity extends AppCompatActivity {
 
-    private TextView tvValue,tvDescription,tvAuthor;
+    private TextView tvValue,tvDescription,tvAuthor,tvDate;
     private String IDGroup;
     private FirebaseDatabase database;
     private String image;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +43,8 @@ public class InfoExpenseActivity extends AppCompatActivity {
         String description = intent.getStringExtra("Description");
         String author = intent.getStringExtra("Author");
         image = intent.getStringExtra("Image");
+        String date = intent.getStringExtra("Date");
+
         byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
         Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
         BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
@@ -60,7 +63,8 @@ public class InfoExpenseActivity extends AppCompatActivity {
         tvDescription = (TextView)findViewById(R.id.tv_description);
         if (!description.equals(""))
             tvDescription.setText(description);
-
+        tvDate = (TextView) findViewById(R.id.tv_date);
+        tvDate.setText(date);
 
 
 //        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);

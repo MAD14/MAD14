@@ -200,7 +200,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 // Insertion of the group in each user
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : friends_added) {
-                    String newUser=user.replace(".",",");
+                    String newUser = user.replace(".",",");
                     DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
                     ref.child("Name").setValue(groupName);
                     ref.child("Author").setValue(groupAuthor);
@@ -243,10 +243,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         };
         Thread t = new Thread(r);
         t.start();
-
-
-
-
 
 //        //send e-mail to members
 //        final Mail inviteMail = new Mail();
