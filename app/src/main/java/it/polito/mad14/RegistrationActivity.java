@@ -112,7 +112,6 @@ public class RegistrationActivity extends AppCompatActivity {
                             ref.child("Name").setValue(name);
                             ref.child("Surname").setValue(surname);
                             ref.child("Email").setValue(email);
-                            ref.child("Password").setValue(password);
                             ref.child("Username").setValue(username);
                             ref.child("ProfileImage").setValue("no_image");
                             ref.child("Bio").setValue(getString(R.string.default_bio));
