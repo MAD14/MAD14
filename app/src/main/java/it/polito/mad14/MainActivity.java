@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -184,7 +185,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseReference myRef_summary_debits,myRef_summary_credits;
         Map<String,Summary> tot= new HashMap<>();
         private String noImage = "no_image";
-
+        private TextView noGroup_textView, noSummary_textView, noContact_textView;
         private int indexSummary=0;
         private boolean credit;
 
@@ -214,6 +215,7 @@ public class MainActivity extends AppCompatActivity {
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.groups_list_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
+                noGroup_textView = (TextView) rootView.findViewById(R.id.noGroup_tv);
 
                 myRef = database.getReference("users/"+UserID+"/groups/");
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -237,6 +239,7 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     }
                         }
+                        //TODO: group sorting
 //                        groupsList.sort(new Comparator<Group>() {
 //                            @Override
 //                            public int compare(Group group1, Group group2) {
@@ -247,6 +250,9 @@ public class MainActivity extends AppCompatActivity {
 //                            }
 //                        });
                         ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
+                        if (list.getAdapter().getCount() == 0){
+                            noGroup_textView.setVisibility(View.VISIBLE);
+                        }
                         list.invalidate();
                         list.requestLayout();
                     }
@@ -260,6 +266,8 @@ public class MainActivity extends AppCompatActivity {
                 CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
                 list.setAdapter(adapter);
 
+
+
                     return rootView;
 
             }
@@ -267,6 +275,7 @@ public class MainActivity extends AppCompatActivity {
 
                 View rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
+                noSummary_textView = (TextView) rootView.findViewById(R.id.noSummary_tv);
 
                 String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                 myRef_summary_debits = database.getReference("users/" + userID + "/debits");
@@ -343,6 +352,10 @@ public class MainActivity extends AppCompatActivity {
                         }
                         summaryList = new ArrayList<>(tot.values());
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
+
+                        if (list_summary.getAdapter().getCount() == 0){
+                            noSummary_textView.setVisibility(View.VISIBLE);
+                        }
                     }
                     @Override
                     public void onCancelled(DatabaseError error) {
@@ -361,9 +374,8 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
-                // popolamento della pagina
-
                 list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
+                noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
 
                 //TODO: prendere i dati degli amici e visualizzarli qui
                 //con il formato contact_item
@@ -400,6 +412,11 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 }
                             }
+
+                            if (list.getAdapter().getCount() == 0){
+                                noContact_textView.setVisibility(View.VISIBLE);
+                            }
+
                             list.invalidate();
                             list.requestLayout();
                         }

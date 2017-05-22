@@ -151,7 +151,8 @@ public class CustomAdapter extends BaseAdapter{
                             };
                             Thread t = new Thread(r);
                             t.start();
-                            Toast.makeText(context, "Deleting group", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, "The group is going to be deleted...", Toast.LENGTH_SHORT).show();
+
                         } else {
                             Toast.makeText(context,"You can not delete this group. \n You must balance your status before.",Toast.LENGTH_LONG).show();
                         }
@@ -160,7 +161,7 @@ public class CustomAdapter extends BaseAdapter{
 
                 AlertDialog alert=dialogAlert.create();
                 alert.show();
-                //Toast.makeText(context,"LOng click on Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();
+
                 return true;
             }
         });

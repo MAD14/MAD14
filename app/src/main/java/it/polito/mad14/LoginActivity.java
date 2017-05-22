@@ -98,7 +98,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     private FirebaseDatabase database;
 
-    private ImageButton italy, uk;
     private SharedPreferences prefs;
 
 
@@ -136,14 +135,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
 
-        italy = (ImageButton) findViewById(R.id.italy_flag);
+        ImageButton italy = (ImageButton) findViewById(R.id.italy_flag);
         italy.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 ChangeToItalian();
             }
         });
-        uk = (ImageButton) findViewById(R.id.uk_flag);
+        ImageButton uk = (ImageButton) findViewById(R.id.uk_flag);
         uk.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -151,7 +150,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-
+        TextView forgotPassword = (TextView) findViewById(R.id.forgot_password);
+        forgotPassword.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(LoginActivity.this, PasswordResetPhase1.class);
+                startActivity(intent);
+            }
+        });
         // Configure sign-in to request the user's ID, email address, and basic
         // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)

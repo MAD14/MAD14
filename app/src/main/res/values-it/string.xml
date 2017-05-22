@@ -111,4 +111,14 @@
     <string name="invitation_mail_subject">Invito a unirti a MAD14</string>
     <string name="emails_sent">Email inviate</string>
 
+    <string name="action_forgot_password">Hai dimenticato la password?</string>
+    <string name="send_email">Invia email</string>
+
+    <string name="no_groups">In questa pagina puoi visualizzare i gruppi di cui fai parte</string>
+    <string name="no_summary">In questa pagina puoi visualizzare il resoconto dei tuoi gruppi</string>
+    <string name="no_contact">In questa pagina puoi visualizzare i tuoi contatti</string>
+    <string name="no_expenses">In questa pagina puoi visualizzare le spese di questo gruppo</string>
+    <string name="no_report">In questa pagina puoi visualizzare il resoconto di questo gruppo</string>
+
+
 </resources>

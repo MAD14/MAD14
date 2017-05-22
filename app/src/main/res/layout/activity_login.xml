@@ -35,7 +35,7 @@
             <ImageView
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/ic_mani_box"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_gravity="center_horizontal"/>
@@ -125,7 +125,6 @@
                     android:layout_marginTop="16dp"
                     android:text="@string/action_register_proposal"
                     android:textStyle="italic"
-
                     android:textColor="@color/colorAccent"
                     android:layout_below="@id/sign_in_button"
                     android:clickable="true"
@@ -147,6 +146,20 @@
                     android:layout_toRightOf="@id/italy_flag"
                     android:layout_margin="5dp"
                     android:background="@mipmap/ic_uk_flag"/>
+
+                <TextView
+                    android:id="@+id/forgot_password"
+                    style="?android:textAppearanceSmall"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin"
+                    android:layout_marginBottom="@dimen/margin"
+                    android:text="@string/action_forgot_password"
+                    android:textStyle="italic"
+                    android:textColor="@color/colorAccent"
+                    android:layout_below="@id/italy_flag"
+                    android:clickable="true"
+                    android:onClick="onClick"/>
 
             </RelativeLayout>
 

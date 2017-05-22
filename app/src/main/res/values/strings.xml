@@ -110,7 +110,11 @@
         Your MAD14 team</string>
     <string name="invitation_mail_subject">Invite to join MAD14</string>
     <string name="emails_sent">Emails have been sent</string>
-
-
-
+    <string name="action_forgot_password">Forgot your password?</string>
+    <string name="send_email">Send email</string>
+    <string name="no_groups">In this page you can see groups you are part of</string>
+    <string name="no_summary">In this page you can see the summary of your groups</string>
+    <string name="no_contact">In this page you can see your contacts</string>
+    <string name="no_expenses">In this page you can see the expenses of this group</string>
+    <string name="no_report">In this page you can see the summary of this group</string>
 </resources>
