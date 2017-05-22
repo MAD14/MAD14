@@ -88,8 +88,8 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
-                //startActivityForResult(intent,EXPENSE_CREATION);
-                startActivity(intent);
+                startActivityForResult(intent,EXPENSE_CREATION);
+//                startActivity(intent);
                 finish();
             }
         });
@@ -268,7 +268,8 @@ public class GroupActivity extends AppCompatActivity {
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString(),
                                         IDGroup,
-                                        data.child("Image").getValue().toString());
+                                        data.child("Image").getValue().toString(),
+                                        data.child("Date").getValue().toString());
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }

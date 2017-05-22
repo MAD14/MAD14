@@ -30,7 +30,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -58,12 +60,16 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private EditText et_import, et_name, et_description;
     private String finalDescription;
     private boolean hasImage;
+
     private double oldValue;
     private double oldDebit;
     private DatabaseReference refUserDebit;
     private DatabaseReference creditBranch;
     private Double priceEach;
     private Double totCredit;
+
+    private String date;
+
 
 
     @Override
@@ -72,6 +78,9 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         setContentView(R .layout.activity_expense_creation);
         encodedExpenseImage = getString(R.string.no_image);
         hasImage = false;
+
+        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyy");
+        date = format1.format(Calendar.getInstance().getTime());
 
         bt = (Button) findViewById(R.id.expense_button);
         bt.setOnClickListener(this);
@@ -119,9 +128,11 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         String et_author = auth.getCurrentUser().getEmail().replace(".",",");
 
         if(isImportValid(et_import.getText().toString()) && hasName(et_name.getText().toString())){
+
             DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
-            DatabaseReference userRef= database.getReference("users");
-            DatabaseReference ref=myRef.child(et_name.getText().toString());
+            DatabaseReference userRef = database.getReference("users");
+            DatabaseReference ref = myRef.child(et_name.getText().toString());
+
             ref.child("Price").setValue(et_import.getText().toString());
             if (!et_description.getText().toString().isEmpty()){
                 finalDescription = et_description.getText().toString();
@@ -132,6 +143,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             ref.child("Name").setValue(et_name.getText().toString());
             ref.child("Author").setValue(et_author);
             ref.child("Image").setValue(encodedExpenseImage);
+            ref.child("Date").setValue(date);
 
             // Calculation of credits and debits
             priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
@@ -157,6 +169,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             // Updating debits branch of the group
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
+
 
             Iterator<String> it=contacts.iterator();
             while(it.hasNext()){
@@ -208,6 +221,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             intent.putExtra("import",et_import.getText().toString());
             intent.putExtra("description",finalDescription);
             intent.putExtra("expenseImage",hasImage);
+            intent.putExtra("date",date);
             intent.putExtra("IDGroup",IDGroup);
             setResult(RESULT_OK, intent);
             startActivity(intent);
