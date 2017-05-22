@@ -120,6 +120,7 @@
     <string name="no_expenses">In questa pagina puoi visualizzare le spese di questo gruppo</string>
     <string name="no_report">In questa pagina puoi visualizzare il resoconto di questo gruppo</string>
     <string name="date">Data</string>
+    <string name="search_users">Caricando i contatti...</string>
 
 
 </resources>

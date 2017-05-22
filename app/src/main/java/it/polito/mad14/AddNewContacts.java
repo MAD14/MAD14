@@ -7,8 +7,11 @@ import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -40,6 +43,8 @@ public class AddNewContacts extends AppCompatActivity {
 
     private DatabaseReference myRef;
     private String actualName;
+    private ProgressBar progressBar;
+    private TextView loading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +52,8 @@ public class AddNewContacts extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_contacts);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar);
+        loading = (TextView) findViewById(R.id.loading_tv);
 
         actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
@@ -57,6 +64,8 @@ public class AddNewContacts extends AppCompatActivity {
         adapter = new CustomAdapterContactSuggested(getApplicationContext(), partialNames);
         list.setAdapter(adapter);
 
+        progressBar.setVisibility(View.VISIBLE);
+        loading.setVisibility(View.VISIBLE);
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -67,8 +76,13 @@ public class AddNewContacts extends AppCompatActivity {
                                     data.child("Email").getValue().toString(),
                                     "no_image"));
                 }
+
+                progressBar.setVisibility(View.GONE);
+                loading.setVisibility(View.GONE);
+
                 nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
-              
+                nameCapture.setVisibility(View.VISIBLE);
+
                 AlterAdapter();
 
                 nameCapture.addTextChangedListener(new TextWatcher() {
