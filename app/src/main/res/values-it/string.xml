@@ -4,6 +4,9 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_join_a_group">Unisciti a un gruppo</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="action_add_members">Aggiungi memebro</string>
+    <string name="action_silence">Silenzia</string>
+    <string name="action_info">Info</string>
 
     <string name="how_to_join_group">Inserisci l\'ID del gruppo e il join-code </string>
     <string name="group_id">ID del gruppo</string>

@@ -3,6 +3,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_join_a_group">Join a group</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="action_add_members">Add members</string>
+    <string name="action_silence">Silence</string>
+    <string name="action_info">Info</string>
 
     <string name="how_to_join_group">Type the group ID and the related join-code</string>
     <string name="group_id">Group ID</string>

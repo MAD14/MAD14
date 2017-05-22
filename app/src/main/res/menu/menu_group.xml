@@ -6,17 +6,17 @@
     <item
         android:id="@+id/add_members"
         android:orderInCategory="100"
-        android:title="Add members"
+        android:title="@string/action_add_members"
         app:showAsAction="never" />
     <item
         android:id="@+id/silenzioso"
         android:orderInCategory="100"
-        android:title="Silence"
+        android:title="@string/action_silence"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/info"
         android:orderInCategory="100"
-        android:title="Info"
+        android:title="@string/action_info"
         app:showAsAction="never" />
 </menu>
