@@ -4,6 +4,9 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_join_a_group">Unisciti a un gruppo</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="action_add_members">Aggiungi memebro</string>
+    <string name="action_silence">Silenzia</string>
+    <string name="action_info">Info</string>
 
     <string name="how_to_join_group">Inserisci l\'ID del gruppo e il join-code </string>
     <string name="group_id">ID del gruppo</string>
@@ -11,6 +14,7 @@
     <string name="join">Unisciti</string>
     <string name="error_group_id_not_found">IDdel gruppo non trovato</string>
     <string name="error_group_join_code_incorrect">Join-code errato</string>
+    <string name="group_created">Gruppo creato</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -70,6 +74,7 @@
     <string name="loading">Caricamento...</string>
     <string name="type_name_surname_username">Inserisci il nome completo o il nome utente</string>
     <string name="type_of_password">La password deve essere lunga almeno 7 caratteri</string>
+    <string name="added">Aggiunto</string>
 
     <string name="pick_image_intent_text">Selezionare un\'applicazione per completare l\'azione</string>
     <string name="title_activity_info_group">InfoGroupActivity</string>
@@ -98,9 +103,14 @@
     <string name="problems">Problemi</string>
     <string name="authentication_failed">Autenticazione fallita</string>
     <string name="google_play_services_error">Errore nei servizi Google Play</string>
+    <string name="group_name_error">Nome gruppo non valido.\nDeve contenere numeri o lettere</string>
+    <string name="added_as_friend">Aggiunto agli amici</string>
 
     <string name="tab_expenses">SPESE</string>
     <string name="tab_report">SOMMARIO</string>
+    <string name="tab_groups">GRUPPI</string>
+    <string name="tab_my_section">PERSONALE</string>
+    <string name="tab_contacts">CONTATTI</string>
 
     <string name="hi">Ciao!</string>
     <string name="mail_body_1">ti ha invitato ad unirti alla community di "Shared Expenses".\n
@@ -120,7 +130,15 @@
     <string name="no_expenses">In questa pagina puoi visualizzare le spese di questo gruppo</string>
     <string name="no_report">In questa pagina puoi visualizzare il resoconto di questo gruppo</string>
     <string name="date">Data</string>
+
     <string name="search_users">Caricando i contatti...</string>
-
-
+    <string name="credit">Credito</string>
+    <string name="debit">Debito</string>
+    <string name="delete_group_request">Cancellare questa gruppo?</string>
+    <string name="deleting_group">Il gruppo sta venendo eliminato...</string>
+    <string name="delete_group_error">Non puoi cancellare questo gruppo.\n
+        Devi ancora pagare dei debiti o riscuotere dei crediti.</string>
+    <string name="friends_added">Amici aggiunti</string>
+    <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
+    <string name="deleting_expense">Cancellazione spesa...</string>
 </resources>

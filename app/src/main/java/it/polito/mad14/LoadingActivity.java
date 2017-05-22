@@ -75,8 +75,14 @@ public class LoadingActivity extends AppCompatActivity {
                             String nm = data.child("Name").getValue().toString();
                             String own = data.child("Author").getValue().toString();
                             String dat = data.child("Date").getValue().toString();
-                            String credit = data.child("Credit").getValue().toString();
-                            String debit = data.child("Debit").getValue().toString();
+                            String credit = "0";
+                            if (data.hasChild("Credit")) {
+                                credit = data.child("Credit").getValue().toString();
+                            }
+                            String debit = "0";
+                            if (data.hasChild("Debit")) {
+                                debit = data.child("Debit").getValue().toString();
+                            }
                             String image;
                             if (data.child("Image").getValue().toString().equals(noImage) ) {
                                 image = null;

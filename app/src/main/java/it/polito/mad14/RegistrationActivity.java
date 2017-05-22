@@ -115,15 +115,13 @@ public class RegistrationActivity extends AppCompatActivity {
                             ref.child("Username").setValue(username);
                             ref.child("ProfileImage").setValue("no_image");
                             ref.child("Bio").setValue(getString(R.string.default_bio));
-                            Toast.makeText(RegistrationActivity.this, getString(R.string.default_bio),
-                                    Toast.LENGTH_SHORT).show();
 
                             UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                     .setDisplayName(name+"."+surname).build();
                             FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates);
 
-//                            Toast.makeText(RegistrationActivity.this, "Added " + name + " " + surname,
-//                                    Toast.LENGTH_SHORT).show();
+                            Toast.makeText(RegistrationActivity.this, getString(R.string.added) + " " + name + " " + surname,
+                                    Toast.LENGTH_SHORT).show();
                             mProgressView.setVisibility(View.GONE);
 
                             mainActivityCall();

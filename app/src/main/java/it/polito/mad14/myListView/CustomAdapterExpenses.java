@@ -42,6 +42,8 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private ArrayList<Expense> expensesList;
     private LayoutInflater inflater;
     private String encodedImage;
+    private FirebaseDatabase database;
+    private Expense expense;
 
 
     public CustomAdapterExpenses(Context context, ArrayList<Expense> expensesList) {
@@ -107,13 +109,13 @@ public class CustomAdapterExpenses extends BaseAdapter {
             public boolean onLongClick(View view){
                 AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
                 dialogAlert.setTitle("");
-                dialogAlert.setMessage("Do you want to delete this item?");
-                dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                dialogAlert.setMessage(context.getString(R.string.delete_item_request));
+                dialogAlert.setPositiveButton(context.getString(R.string.positive_button_dialogue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
 
                         //TODO: posso cancellare la spesa solo se l'ho creata io!
-                        final FirebaseDatabase database=FirebaseDatabase.getInstance();
-                        final Expense expense=expensesList.get(position);
+                        database = FirebaseDatabase.getInstance();
+                        expense = expensesList.get(position);
                         // remove value from expense list
                         expensesList.remove(position);
                         // remove value from group
@@ -140,9 +142,18 @@ public class CustomAdapterExpenses extends BaseAdapter {
                             }
                         });
 
-                        Toast.makeText(context,"Deleting expense",Toast.LENGTH_SHORT).show();
+                        Toast.makeText(context,context.getString(R.string.deleting_expense),Toast.LENGTH_SHORT).show();
                     }
                 });
+
+                dialogAlert.setNegativeButton(context.getString(R.string.negative_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
                 AlertDialog alert=dialogAlert.create();
                 alert.show();
                 //Toast.makeText(context,"LOng click on Expense number "+ position +" has been clicked!",Toast.LENGTH_SHORT).show();

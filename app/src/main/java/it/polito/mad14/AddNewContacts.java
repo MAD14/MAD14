@@ -43,8 +43,10 @@ public class AddNewContacts extends AppCompatActivity {
 
     private DatabaseReference myRef;
     private String actualName;
+
     private ProgressBar progressBar;
     private TextView loading;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +56,8 @@ public class AddNewContacts extends AppCompatActivity {
         setSupportActionBar(toolbar);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loading = (TextView) findViewById(R.id.loading_tv);
+
+        actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
         actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 

@@ -58,6 +58,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     private DatabaseReference temp_reference, myRefGroup;
     private Uri groupImageUri;
     private String noImage = "no_image";
+    private AutoCompleteTextView actv;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,8 +127,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     friendsIndex++;
                 }
                 // adapter per suggerire gli amici in elenco
-                final AutoCompleteTextView tv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
-                tv.setAdapter(new ArrayAdapter<>(
+                actv = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
+                actv.setAdapter(new ArrayAdapter<>(
                         NewGroupActivityPhase2.this,android.R.layout.simple_list_item_single_choice,friends));
                 list_friends = (ListView) findViewById(R.id.lv_friends);
                 list_friends.setAdapter(new BaseAdapter() {
@@ -181,12 +182,12 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             list_friends.invalidate();
             list_friends.requestLayout();
         } else {
-            Toast.makeText(NewGroupActivityPhase2.this,"User not found",Toast.LENGTH_SHORT).show();
+            Toast.makeText(NewGroupActivityPhase2.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
         }
     }
 
     public void onClickCompletedAction(View view) {
-        Toast.makeText(NewGroupActivityPhase2.this, "Group Created",
+        Toast.makeText(NewGroupActivityPhase2.this, getString(R.string.group_created),
                 Toast.LENGTH_SHORT).show();
 
         database = FirebaseDatabase.getInstance();

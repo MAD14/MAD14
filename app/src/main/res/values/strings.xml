@@ -3,6 +3,9 @@
     <string name="action_settings">Settings</string>
     <string name="action_join_a_group">Join a group</string>
     <string name="title_activity_group">GroupActivity</string>
+    <string name="action_add_members">Add members</string>
+    <string name="action_silence">Silence</string>
+    <string name="action_info">Info</string>
 
     <string name="how_to_join_group">Type the group ID and the related join-code</string>
     <string name="group_id">Group ID</string>
@@ -10,6 +13,7 @@
     <string name="join">Join</string>
     <string name="error_group_id_not_found">Group ID not found</string>
     <string name="error_group_join_code_incorrect">Incorrect Join-code</string>
+    <string name="group_created">Group created</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -70,6 +74,7 @@
     <string name="loading">Loading...</string>
     <string name="type_name_surname_username">Type the full name or the username</string>
     <string name="type_of_password">The password has to be at least 7 characters long</string>
+    <string name="added">Added</string>
 
     <string name="pick_image_intent_text">Select an application to complete the action</string>
     <string name="title_activity_info_group">InfoGroupActivity</string>
@@ -98,9 +103,14 @@
     <string name="problems">Problems</string>
     <string name="authentication_failed">Authentication failed</string>
     <string name="google_play_services_error">Google Play Services Error</string>
+    <string name="group_name_error">Group Name is not valid.\nMust contains numbers or letters</string>
+    <string name="added_as_friend">Added as friend</string>
 
     <string name="tab_expenses">EXPENSES</string>
     <string name="tab_report">REPORT</string>
+    <string name="tab_groups">GROUPS</string>
+    <string name="tab_my_section">MY SECTION</string>
+    <string name="tab_contacts">CONTACTS</string>
 
     <string name="hi">Hi!</string>
     <string name="mail_body_1">invites you to join "Shared Expenses" Community.\n
@@ -119,4 +129,13 @@
     <string name="no_report">In this page you can see the summary of this group</string>
     <string name="date">Date</string>
     <string name="search_users">Searching for contacts...</string>
+    <string name="credit">Credit</string>
+    <string name="debit">Debit</string>
+    <string name="delete_group_request">Do you want to delete this group?</string>
+    <string name="deleting_group">The group is going to be deleted...</string>
+    <string name="delete_group_error">You can not delete this group.\nYou must balance your status before.</string>
+    <string name="friends_added">Friends added</string>
+    <string name="delete_item_request">Do you want to delete this item?</string>
+    <string name="deleting_expense">Deleting expense...</string>
+
 </resources>

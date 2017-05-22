@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -54,6 +55,7 @@ public class CustomAdapter extends BaseAdapter{
     public CustomAdapter(Context context, ArrayList<Group> groupList) {
         this.context = context;
         this.groupList = groupList;
+
     }
 
     @Override
@@ -81,9 +83,9 @@ public class CustomAdapter extends BaseAdapter{
         TextView tv = (TextView) convertView.findViewById(R.id.group_name);
         tv.setText(groupList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.group_summary1);
-        tv.setText("Credit: " + groupList.get(position).getCredit() +"€");
+        tv.setText(context.getString(R.string.credit) + ": " + groupList.get(position).getCredit() +"€");
         tv = (TextView) convertView.findViewById(R.id.group_summary2);
-        tv.setText("Debit: "+ groupList.get(position).getDebit() +"€");
+        tv.setText(context.getString(R.string.debit) + ": "+ groupList.get(position).getDebit() +"€");
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.group_icon);
         if (groupList.get(position).getImage().equals("no_image")) {
@@ -111,9 +113,9 @@ public class CustomAdapter extends BaseAdapter{
             public boolean onLongClick(View view){
                 AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
                 dialogAlert.setTitle("");
-                dialogAlert.setMessage("Do you want to delete this group?");
+                dialogAlert.setMessage(context.getString(R.string.delete_group_request));
 
-                dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                dialogAlert.setPositiveButton(context.getString(R.string.positive_button_dialogue), new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog,int id) {
 
@@ -151,13 +153,21 @@ public class CustomAdapter extends BaseAdapter{
                             };
                             Thread t = new Thread(r);
                             t.start();
-                            Toast.makeText(context, "The group is going to be deleted...", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.deleting_group), Toast.LENGTH_SHORT).show();
 
                         } else {
-                            Toast.makeText(context,"You can not delete this group. \n You must balance your status before.",Toast.LENGTH_LONG).show();
+                            Toast.makeText(context,context.getString(R.string.delete_group_error),Toast.LENGTH_LONG).show();
                         }
                     }
                 });
+
+                dialogAlert.setNegativeButton(context.getString(R.string.negative_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
 
                 AlertDialog alert=dialogAlert.create();
                 alert.show();

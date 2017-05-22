@@ -111,7 +111,7 @@ public class OtherProfileActivity extends AppCompatActivity {
         Thread t = new Thread(r);
         t.start();
 
-        Toast.makeText(OtherProfileActivity.this, "Added as friend", Toast.LENGTH_SHORT).show();
+        Toast.makeText(OtherProfileActivity.this, getString(R.string.added_as_friend), Toast.LENGTH_SHORT).show();
 
     }
     }
