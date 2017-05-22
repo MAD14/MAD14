@@ -100,7 +100,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             dict.put("Date",date);
 
                             if (encodedImage == null) {
-                                dict.put("Image", "no_image");
+                                dict.put("Image", noImage);
                             } else {
                                 dict.put("Image",encodedImage);
                             }
@@ -120,7 +120,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             finish();
                         } else {
                             groupName = "";
-                            Toast.makeText(NewGroupActivityPhase1.this, "Group Name is not valid.\nMust contains numbers or letters",
+                            Toast.makeText(NewGroupActivityPhase1.this, getString(R.string.group_name_error),
                                     Toast.LENGTH_SHORT).show();
 
                         }

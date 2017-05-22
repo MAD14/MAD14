@@ -11,6 +11,7 @@
     <string name="join">Unisciti</string>
     <string name="error_group_id_not_found">IDdel gruppo non trovato</string>
     <string name="error_group_join_code_incorrect">Join-code errato</string>
+    <string name="group_created">Gruppo creato</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -70,6 +71,7 @@
     <string name="loading">Caricamento...</string>
     <string name="type_name_surname_username">Inserisci il nome completo o il nome utente</string>
     <string name="type_of_password">La password deve essere lunga almeno 7 caratteri</string>
+    <string name="added">Aggiunto</string>
 
     <string name="pick_image_intent_text">Selezionare un\'applicazione per completare l\'azione</string>
     <string name="title_activity_info_group">InfoGroupActivity</string>
@@ -98,9 +100,14 @@
     <string name="problems">Problemi</string>
     <string name="authentication_failed">Autenticazione fallita</string>
     <string name="google_play_services_error">Errore nei servizi Google Play</string>
+    <string name="group_name_error">Nome gruppo non valido.\nDeve contenere numeri o lettere</string>
+    <string name="added_as_friend">Aggiunto agli amici</string>
 
     <string name="tab_expenses">SPESE</string>
     <string name="tab_report">SOMMARIO</string>
+    <string name="tab_groups">GRUPPI</string>
+    <string name="tab_my_section">PERSONALE</string>
+    <string name="tab_contacts">CONTATTI</string>
 
     <string name="hi">Ciao!</string>
     <string name="mail_body_1">ti ha invitato ad unirti alla community di "Shared Expenses".\n

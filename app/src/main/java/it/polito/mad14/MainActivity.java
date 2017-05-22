@@ -56,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
 
-
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -112,7 +111,6 @@ public class MainActivity extends AppCompatActivity {
         fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
 
 
-
     }
 
 
@@ -135,17 +133,17 @@ public class MainActivity extends AppCompatActivity {
                 //
                 break;
             case R.id.action_personal_profile:
-                Intent intent = new Intent(MainActivity.this,ProfileActivity.class);
+                Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_logout:
                 FirebaseAuth.getInstance().signOut();
-                intent = new Intent(MainActivity.this,LoginActivity.class);
+                intent = new Intent(MainActivity.this, LoginActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_invite_new_members:
                 intent = new Intent(MainActivity.this, InviteToJoinCommunity.class);
-                intent.putExtra("sender",UserID);
+                intent.putExtra("sender", UserID);
                 startActivity(intent);
                 break;
 //            case R.id.action_join_a_group:
@@ -228,8 +226,14 @@ public class MainActivity extends AppCompatActivity {
                                     String nm = data.child("Name").getValue().toString();
                                     String own = data.child("Author").getValue().toString();
                                     String dat = data.child("Date").getValue().toString();
-                                    String credit = data.child("Credit").getValue().toString();
-                                    String debit = data.child("Debit").getValue().toString();
+                                    String credit = "0";
+                                    if (data.hasChild("Credit")) {
+                                        credit = data.child("Credit").getValue().toString();
+                                    }
+                                    String debit = "0";
+                                    if (data.hasChild("Debit")) {
+                                        debit = data.child("Debit").getValue().toString();
+                                    }
                                     String image = data.child("Image").getValue().toString();
                                     indexGroup = groupsList.size();
                                     groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image));
@@ -289,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             credit = false; // debits section --> it's a debit
-                            Summary tmp = new Summary(data.child("Paying").getValue().toString().replace(",","."),
+                            Summary tmp = new Summary(data.child("Paying").getValue().toString().replace(",", "."),
                                     data.child("Money").getValue().toString(),
                                     credit);
                             indexSummary = debitsList.size();
@@ -298,23 +302,30 @@ public class MainActivity extends AppCompatActivity {
                         //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
                         //debitsList.addAll(tmpList);
 
-                        Iterator<Summary> itDeb=creditsList.iterator();
-                        while(itDeb.hasNext()){
+                        Iterator<Summary> itDeb = creditsList.iterator();
+                        while (itDeb.hasNext()) {
                             Summary sum = itDeb.next();
-                            if(tot.containsKey(sum.getName())){
+                            if (tot.containsKey(sum.getName())) {
                                 Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                Double newtot=Math.round(past-Float.valueOf(sum.getValue())*100.0)/100.0;
+                                Double newtot = Math.round(past - Float.valueOf(sum.getValue()) * 100.0) / 100.0;
                                 boolean flag = true;
-                                if(newtot < 0)
+                                if (newtot < 0)
                                     flag = false;
-                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),flag));
+                                tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), flag));
 
-                            }else{
-                                tot.put(sum.getName(),sum);
+                            } else {
+                                tot.put(sum.getName(), sum);
                             }
                         }
                         summaryList = new ArrayList<>(tot.values());
-                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
+                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError error){
+                        Log.w("Failed to read value.", error.toException());
+                    }
+                });
+
 
                         myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
@@ -368,7 +379,7 @@ public class MainActivity extends AppCompatActivity {
 
 
             } else {
-                final View rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
+                rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
                 noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
 
@@ -434,6 +445,7 @@ public class MainActivity extends AppCompatActivity {
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
      */
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -456,11 +468,11 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "GROUPS";
+                    return getString(R.string.tab_groups);
                 case 1:
-                    return "MY SECTION";
+                    return getString(R.string.tab_my_section);
                 case 2:
-                    return "CONTACTS";
+                    return getString(R.string.tab_contacts);
             }
             return null;
         }
