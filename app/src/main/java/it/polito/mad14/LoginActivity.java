@@ -9,10 +9,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
+import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -37,6 +40,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,11 +99,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     private String insertedPassword;
-
     private FirebaseDatabase database;
-
     private SharedPreferences prefs;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -9,6 +9,7 @@
     tools:context="it.polito.mad14.MainActivity"
     android:clickable="true"
     android:onClick="onClick"
+    android:background="@color/background"
     >
 
     <it.polito.mad14.myDataStructures.CircularImageView

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="it.polito.mad14.AddNewMembersToGroup"
-    tools:showIn="@layout/activity_add_new_members_to_group">
+    tools:showIn="@layout/activity_add_new_members_to_group"
+    android:background="@color/background">
 
 </android.support.constraint.ConstraintLayout>

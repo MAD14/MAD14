@@ -8,6 +8,7 @@
     tools:showIn="@layout/activity_invite_to_join_community"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/background"
     >
 
     <android.support.design.widget.TextInputLayout

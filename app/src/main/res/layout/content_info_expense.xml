@@ -8,6 +8,7 @@
     tools:context="it.polito.mad14.InfoExpenseActivity"
     tools:showIn="@layout/activity_info_expense"
     android:fillViewport="true"
+    android:background="@color/background"
     >
 
     <RelativeLayout

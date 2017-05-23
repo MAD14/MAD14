@@ -174,7 +174,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             }
         }
         if (flag) {
-            friends_added.add(nFriends,cont.getEmail().toString());
+            friends_added.add(nFriends,cont.toString());
 
             emailsToBeSent.add(nFriends,cont.getEmail().toString());
 
@@ -193,6 +193,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         database = FirebaseDatabase.getInstance();
 
         friends_added.add(nFriends,MyID);
+        emailsToBeSent.add(nFriends,MyID);
         nFriends++;
 
         Runnable r = new Runnable() {
@@ -200,7 +201,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             public void run() {
                 // Insertion of the group in each user
                 DatabaseReference myRefUser = database.getReference("users");
-                for (String user : friends_added) {
+                for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");
                     DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
                     ref.child("Name").setValue(groupName);
@@ -214,7 +215,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
                 myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
-                for (String user : friends_added) {
+                for (String user : emailsToBeSent) {
                     newUser = user.replace(".", ",");
                     myRefGroup.child(newUser).child("Debits").setValue("0");
                     myRefGroup.child(newUser).child("Credits").setValue("0");
@@ -227,7 +228,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        for (String user : friends_added)
+                        for (String user : emailsToBeSent)
                         {
                             newUser = user.replace(".", ",");
                             myRefGroup.child(newUser).child("Name").setValue(dataSnapshot.child(newUser).child("Name").getValue().toString());
@@ -277,7 +278,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
         intent.putExtra("IDGroup",IDGroup);
-        intent.putExtra("Image",groupImage);
+//        intent.putExtra("Image",groupImage);
+// TODO: the image is too large. possible solution: create bitmap from the received byte[] data and store the image on device.then just parse the path of that image to any other activity according to your requirement.
         intent.putExtra("Author",groupAuthor);
         intent.putExtra("Date",groupDate);
         intent.putExtra("Description",groupDescr);

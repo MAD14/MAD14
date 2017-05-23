@@ -305,10 +305,10 @@ public class GroupActivity extends AppCompatActivity {
 
                                 if (data.child("Receiver").getValue().toString().equals(user)) {
                                     credit = true;
-                                    name = data.child("Sender").getValue().toString();
+                                    name = data.child("DisplayNameSender").getValue().toString();
                                 } else {
                                     credit = false;
-                                    name = data.child("Receiver").getValue().toString();
+                                    name = data.child("DisplayNameReceiver").getValue().toString();
                                 }
 
                                 boolean flag = false;

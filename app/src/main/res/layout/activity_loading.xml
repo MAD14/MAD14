@@ -4,14 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="it.polito.mad14.LoadingActivity">
+    tools:context="it.polito.mad14.LoadingActivity"
+    android:background="@color/background">
 
     <ImageView
         android:id="@+id/splash"
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
-        android:src="@mipmap/ic_mani_box" />
+        android:src="@mipmap/ic_mani_box"
+        />
 
 
 

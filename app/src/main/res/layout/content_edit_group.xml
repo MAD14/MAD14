@@ -7,7 +7,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="it.polito.mad14.InfoGroupActivity"
     tools:showIn="@layout/activity_edit_group"
-    android:background="@color/backgroundDark"
+    android:background="@color/background"
     android:fillViewport="true"
     >
 

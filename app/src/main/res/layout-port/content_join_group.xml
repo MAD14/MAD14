@@ -8,6 +8,7 @@
     tools:showIn="@layout/activity_join_group"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    android:background="@color/background"
     >
 
     <ProgressBar
