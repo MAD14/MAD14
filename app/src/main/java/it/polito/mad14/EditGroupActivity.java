@@ -15,6 +15,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -48,18 +49,21 @@ public class EditGroupActivity extends AppCompatActivity {
     private ImageButton editName;
     private EditText input;
     private FirebaseDatabase database;
-    private DatabaseReference myRef;
+    private DatabaseReference myRef,newRef, reference;
     private int indexMembers;
-    private ArrayList<Contact> membersList = new ArrayList<>();
+    private ArrayList<String> membersList = new ArrayList<>();
     private ListView list;
     private String groupPhoto;
     private ProgressBar progressBar;
+    private String currentUser;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_group);
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
         IDGroup = getIntent().getStringExtra("IDGroup");
         groupName = getIntent().getStringExtra("Name");
@@ -99,8 +103,20 @@ public class EditGroupActivity extends AppCompatActivity {
 //        findViewById(R.id.edit_image).bringToFront();
 
         database = FirebaseDatabase.getInstance();
+        reference = database.getReference("groups/"+IDGroup+"/members");
+        reference.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()){
+                    membersList.add(data.getKey());
+                }
+            }
 
-        //TODO l'immagine va decodificata e messa come sfondo della collapsing toolbar
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
         encodedImage = groupPhoto;
         byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
         Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
@@ -150,7 +166,30 @@ public class EditGroupActivity extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.progressBar_edit);
         progressBar.setVisibility(View.VISIBLE);
 
-        // TODO devo aggiornare il gruppo nell'utente corrente e poi sganciare il thread che aggiorni glialtri utenti!
+        // TODO devo aggiornare il gruppo nell'utente corrente
+        myRef = database.getReference("users/"+currentUser+"/groups/"+IDGroup);
+        myRef.child("Name").setValue(groupName);
+        myRef.child("Description").setValue(description);
+        myRef.child("Image").setValue(groupPhoto);
+
+        // TODO: poi sganciare il thread che aggiorni gli altri utenti!
+
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                for (String user : membersList){
+
+                    String userID = user;
+                    newRef = database.getReference("users/"+userID+"/groups/"+IDGroup);
+                    newRef.child("Name").setValue(groupName);
+                    newRef.child("Description").setValue(description);
+                    newRef.child("Image").setValue(encodedImage);
+                }
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+
 
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
@@ -187,6 +226,7 @@ public class EditGroupActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newDescription = input.getText().toString();
+                        description = newDescription;
                         if (newDescription.equals("")) {
                             editDescription.setText("-");
                         }else {
@@ -220,6 +260,7 @@ public class EditGroupActivity extends AppCompatActivity {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         String newName = input.getText().toString();
+                        groupName = newName;
                         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
                         toolbar.setTitle(newName);
                         database = FirebaseDatabase.getInstance();

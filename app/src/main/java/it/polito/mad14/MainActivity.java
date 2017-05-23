@@ -523,13 +523,12 @@ public class MainActivity extends AppCompatActivity {
                         getIntent().getStringExtra("Date"),
                         "0",
                         "0",
-                        getIntent().getStringExtra("Image"));
+                        "no_image");
                 ((CustomAdapter) list.getAdapter()).getGroupList().add(tmp);
 
 //                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
                ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
-//                list.invalidate();
-//                list.requestLayout();
+
             }
         }
     }
