@@ -293,7 +293,7 @@ public class MainActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             credit = false; // debits section --> it's a debit
-                            Summary tmp = new Summary(data.child("Paying").getValue().toString().replace(",", "."),
+                            Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
                                     data.child("Money").getValue().toString(),
                                     credit);
                             indexSummary = debitsList.size();
@@ -319,6 +319,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                         summaryList = new ArrayList<>(tot.values());
                         list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+
                     }
                     @Override
                     public void onCancelled(DatabaseError error){
@@ -332,7 +333,7 @@ public class MainActivity extends AppCompatActivity {
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     credit = true; // credits section --> it's a credit
-                                    Summary tmp = new Summary(data.child("Debitor").getValue().toString().replace(",","."),
+                                    Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",","."),
                                             data.child("Money").getValue().toString(),
                                             credit);
                                     indexSummary = creditsList.size();
@@ -356,15 +357,14 @@ public class MainActivity extends AppCompatActivity {
                   
 
 
-                        }
-                        summaryList = new ArrayList<>(tot.values());
-                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
+                                }
+                                summaryList = new ArrayList<>(tot.values());
+                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
 
-                        if (list_summary.getAdapter().getCount() == 0){
-                            noSummary_textView.setVisibility(View.VISIBLE);
-                        }
-
-                    }
+                                if (list_summary.getAdapter().getCount() == 0){
+                                    noSummary_textView.setVisibility(View.VISIBLE);
+                                }
+                            }
                     @Override
                     public void onCancelled(DatabaseError error) {
                         Log.w("Failed to read value.", error.toException());
@@ -374,7 +374,7 @@ public class MainActivity extends AppCompatActivity {
                 //TODO: possibilità di segnare che si è pagato qualcuno
                 //TODO: grafico riepilogo crediti/debiti
 
-                //in questa vista possiamo aggiungere un bottone con scritto "salda/saldato" in modo da linkare subito alla conferma di pagamento effettuato/ricevuto
+
                 return rootView;
 
 

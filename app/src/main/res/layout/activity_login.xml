@@ -33,12 +33,13 @@
             android:orientation="vertical">
 
             <ImageView
+                android:id="@+id/image_logo"
                 android:layout_width="160dp"
                 android:layout_height="160dp"
-                android:src="@mipmap/ic_mani_box"
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
-                android:layout_gravity="center_horizontal"/>
+                android:layout_gravity="center_horizontal"
+                android:src="@mipmap/ic_mani_box"/>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
