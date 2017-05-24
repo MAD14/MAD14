@@ -141,4 +141,10 @@
     <string name="friends_added">Amici aggiunti</string>
     <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
     <string name="deleting_expense">Cancellazione spesa...</string>
+
+    <string name="currency">Valuta</string>
+    <string name="default_currency">€</string>
+    <string name="choose_your_currency">Scegli la tua valuta</string>
+    <string name="currency_set_to">Valuta impostata</string>
+    <string name="currency_advisor">Puoi cambiarla in futuro dalle impostazioni</string>
 </resources>

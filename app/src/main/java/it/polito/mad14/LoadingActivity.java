@@ -94,7 +94,8 @@ public class LoadingActivity extends AppCompatActivity {
                             } else {
                                 image = data.child("Image").getValue().toString();
                             }
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image));
+                            String currency = data.child("Currency").toString();
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency));
                             indexGroup++;
                         } catch (Error e) {
                             Toast.makeText(LoadingActivity.this, e.getMessage(),

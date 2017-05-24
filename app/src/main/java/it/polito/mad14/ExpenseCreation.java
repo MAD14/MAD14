@@ -12,11 +12,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -73,6 +75,14 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private String debitorDisplayName;
     private DatabaseReference newRef,refDeb;
 
+    private Spinner selectCurrency;
+    private String selectedCurrency;
+    private String groupCurrency;
+    private ArrayAdapter<String> spinnerAdapter;
+    private String price;
+
+    private double EURtoUSD, USDtoEUR;
+
 
 
     @Override
@@ -101,6 +111,39 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         contacts= new HashSet<>();
 
         database = FirebaseDatabase.getInstance();
+
+        selectCurrency = (Spinner) findViewById(R.id.spinner_currency);
+        String[] currencies = new String[]{"€","$"};
+        spinnerAdapter = new ArrayAdapter<>(this,R.layout.spinner_item,currencies);
+        selectCurrency.setAdapter(spinnerAdapter);
+
+        DatabaseReference currencyRef = database.getReference("currencies");
+        currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                USDtoEUR = Double.parseDouble(dataSnapshot.child("USDtoEUR").getValue().toString());
+                EURtoUSD = Double.parseDouble(dataSnapshot.child("EURtoUSD").getValue().toString());
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
+        DatabaseReference refCurrency=database.getReference("groups/"+IDGroup);
+
+        refCurrency.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                groupCurrency=dataSnapshot.child("Currency").getValue().toString();
+                int spinnerPosition = spinnerAdapter.getPosition(groupCurrency);
+                selectCurrency.setSelection(spinnerPosition);
+            }
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+
         DatabaseReference refMembers=database.getReference("groups/"+IDGroup+"/members");
 
         refMembers.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -133,11 +176,26 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         if(isImportValid(et_import.getText().toString()) && hasName(et_name.getText().toString())){
 
+            selectedCurrency = selectCurrency.getSelectedItem().toString();
+            if (!selectedCurrency.equals(groupCurrency)) {
+                if (selectedCurrency.equals("$") && groupCurrency.equals("€")){
+                    double oldPrice = Double.parseDouble(et_import.getText().toString());
+                    double newPrice = (double)Math.round(oldPrice*USDtoEUR*100.0)/100.0;
+                    price = String.valueOf(newPrice);
+                } else if (selectedCurrency.equals("€") && groupCurrency.equals("$")){
+                    double oldPrice = Double.parseDouble(et_import.getText().toString());
+                    double newPrice = (double)Math.round(oldPrice*EURtoUSD*100.0)/100.0;
+                    price = String.valueOf(newPrice);
+                }
+            } else {
+                price = et_import.getText().toString();
+            }
+
             DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
             DatabaseReference userRef = database.getReference("users");
             DatabaseReference ref = myRef.child(et_name.getText().toString());
 
-            ref.child("Price").setValue(et_import.getText().toString());
+            ref.child("Price").setValue(price);
             if (!et_description.getText().toString().isEmpty()){
                 finalDescription = et_description.getText().toString();
             } else {
@@ -148,9 +206,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             ref.child("Author").setValue(et_author);
             ref.child("Image").setValue(encodedExpenseImage);
             ref.child("Date").setValue(date);
+            ref.child("Currency").setValue(groupCurrency);
 
             // Calculation of credits and debits
-            priceEach=Math.round((Double.valueOf(et_import.getText().toString())/nMembers)*100.0)/100.0;
+            priceEach=Math.round((Double.valueOf(price)/nMembers)*100.0)/100.0;
             // Total credit the owner should receive
             totCredit=priceEach*(nMembers-1);
 
@@ -189,6 +248,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     newRef.child("Sender").setValue(name);
                     newRef.child("Money").setValue(priceEach);
                     newRef.child("DisplayNameReceiver").setValue(authorDisplayName);
+                    newRef.child("Currency").setValue(groupCurrency);
 
 
 
@@ -199,6 +259,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     refDeb.child("Group").setValue(IDGroup);
                     refDeb.child("Debitor").setValue(name);
                     refDeb.child("Money").setValue(priceEach);
+                    refDeb.child("Currency").setValue(groupCurrency);
 
 
                     userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -219,6 +280,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     refCred.child("Paying").setValue(et_author);
                     refCred.child("DisplayName").setValue(authorDisplayName);
                     refCred.child("Money").setValue(priceEach);
+                    refCred.child("Currency").setValue(groupCurrency);
                     refUserDebit = userRef.child(name).child("groups").child(IDGroup).child("Debit");
                     refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -240,11 +302,12 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
             intent.putExtra("author",et_author);
             intent.putExtra("name",et_name.getText().toString());
-            intent.putExtra("import",et_import.getText().toString());
+            intent.putExtra("import",price);
             intent.putExtra("description",finalDescription);
             intent.putExtra("expenseImage",hasImage);
             intent.putExtra("date",date);
             intent.putExtra("IDGroup",IDGroup);
+            intent.putExtra("Currency",groupCurrency);
             setResult(RESULT_OK, intent);
             startActivity(intent);
             finish();
