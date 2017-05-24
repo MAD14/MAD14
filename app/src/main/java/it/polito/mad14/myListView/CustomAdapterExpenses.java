@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -49,6 +54,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
     public CustomAdapterExpenses(Context context, ArrayList<Expense> expensesList) {
         this.context = context;
         this.expensesList = expensesList;
+
     }
 
     @Override
@@ -171,4 +177,5 @@ public class CustomAdapterExpenses extends BaseAdapter {
     public void setExpensesList(ArrayList<Expense> expensesList) {
         this.expensesList = expensesList;
     }
+
 }

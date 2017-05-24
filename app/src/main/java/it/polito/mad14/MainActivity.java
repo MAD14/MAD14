@@ -29,8 +29,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -243,16 +247,33 @@ public class MainActivity extends AppCompatActivity {
                                                 Toast.LENGTH_SHORT).show();
                                     }
                         }
-                        //TODO: group sorting
-//                        groupsList.sort(new Comparator<Group>() {
-//                            @Override
-//                            public int compare(Group group1, Group group2) {
-//                                if (group1.getDate() > group2.getDate()) {
-//                                    return 1;
-//                                }else {
-//                                    return 2;}
-//                            }
-//                        });
+
+                        Collections.sort(groupsList,new Comparator<Group>(){
+                            @Override
+                            public int compare(Group group1, Group group2) {
+                                //TODO: bisognerà aggiungere il controllo sul campo "LastChange" per far si che non dipenda dalla data di creazione, ma dall'ultima modifica!
+                                try{
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                    Date d1 = formatter.parse(group1.getDate());
+                                    long timestamp1 = d1.getTime();
+                                    Date d2 = formatter.parse(group2.getDate());
+                                    long timestamp2 = d2.getTime();
+//                                    Log.e("-------timestamp1",String.valueOf(timestamp1));
+//                                    Log.e("timestamp2",String.valueOf(timestamp2));
+                                    if (timestamp1 <= timestamp2) {
+                                        Log.e("return","1");
+                                        return -1;
+                                    } else {
+                                        Log.e("return","0");
+                                        return 1;
+                                    }
+                                } catch(ParseException e){
+                                    Log.e("error parsing",e.getMessage());
+                                }
+                                return 0;                            }
+                        });
+
+
                         ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
                         if (list.getAdapter().getCount() == 0){
                             noGroup_textView.setVisibility(View.VISIBLE);
