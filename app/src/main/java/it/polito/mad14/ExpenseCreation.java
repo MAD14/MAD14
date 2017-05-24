@@ -71,7 +71,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private String authorDisplayName;
     private String debitorDisplayName;
-    private DatabaseReference newRef;
+    private DatabaseReference newRef,refDeb;
 
 
 
@@ -82,7 +82,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         encodedExpenseImage = getString(R.string.no_image);
         hasImage = false;
 
-        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy");
         date = format1.format(Calendar.getInstance().getTime());
 
         bt = (Button) findViewById(R.id.expense_button);
@@ -178,15 +178,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             while(it.hasNext()){
 
                 String name=it.next();
-                userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
-                    }
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
                 if(!name.equals(et_author)) {
                     //updating of the group's info
                     newRef = refDebits.push();
@@ -199,27 +190,28 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     newRef.child("Money").setValue(priceEach);
                     newRef.child("DisplayNameReceiver").setValue(authorDisplayName);
 
+
+
+                    Log.e("authorDisplayName",authorDisplayName);
+
+                    //updating debitors list inside the author
+                    refDeb = userRef.child(et_author).child("credits").child(key);
+                    refDeb.child("Group").setValue(IDGroup);
+                    refDeb.child("Debitor").setValue(name);
+                    refDeb.child("Money").setValue(priceEach);
+
+
                     userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
-                            Log.e("debitorDisplayName",debitorDisplayName);
-
+                            refDeb.child("DisplayName").setValue(debitorDisplayName);
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
                         }
                     });
-
-                    Log.e("authorDisplayName",authorDisplayName);
-
-                    //updating debitors list inside the author
-                    DatabaseReference refDeb = userRef.child(et_author).child("credits").child(key);
-                    refDeb.child("Group").setValue(IDGroup);
-                    refDeb.child("Debitor").setValue(name);
-                    refDeb.child("Money").setValue(priceEach);
-                    refDeb.child("DisplayName").setValue(debitorDisplayName);
 
                     //updating each creditor
                     DatabaseReference refCred = userRef.child(name).child("debits").child(key);

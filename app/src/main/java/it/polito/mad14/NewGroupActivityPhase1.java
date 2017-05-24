@@ -62,7 +62,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         encodedImage = null;
         strImageUri = noImage;
 
-        SimpleDateFormat format1 = new SimpleDateFormat("dd-MM-yyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy");
         date = format1.format(Calendar.getInstance().getTime());
 
         createGroup = (Button) findViewById(R.id.group_create_button);

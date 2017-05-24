@@ -86,8 +86,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         } else {groupImage = noImage;}
 
         IDGroup=getIntent().getStringExtra("IDGroup");
-        Toast.makeText(NewGroupActivityPhase2.this, IDGroup,
-                Toast.LENGTH_SHORT).show();
+
         MyID=FirebaseAuth.getInstance().getCurrentUser().getEmail();  // here no replace directly nel for
 
         friends_added = new ArrayList<>();
@@ -159,30 +158,32 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
     public void onClick(View view){
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
+        if (tmp_name.contains("-")){
         String[] parts = tmp_name.split(" - ");
-        String contUsername = parts[1];
-        et.setText("");
-        Iterator<Contact> it=friends.iterator();
+            String contUsername = parts[1];
+            et.setText("");
+            Iterator<Contact> it=friends.iterator();
 
-        boolean flag=false;
-        Contact cont=null;
-        while(it.hasNext()){
-            cont=it.next();
-            if(cont.getUsername().toString().equals(contUsername)) {
-                flag = true;
-                break;
+            boolean flag=false;
+            Contact cont=null;
+            while(it.hasNext()){
+                cont=it.next();
+                if(cont.getUsername().toString().equals(contUsername)) {
+                    flag = true;
+                    break;
+                }
             }
-        }
-        if (flag) {
-            friends_added.add(nFriends,cont.toString());
+            if (flag) {
+                friends_added.add(nFriends,cont.toString());
 
-            emailsToBeSent.add(nFriends,cont.getEmail().toString());
+                emailsToBeSent.add(nFriends,cont.getEmail().toString());
 
-            nFriends++;
-            list_friends.invalidate();
-            list_friends.requestLayout();
-        } else {
-            Toast.makeText(NewGroupActivityPhase2.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
+                nFriends++;
+                list_friends.invalidate();
+                list_friends.requestLayout();
+            } else {
+                Toast.makeText(NewGroupActivityPhase2.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -284,6 +285,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         intent.putExtra("Date",groupDate);
         intent.putExtra("Description",groupDescr);
         setResult(RESULT_OK,intent);
+        startActivity(intent);
         finish();
 
     }

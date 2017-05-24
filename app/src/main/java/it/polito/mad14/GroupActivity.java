@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -27,7 +28,13 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
@@ -255,6 +262,7 @@ public class GroupActivity extends AppCompatActivity {
                 list_expenses = (ListView) rootView.findViewById(R.id.list_view_expenses);
                 noExpense_textView = (TextView) rootView.findViewById(R.id.noExpenses_tv);
 
+
                 CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(), expensesList);
                 list_expenses.setAdapter(adapter);
 
@@ -273,9 +281,34 @@ public class GroupActivity extends AppCompatActivity {
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }
-                        ((CustomAdapterExpenses) list_expenses.getAdapter()).setExpensesList(expensesList);
-                        list_expenses.invalidate();
-                        list_expenses.requestLayout();
+                        Collections.sort(expensesList,new Comparator<Expense>(){
+                            @Override
+                            public int compare(Expense expense1, Expense expense2) {
+                                try{
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                    Date d1 = formatter.parse(expense1.getDate());
+                                    long timestamp1 = d1.getTime();
+                                    Date d2 = formatter.parse(expense2.getDate());
+                                    long timestamp2 = d2.getTime();
+                                    Log.e("-------timestamp1",String.valueOf(timestamp1));
+                                    Log.e("timestamp2",String.valueOf(timestamp2));
+                                    if (timestamp1 <= timestamp2) {
+                                        Log.e("return","1");
+                                        return 1;
+                                    } else {
+                                        Log.e("return","0");
+                                        return -1;
+                                    }
+                                } catch(ParseException e){
+                                    Log.e("error parsing",e.getMessage());
+                                }
+                                return 0;                            }
+                        });
+                        CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(),expensesList);
+                        list_expenses.setAdapter(adapter);
+//                        ((CustomAdapterExpenses) list_expenses.getAdapter()).setExpensesList(expensesList);
+//                        list_expenses.invalidate();
+//                        list_expenses.requestLayout();
                         if (list_expenses.getAdapter().getCount() == 0){
                             noExpense_textView.setVisibility(View.VISIBLE);
                         }
@@ -285,6 +318,7 @@ public class GroupActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
+
 
                 return rootView;
             }
