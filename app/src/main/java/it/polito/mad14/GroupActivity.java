@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
@@ -261,6 +262,7 @@ public class GroupActivity extends AppCompatActivity {
                 list_expenses = (ListView) rootView.findViewById(R.id.list_view_expenses);
                 noExpense_textView = (TextView) rootView.findViewById(R.id.noExpenses_tv);
 
+
                 CustomAdapterExpenses adapter = new CustomAdapterExpenses(getContext(), expensesList);
                 list_expenses.setAdapter(adapter);
 
@@ -316,6 +318,8 @@ public class GroupActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
+
+
                 return rootView;
             }
             else { // summary page
