@@ -91,7 +91,17 @@ public class MainActivity extends AppCompatActivity {
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
+        //////////////////////////
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(MainActivity.this,FirebaseBackgroundService.class));
+                System.out.println("inizio!");
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+        //////////////////////////
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
