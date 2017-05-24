@@ -149,6 +149,7 @@ public class CustomAdapter extends BaseAdapter{
 
                                     // remove value from group list
                                     groupList.remove(position);
+                                    groupList.notify();
                                 }
                             };
                             Thread t = new Thread(r);

@@ -285,6 +285,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         intent.putExtra("Date",groupDate);
         intent.putExtra("Description",groupDescr);
         setResult(RESULT_OK,intent);
+        startActivity(intent);
         finish();
 
     }

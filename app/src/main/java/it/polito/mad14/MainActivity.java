@@ -549,7 +549,7 @@ public class MainActivity extends AppCompatActivity {
 
 //                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
                ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
-
+                Log.e("provaResult","received and added");
             }
         }
     }
