@@ -141,4 +141,8 @@
     <string name="friends_added">Amici aggiunti</string>
     <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
     <string name="deleting_expense">Cancellazione spesa...</string>
+    <string name="impossible_del_exp">\Solo il proprietario può eliminare una spesa</string>
+    <string name="settle_expense">Vuoi saldare questa operazione?</string>
+    <string name="confirm_user_payment">In attesa della conferma dell\'altro utente </string>
+    <string name="wait_confirm">L\'altro utente non ha ancora confermato. Attesa della sua conferma</string>
 </resources>
