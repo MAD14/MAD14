@@ -47,7 +47,7 @@
                 android:layout_marginLeft="@dimen/margin"
                 android:layout_marginRight="@dimen/margin"
                 android:maxLines="1"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:singleLine="true"
                 />
         </android.support.design.widget.TextInputLayout>
@@ -57,12 +57,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:layout_below="@id/text_input_add"
             android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:clickable="true"
             android:gravity="center"
             android:onClick="onClick"
-            android:text="Add"
+            android:text="@string/add"
             android:textSize="@dimen/main_text" />
 
         <ListView

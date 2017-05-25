@@ -54,7 +54,7 @@
             android:layout_toStartOf="@id/italy_flag"
             android:text="@string/change_language"
             android:textColor="@color/writing"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/main_text"/>
 
         <Button
             android:id="@+id/button_currency"
@@ -64,7 +64,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentEnd="true"
             android:layout_margin="@dimen/margin"
-            android:textSize="20sp"
+            android:textSize="@dimen/main_text"
             android:clickable="true"
             android:onClick="onClickChangeCurrency"/>
 
@@ -79,7 +79,7 @@
             android:layout_alignBaseline="@id/button_currency"
             android:textColor="@color/writing"
             android:text="@string/choose_your_currency"
-            android:textSize="20sp"/>
+            android:textSize="@dimen/main_text"/>
 
 
 

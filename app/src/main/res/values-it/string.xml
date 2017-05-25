@@ -155,5 +155,12 @@
     <string name="currency_advisor">Puoi cambiarla in futuro dalle impostazioni</string>
 
     <string name="change_language">Scegli la lingua</string>
+    <string name="insert_an_image">Inserisci un\'immagine</string>
+    <string name="submit">Inserisci</string>
+    <string name="or">oppure</string>
+    <string name="add">Aggiungi</string>
+    <string name="group_name">Nome gruppo</string>
+    <string name="summary1">Sommario1</string>
+    <string name="summary2">Sommario2</string>
 
 </resources>

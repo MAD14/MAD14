@@ -149,5 +149,12 @@
     <string name="currency_advisor">You can change it from your settings</string>
 
     <string name="change_language">Choose your language</string>
+    <string name="insert_an_image">Insert an image</string>
+    <string name="submit">Submit</string>
+    <string name="or">or</string>
+    <string name="add">Add</string>
+    <string name="group_name">Group name</string>
+    <string name="summary1">Summary1</string>
+    <string name="summary2">Summary2</string>
 
 </resources>

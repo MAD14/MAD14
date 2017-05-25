@@ -26,6 +26,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="50dp"
                 android:layout_marginLeft="@dimen/margin"
+                android:layout_marginStart="@dimen/margin"
                 android:clickable="true"
                 android:elevation="4dp"
                 android:text="@string/date_creation"
@@ -40,11 +41,13 @@
                 android:clickable="true"
                 android:elevation="4dp"
                 android:textColor="@color/writing"
-                android:gravity="right"
+                android:gravity="end"
                 android:textSize="@dimen/summary"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_alignBaseline="@id/date_creation"
                 android:layout_toRightOf="@id/date_creation"
+                android:layout_toEndOf="@id/date_creation"
                 android:layout_below="@id/date_creation"/>
 
             <TextView
@@ -53,6 +56,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:layout_marginLeft="@dimen/margin"
+                android:layout_marginStart="@dimen/margin"
                 android:clickable="true"
                 android:elevation="4dp"
                 android:text="@string/Description"
@@ -73,7 +77,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_alignBaseline="@id/description"
                 android:layout_toRightOf="@id/description"
-                android:gravity="right"
+                android:layout_toEndOf="@id/description"
+                android:gravity="end"
                 android:text="-"
                 />
 
@@ -85,6 +90,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
             android:layout_marginTop="@dimen/margin_double"
             android:layout_marginBottom="@dimen/margin_double"
             android:clickable="true"

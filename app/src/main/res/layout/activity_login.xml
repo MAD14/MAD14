@@ -101,12 +101,13 @@
                     style="?android:textAppearanceSmall"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="or"
+                    android:text="@string/or"
                     android:textSize="16sp"
                     android:paddingLeft="16dp"
                     android:paddingRight="16dp"
                     android:paddingTop="13dp"
                     android:layout_toRightOf="@id/email_sign_in_button"
+                    android:layout_toEndOf="@id/email_sign_in_button"
                     android:layout_alignTop="@id/email_sign_in_button"/>
 
                 <com.google.android.gms.common.SignInButton
@@ -116,6 +117,7 @@
                     android:clickable="true"
                     android:onClick="onClick"
                     android:layout_toRightOf="@id/text"
+                    android:layout_toEndOf="@id/text"
                     android:layout_alignTop="@id/email_sign_in_button"/>
 
                 <TextView

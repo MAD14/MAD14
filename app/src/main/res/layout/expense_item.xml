@@ -16,7 +16,6 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:src="@mipmap/expense_icon"
-        android:layout_alignBottom="@+id/expense_description"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginRight="@dimen/margin"/>
@@ -44,7 +43,7 @@
         android:textColor="@color/red"
         android:textAlignment="center"
         android:gravity="center"
-        android:text="Import"
+        android:text="@string/Import"
         android:layout_marginRight="23dp"
         android:layout_marginEnd="23dp"
         android:layout_alignParentRight="true"

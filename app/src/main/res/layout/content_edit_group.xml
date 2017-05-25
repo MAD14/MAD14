@@ -65,7 +65,8 @@
                 android:textSize="@dimen/summary"
                 android:layout_below="@id/description"
                 android:layout_alignParentRight="true"
-                android:gravity="right"
+                android:layout_alignParentEnd="true"
+                android:gravity="end"
                 android:text="-"
                 />
 

@@ -55,7 +55,7 @@
             <EditText android:id="@+id/group_name"
                 android:hint="@string/Name"
                 android:inputType="text"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="@dimen/margin"
@@ -67,7 +67,7 @@
             <EditText android:id="@+id/group_description"
                 android:hint="@string/Description"
                 android:inputType="text"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_marginLeft="@dimen/margin"
@@ -102,9 +102,10 @@
                 android:id="@+id/insert_image_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Insert an image"
+                android:text="@string/insert_an_image"
                 android:textSize="15sp"
                 android:layout_marginLeft="8dp"
+                android:layout_marginStart="8dp"
                 android:layout_marginTop="30dp"
                 android:layout_below="@id/select_currency"/>
 
@@ -115,6 +116,7 @@
                 android:background="@mipmap/photo_icon"
                 android:layout_below="@id/insert_image_text"
                 android:layout_marginLeft="20dp"
+                android:layout_marginStart="20dp"
                 android:paddingRight="20dp"
                 android:clickable="true"
                 android:onClick="onClickImage"
@@ -126,10 +128,12 @@
                 android:layout_height="wrap_content"
                 android:text="@string/create_group"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginEnd="@dimen/activity_horizontal_margin"
                 android:clickable="true"
                 android:onClick="onClick"
                 android:layout_below="@+id/insert_image"
                 android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
                 android:layout_gravity="end"/>
 
         </RelativeLayout>

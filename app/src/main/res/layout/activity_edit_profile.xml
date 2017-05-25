@@ -52,6 +52,7 @@
             android:layout_height="wrap_content"
             android:src="@android:drawable/ic_menu_edit"
             android:layout_toLeftOf="@id/user_profile_photo"
+            android:layout_toStartOf="@id/user_profile_photo"
             android:layout_below="@+id/header_cover_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-30dp"
@@ -98,6 +99,7 @@
                 android:layout_height="wrap_content"
                 android:src="@android:drawable/ic_menu_edit"
                 android:layout_toLeftOf="@id/user_profile_short_bio"
+                android:layout_toStartOf="@id/user_profile_short_bio"
                 android:layout_below="@id/user_profile_name"
                 android:layout_margin="5dp"
                 android:clickable="true"
@@ -151,6 +153,7 @@
                     android:layout_height="wrap_content"
                     android:src="@android:drawable/ic_menu_edit"
                     android:layout_toLeftOf="@id/info1"
+                    android:layout_toStartOf="@id/info1"
                     android:layout_marginTop="5dp"
                     android:elevation="4dp"
                     android:padding="13dp"
@@ -183,6 +186,7 @@
                     android:textSize="@dimen/summary"
                     android:layout_below="@id/info1"
                     android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     />
             </RelativeLayout>
 

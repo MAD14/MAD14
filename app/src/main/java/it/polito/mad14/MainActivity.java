@@ -396,7 +396,6 @@ public class MainActivity extends AppCompatActivity {
                                         } else {
                                             Float past = Float.valueOf(tot.get(sum.getName()).getValue());
                                             newtot = Math.round((past - Float.valueOf(sum.getValue())) * 100.0) / 100.0;
-                                            Toast.makeText(getContext(),"newtot: "+newtot.toString(),Toast.LENGTH_SHORT).show();
                                         }
                                         boolean flag = true;
                                         if (newtot < 0)

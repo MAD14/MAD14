@@ -24,12 +24,13 @@
         android:id="@+id/tv_contact_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Email"
+        android:text="@string/email"
         android:textSize="@dimen/main_text"
         android:textColor="@color/writing"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@+id/image_person"
         android:layout_toEndOf="@+id/image_person"
-        android:layout_marginLeft="@dimen/margin"/>
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"/>
 
 </RelativeLayout>

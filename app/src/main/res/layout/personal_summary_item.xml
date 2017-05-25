@@ -11,6 +11,7 @@
             android:id="@+id/image_person"
             android:layout_alignParentLeft="true"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="20dp"/>
 
@@ -24,7 +25,9 @@
             android:layout_marginBottom="@dimen/margin"
             android:layout_marginTop="@dimen/margin"
             android:layout_marginLeft="15dp"
+            android:layout_marginStart="15dp"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:textAppearance="@color/colorPrimary"
             android:textSize="@dimen/main_text"
             />
@@ -38,6 +41,7 @@
             android:layout_marginTop="@dimen/margin"
             android:layout_marginBottom="@dimen/margin"
             android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
             android:gravity="center_vertical"
             android:textSize="20sp" />
 
