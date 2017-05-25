@@ -214,6 +214,8 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
+                    ref.child("Expenses").setValue("x");
+                    ref.child("Members").setValue("x");
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added

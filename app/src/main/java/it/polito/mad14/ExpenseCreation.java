@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Base64;
@@ -18,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -49,6 +51,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Button bt;
     final static int GET_IMAGE = 1;
 
+    private ProgressBar progressBar;
     private FirebaseAuth auth;
     private Set<String> contacts;
     private FirebaseDatabase database;
@@ -71,9 +74,9 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Double priceEach;
     private Double totCredit;
 
-    private String authorDisplayName;
+    private String authorDisplayName, et_author;
     private String debitorDisplayName;
-    private DatabaseReference newRef,refDeb;
+    private DatabaseReference newRef,refDeb, userRef;
 
     private Spinner selectCurrency;
     private String selectedCurrency;
@@ -172,7 +175,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
 
     public void onClick(View v){
-        String et_author = auth.getCurrentUser().getEmail().replace(".",",");
+        et_author = auth.getCurrentUser().getEmail().replace(".",",");
 
         if(isImportValid(et_import.getText().toString()) && hasName(et_name.getText().toString())){
 
@@ -192,7 +195,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             }
 
             DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
-            DatabaseReference userRef = database.getReference("users");
+            userRef = database.getReference("users");
             DatabaseReference ref = myRef.child(et_name.getText().toString());
 
             ref.child("Price").setValue(price);
@@ -268,6 +271,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
+                            String oldValue = dataSnapshot.child("groups").child(IDGroup).child("Expenses").getValue().toString();
+                            userRef.child("groups").child(IDGroup).child("Expenses").setValue(oldValue + "x");
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -298,19 +303,31 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     });
                 }
             }
-            //notificare che le spese sono cambiate
-            Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
-            intent.putExtra("author",et_author);
-            intent.putExtra("name",et_name.getText().toString());
-            intent.putExtra("import",price);
-            intent.putExtra("description",finalDescription);
-            intent.putExtra("expenseImage",hasImage);
-            intent.putExtra("date",date);
-            intent.putExtra("IDGroup",IDGroup);
-            intent.putExtra("Currency",groupCurrency);
-            setResult(RESULT_OK, intent);
-            startActivity(intent);
-            finish();
+
+            progressBar = (ProgressBar) findViewById(R.id.progressBar_expense);
+            progressBar.setVisibility(View.VISIBLE);
+
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+                    intent.putExtra("author",et_author);
+                    intent.putExtra("name",et_name.getText().toString());
+                    intent.putExtra("import",price);
+                    intent.putExtra("description",finalDescription);
+                    intent.putExtra("expenseImage",hasImage);
+                    intent.putExtra("date",date);
+                    intent.putExtra("IDGroup",IDGroup);
+                    intent.putExtra("Currency",groupCurrency);
+                    setResult(RESULT_OK, intent);
+                    startActivity(intent);
+                    progressBar.setVisibility(View.GONE);
+                    finish();
+                }
+            }, 2000);
+
+
+
         } else {
             if(!isImportValid(et_import.getText().toString())){
                 et_import.setError(getString(R.string.error_invalid_import));
