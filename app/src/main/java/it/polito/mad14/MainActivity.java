@@ -351,6 +351,7 @@ public class MainActivity extends AppCompatActivity {
                 currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+
                         USDtoEUR = Double.parseDouble(dataSnapshot.child("USDtoEUR").getValue().toString());
                         EURtoUSD = Double.parseDouble(dataSnapshot.child("EURtoUSD").getValue().toString());
 
@@ -365,15 +366,18 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
+
                                     credit = false; // debits section --> it's a debit
                                     Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
-                                            data.child("Money").getValue().toString(),
+                                            data.child("Money").getValue().toString(),data.child("Paying").getValue().toString().
                                             data.child("Currency").getValue().toString(),
+
                                             credit);
                                     indexSummary = debitsList.size();
                                     debitsList.add(indexSummary, tmp);
                                 }
                                 //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+
                                 //debitsList.addAll(tmpList);
 
                                 Iterator<Summary> itDeb = debitsList.iterator();
@@ -397,7 +401,8 @@ public class MainActivity extends AppCompatActivity {
                                         boolean flag = true;
                                         if (newtot < 0)
                                             flag = false;
-                                        tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), selectedCurrency,flag));
+                                        tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), sum.getEmail(),selectedCurrency,flag));
+
 
                                     } else {
                                         if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){

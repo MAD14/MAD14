@@ -242,7 +242,7 @@ public class GroupActivity extends AppCompatActivity {
         }
         private View rootView;
         private ListView list_expenses,list_summary;
-        private String name;
+        private String name,email;
         private String IDGroup;
         private TextView noExpense_textView, noReport_textView;
 
@@ -336,9 +336,11 @@ public class GroupActivity extends AppCompatActivity {
                                 if (data.child("Receiver").getValue().toString().equals(user)) {
                                     credit = true;
                                     name = data.child("DisplayNameSender").getValue().toString();
+                                    email= data.child("Sender").getValue().toString();
                                 } else {
                                     credit = false;
                                     name = data.child("DisplayNameReceiver").getValue().toString();
+                                    email = data.child("Receiver").getValue().toString();
                                 }
 
                                 boolean flag = false;
@@ -361,10 +363,12 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val + Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin > 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), credit));
+
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), credit));
                                         }else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), false));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getEmail(),old.getCurrency(), false));
+
                                         }
 
                                     } else {
@@ -376,18 +380,23 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val - Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin < 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), credit));
+
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), credit));
                                         }
                                         else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), true));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), true));
+
+        
                                         }
                                     }
                                 } else {
                                     Summary tmp = new Summary(name,
-                                            data.child("Money").getValue().toString(),
-                                            data.child("Currency").getValue().toString(),
-                                            credit);
+
+                                            data.child("Money").getValue().toString(),email,
+                                            data.child("Currency").getValue().toString(),credit);
+
+                                            
                                     summaryList.add(indexSummary, tmp);
                                     indexSummary++;
                                 }
