@@ -47,6 +47,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
     private DatabaseReference myRef;
     private String image;
 
+
     public CustomAdapterContactSuggested(Context context, ArrayList<Contact> partialNames) {
         this.context = context;
         this.partialNames = partialNames;
@@ -101,9 +102,10 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
                         currentUser.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
-                                image = dataSnapshot.child("ProfileImage").getValue().toString();
-                                if(image!=null)
+                                if(dataSnapshot.child("ProfileImage").getValue()!=null) {
+                                    image=dataSnapshot.child("ProfileImage").getValue().toString();
                                     myRef.child("Image").setValue(image);
+                                }
                             }
 
                             @Override
