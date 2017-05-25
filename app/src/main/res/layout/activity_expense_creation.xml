@@ -11,6 +11,15 @@
     android:background="@color/background"
     >
 
+    <ProgressBar
+        android:id="@+id/progressBar_expense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
     <EditText android:id="@+id/expense_name"
         android:hint="@string/Name"
         android:inputType="text"

@@ -69,7 +69,7 @@
             android:layout_below="@+id/profile_layout"
             android:layout_marginTop="5dp"
             android:orientation="vertical"
-            android:background="@color/backgroundDark"
+            android:background="@color/background"
             >
 
             <RelativeLayout
