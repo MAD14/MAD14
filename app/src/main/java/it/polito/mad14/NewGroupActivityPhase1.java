@@ -17,10 +17,12 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,12 +48,14 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
     private EditText editDescription;
     private String groupName;
     private String groupDescription;
+    private Spinner selectCurrency;
 
     private Bitmap targetImageBitmap = null;
     private String encodedImage;
     private String strImageUri, noImage = "no_image";
     private FirebaseAuth mAuth;
     private String date;
+    private String groupCurrency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,8 +72,13 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         createGroup = (Button) findViewById(R.id.group_create_button);
         editName = (EditText) findViewById(R.id.group_name);
         editDescription = (EditText) findViewById(R.id.group_description);
-        insertImage = (ImageButton) findViewById(R.id.insert_image);
 
+        selectCurrency = (Spinner) findViewById(R.id.spinner_currency);
+        String[] currencies = new String[]{"€","$"};
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,R.layout.spinner_item,currencies);
+        selectCurrency.setAdapter(adapter);
+
+        insertImage = (ImageButton) findViewById(R.id.insert_image);
         insertImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,6 +97,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                         groupName = editName.getText().toString();
                         if (EditIsAlphanumeric(groupName)) {
                             groupDescription = editDescription.getText().toString();
+                            groupCurrency = selectCurrency.getSelectedItem().toString();
                             // DB ACCESS
                             FirebaseDatabase database = FirebaseDatabase.getInstance();
                             DatabaseReference myRef = database.getReference("groups").push();
@@ -98,6 +108,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             dict.put("Description",groupDescription);
                             dict.put("Author",author);
                             dict.put("Date",date);
+                            dict.put("Currency",groupCurrency);
 
                             if (encodedImage == null) {
                                 dict.put("Image", noImage);
@@ -116,6 +127,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             intent.putExtra("Author",author);
                             intent.putExtra("Date",date);
                             intent.putExtra("Image",strImageUri);
+                            intent.putExtra("Currency",groupCurrency);
                             startActivity(intent);
                             finish();
                         } else {

@@ -43,6 +43,7 @@ public class AddNewContacts extends AppCompatActivity {
 
     private DatabaseReference myRef;
     private String actualName;
+    private String actualEmail;
 
     private ProgressBar progressBar;
     private TextView loading;
@@ -59,7 +60,7 @@ public class AddNewContacts extends AppCompatActivity {
 
         actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
-        actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
+        actualEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         myRef = database.getReference("users");
@@ -119,7 +120,7 @@ public class AddNewContacts extends AppCompatActivity {
             partialNames.clear();
             for (int i = 0; i < searchNames.size(); i++) {
                 if (searchNames.get(i).toString().toUpperCase().contains(nameCapture.getText().toString().toUpperCase()) &&
-                        !(searchNames.get(i).toString().toUpperCase().contains(actualName.toUpperCase()))) {
+                        !(searchNames.get(i).getEmail().equals(actualEmail))) {
                     partialNames.add(searchNames.get(i));
                     adapter.notifyDataSetChanged();
 

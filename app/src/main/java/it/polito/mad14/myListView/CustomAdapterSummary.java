@@ -57,7 +57,7 @@ public class CustomAdapterSummary extends BaseAdapter {
             convertView = inflater.inflate(R.layout.personal_summary_item,parent,false);
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
-        tv.setText(summaryList.get(position).toString());
+        tv.setText(summaryList.get(position).getName());
 
         tv = (TextView) convertView.findViewById(R.id.summary_import);
         if (summaryList.get(position).getCredit()) {

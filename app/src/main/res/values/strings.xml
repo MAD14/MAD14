@@ -142,4 +142,10 @@
     <string name="confirm_user_payment">Waiting for the confirm of the other user</string>
     <string name="wait_confirm">The other user hasn\'t confirm yet. Please wait the confirmation</string>
 
+    <string name="currency">Currency</string>
+    <string name="default_currency">€</string>
+    <string name="choose_your_currency">Choose your currency</string>
+    <string name="currency_set_to">Currency set to</string>
+    <string name="currency_advisor">You can change it from your settings</string>
+
 </resources>

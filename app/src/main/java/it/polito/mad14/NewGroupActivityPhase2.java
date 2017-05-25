@@ -51,7 +51,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     private int nFriends=0;
 
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,groupCurrency,creator;
     private String IDGroup;
     private String MyID, newUser;
     private FirebaseDatabase database;
@@ -71,6 +71,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         groupAuthor= getIntent().getStringExtra("Author");
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
+        groupCurrency = getIntent().getStringExtra("Currency");
         groupImage = getIntent().getStringExtra("Image");
         if (!getIntent().getStringExtra("Image").equals(noImage)){
             groupImageUri = Uri.parse(getIntent().getStringExtra("Image"));
@@ -210,8 +211,11 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Description").setValue(groupDescr);
                     ref.child("Date").setValue(groupDate);
                     ref.child("Image").setValue(groupImage);
+                    ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
+                    ref.child("Expenses").setValue("x");
+                    ref.child("Members").setValue("x");
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
@@ -284,6 +288,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         intent.putExtra("Author",groupAuthor);
         intent.putExtra("Date",groupDate);
         intent.putExtra("Description",groupDescr);
+        intent.putExtra("Currency",groupCurrency);
         setResult(RESULT_OK,intent);
         startActivity(intent);
         finish();

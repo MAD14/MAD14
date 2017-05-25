@@ -11,6 +11,15 @@
     android:background="@color/background"
     >
 
+    <ProgressBar
+        android:id="@+id/progressBar_expense"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@android:style/Widget.ProgressBar.Large"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        />
+
     <EditText android:id="@+id/expense_name"
         android:hint="@string/Name"
         android:inputType="text"
@@ -34,17 +43,33 @@
         android:layout_marginBottom="20dp">
     </EditText>
 
-    <EditText android:id="@+id/expense_import"
-        android:hint="@string/Import"
-        android:inputType="text"
-        android:textSize="20dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:id="@+id/linear_layout_import"
         android:layout_width="match_parent"
-        android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"
-        android:layout_below="@id/expense_description"
-        android:layout_marginBottom="20dp">
-    </EditText>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/expense_description">
+
+        <EditText
+            android:id="@+id/expense_import"
+            android:layout_width="fill_parent"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginRight="@dimen/margin"
+            android:hint="@string/Import"
+            android:inputType="text"
+            android:textSize="20dp" />
+
+        <Spinner
+            android:id="@+id/spinner_currency"
+            android:layout_width="wrap_content"
+            android:layout_weight="0"
+            android:layout_height="wrap_content"
+            android:spinnerMode="dropdown"
+            android:minWidth="100dp"/>
+
+    </LinearLayout>
 
     <TextView
         android:id="@+id/expense_add_text"
@@ -53,7 +78,7 @@
         android:text="Insert an image"
         android:textSize="@dimen/main_text"
         android:layout_marginLeft="@dimen/margin"
-        android:layout_below="@id/expense_import"
+        android:layout_below="@id/linear_layout_import"
         android:textColor="@color/writing"
         />
 

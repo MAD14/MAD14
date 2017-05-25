@@ -365,10 +365,10 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val + Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin > 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), credit));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), credit));
                                         }else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), false));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), false));
                                         }
 
                                     } else {
@@ -380,16 +380,17 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val - Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin < 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), credit));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), credit));
                                         }
                                         else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), true));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getCurrency(), true));
                                         }
                                     }
                                 } else {
                                     Summary tmp = new Summary(name,
                                             data.child("Money").getValue().toString(),
+                                            data.child("Currency").getValue().toString(),
                                             credit);
                                     summaryList.add(indexSummary, tmp);
                                     indexSummary++;

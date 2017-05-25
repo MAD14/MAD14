@@ -83,9 +83,9 @@ public class CustomAdapter extends BaseAdapter{
         TextView tv = (TextView) convertView.findViewById(R.id.group_name);
         tv.setText(groupList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.group_summary1);
-        tv.setText(context.getString(R.string.credit) + ": " + groupList.get(position).getCredit() +"€");
+        tv.setText(context.getString(R.string.credit) + ": " + groupList.get(position).getCredit() + groupList.get(position).getCurrency());
         tv = (TextView) convertView.findViewById(R.id.group_summary2);
-        tv.setText(context.getString(R.string.debit) + ": "+ groupList.get(position).getDebit() +"€");
+        tv.setText(context.getString(R.string.debit) + ": "+ groupList.get(position).getDebit() + groupList.get(position).getCurrency());
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.group_icon);
         if (groupList.get(position).getImage().equals("no_image")) {
