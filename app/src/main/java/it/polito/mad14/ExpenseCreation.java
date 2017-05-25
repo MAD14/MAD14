@@ -74,7 +74,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Double priceEach;
     private Double totCredit;
 
-    private String authorDisplayName, et_author;
+    private String authorDisplayName, et_author, name;
     private String debitorDisplayName;
     private DatabaseReference newRef,refDeb, userRef;
 
@@ -239,7 +239,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             Iterator<String> it=contacts.iterator();
             while(it.hasNext()){
 
-                String name=it.next();
+                name=it.next();
                 if(!name.equals(et_author)) {
                     //updating of the group's info
                     newRef = refDebits.push();
@@ -271,8 +271,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
-                            String oldValue = dataSnapshot.child("Expenses").child(IDGroup).getValue().toString();
-                            userRef.child("Expenses").child(IDGroup).setValue(oldValue + "x");
+
+                            userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
