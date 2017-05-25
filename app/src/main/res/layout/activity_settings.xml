@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="it.polito.mad14.SettingsActivity"
+    android:background="@color/background">
+
+    <!--<android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+    </android.support.design.widget.AppBarLayout>-->
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageButton
+            android:id="@+id/uk_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:background="@mipmap/ic_uk_flag" />
+
+        <ImageButton
+            android:id="@+id/italy_flag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:layout_toLeftOf="@id/uk_flag"
+            android:layout_toStartOf="@id/uk_flag"
+            android:background="@mipmap/ic_italy_flag" />
+
+        <TextView
+            android:id="@+id/language"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@id/italy_flag"
+            android:layout_alignTop="@id/italy_flag"
+            android:layout_margin="@dimen/margin"
+            android:layout_toLeftOf="@id/italy_flag"
+            android:layout_toStartOf="@id/italy_flag"
+            android:text="@string/change_language"
+            android:textColor="@color/writing"
+            android:textSize="20sp"/>
+
+        <Button
+            android:id="@+id/button_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/italy_flag"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="@dimen/margin"
+            android:textSize="20sp"
+            android:clickable="true"
+            android:onClick="onClickChangeCurrency"/>
+
+        <TextView
+            android:id="@+id/currency"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:layout_below="@id/italy_flag"
+            android:layout_toLeftOf="@id/button_currency"
+            android:layout_toStartOf="@id/button_currency"
+            android:layout_alignBaseline="@id/button_currency"
+            android:textColor="@color/writing"
+            android:text="@string/choose_your_currency"
+            android:textSize="20sp"/>
+
+
+
+
+
+
+    </RelativeLayout>
+
+
+</android.support.design.widget.CoordinatorLayout>

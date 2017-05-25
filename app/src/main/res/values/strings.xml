@@ -148,4 +148,6 @@
     <string name="currency_set_to">Currency set to</string>
     <string name="currency_advisor">You can change it from your settings</string>
 
+    <string name="change_language">Choose your language</string>
+
 </resources>

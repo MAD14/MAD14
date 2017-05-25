@@ -104,11 +104,12 @@ public class ProfileActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         switch (id) {
             case R.id.action_settings:
-                //
+                Intent intent = new Intent(ProfileActivity.this, SettingsActivity.class);
+                startActivity(intent);
                 break;
             case R.id.action_logout:
                 FirebaseAuth.getInstance().signOut();
-                Intent intent = new Intent(ProfileActivity.this,LoginActivity.class);
+                intent = new Intent(ProfileActivity.this,LoginActivity.class);
                 startActivity(intent);
                 break;
             case R.id.action_edit_profile:

@@ -59,7 +59,7 @@
             android:layout_marginRight="@dimen/margin"
             android:hint="@string/Import"
             android:inputType="text"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <Spinner
             android:id="@+id/spinner_currency"

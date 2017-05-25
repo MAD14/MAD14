@@ -154,4 +154,6 @@
     <string name="currency_set_to">Valuta impostata</string>
     <string name="currency_advisor">Puoi cambiarla in futuro dalle impostazioni</string>
 
+    <string name="change_language">Scegli la lingua</string>
+
 </resources>
