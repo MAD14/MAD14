@@ -38,7 +38,7 @@ import java.util.Date;
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
-import it.polito.mad14.myListView.CustomAdapterSummary;
+import it.polito.mad14.myListView.CustomAdapterSummaryGroup;
 
 
 public class GroupActivity extends AppCompatActivity {
@@ -327,7 +327,7 @@ public class GroupActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
                 noReport_textView = (TextView) rootView.findViewById(R.id.noReport_tv);
 
-                CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
+                CustomAdapterSummaryGroup adapter = new CustomAdapterSummaryGroup(getContext(),summaryList,IDGroup);
                 list_summary.setAdapter(adapter);
 
                 myRef_summary.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -402,7 +402,7 @@ public class GroupActivity extends AppCompatActivity {
 //                        tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
 //                        summaryList.addAll(tmpList);
 //                        list_summary.setAdapter(new CustomAdapterSummary(getContext(),summaryList));
-                        ((CustomAdapterSummary) list_summary.getAdapter()).setSummaryList(summaryList);
+                        ((CustomAdapterSummaryGroup) list_summary.getAdapter()).setSummaryList(summaryList);
                         list_summary.invalidate();
                         list_summary.requestLayout();
                         if (list_summary.getAdapter().getCount() == 0){

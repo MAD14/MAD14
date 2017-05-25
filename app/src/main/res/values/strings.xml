@@ -137,6 +137,10 @@
     <string name="friends_added">Friends added</string>
     <string name="delete_item_request">Do you want to delete this item?</string>
     <string name="deleting_expense">Deleting expense...</string>
+    <string name="impossible_del_exp">\Only the owner can delete an expense!</string>
+    <string name="settle_expense">Do you want to settle this operation?</string>
+    <string name="confirm_user_payment">Waiting for the confirm of the other user</string>
+    <string name="wait_confirm">The other user hasn\'t confirm yet. Please wait the confirmation</string>
 
     <string name="currency">Currency</string>
     <string name="default_currency">€</string>

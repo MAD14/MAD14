@@ -20,6 +20,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -119,36 +120,42 @@ public class CustomAdapterExpenses extends BaseAdapter {
                 dialogAlert.setPositiveButton(context.getString(R.string.positive_button_dialogue), new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog,int id) {
 
-                        //TODO: posso cancellare la spesa solo se l'ho creata io!
-                        database = FirebaseDatabase.getInstance();
-                        expense = expensesList.get(position);
-                        // remove value from expense list
-                        expensesList.remove(position);
-                        // remove value from group
-                        DatabaseReference myRef=database.getReference("groups/"+expense.getGroup()+"/items");
-                        myRef.child(expense.getName()).removeValue();
-                        DatabaseReference debits=database.getReference("groups/"+expense.getGroup()+"/debits");
-                        debits.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for(DataSnapshot data : dataSnapshot.getChildren()){
-                                    if(data.child("Product").getValue().toString().equals(expense.getName())){
-                                        String creditor= data.child("Receiver").getValue().toString();
-                                        String debitor=data.child("Sender").getValue().toString();
-                                        database.getReference("users/"+creditor+"/credits/"+data.getKey()).removeValue();
-                                        database.getReference("users/"+debitor+"/debits/"+data.getKey()).removeValue();
-                                        data.getRef().removeValue();
+                        if(expense.getAuthor().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","))) {
+                            //TODO: posso cancellare la spesa solo se l'ho creata io!
+                            database = FirebaseDatabase.getInstance();
+                            expense = expensesList.get(position);
+                            // remove value from expense list
+                            expensesList.remove(position);
+                            notifyDataSetChanged();
+                            notifyDataSetInvalidated();
+                            // remove value from group
+                            DatabaseReference myRef = database.getReference("groups/" + expense.getGroup() + "/items");
+                            myRef.child(expense.getName()).removeValue();
+                            DatabaseReference debits = database.getReference("groups/" + expense.getGroup() + "/debits");
+                            debits.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        if (data.child("Product").getValue().toString().equals(expense.getName())) {
+                                            String creditor = data.child("Receiver").getValue().toString();
+                                            String debitor = data.child("Sender").getValue().toString();
+                                            database.getReference("users/" + creditor + "/credits/" + data.getKey()).removeValue();
+                                            database.getReference("users/" + debitor + "/debits/" + data.getKey()).removeValue();
+                                            data.getRef().removeValue();
+                                        }
                                     }
                                 }
-                            }
 
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
-                            }
-                        });
+                                }
+                            });
 
-                        Toast.makeText(context,context.getString(R.string.deleting_expense),Toast.LENGTH_SHORT).show();
+                            Toast.makeText(context, context.getString(R.string.deleting_expense), Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(context, context.getString(R.string.impossible_del_exp), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
 
