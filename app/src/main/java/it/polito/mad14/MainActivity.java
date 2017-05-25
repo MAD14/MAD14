@@ -369,7 +369,7 @@ public class MainActivity extends AppCompatActivity {
 
                                     credit = false; // debits section --> it's a debit
                                     Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
-                                            data.child("Money").getValue().toString(),data.child("Paying").getValue().toString().
+                                            data.child("Money").getValue().toString(),data.child("Paying").getValue().toString(),
                                             data.child("Currency").getValue().toString(),
 
                                             credit);
@@ -428,6 +428,7 @@ public class MainActivity extends AppCompatActivity {
                                             credit = true; // credits section --> it's a credit
                                             Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",","."),
                                                     data.child("Money").getValue().toString(),
+                                                    data.child("Debitor").getValue().toString(),
                                                     data.child("Currency").getValue().toString(),
                                                     credit);
                                             indexSummary = creditsList.size();
@@ -454,7 +455,7 @@ public class MainActivity extends AppCompatActivity {
                                                     newtot = Math.round((past + Float.valueOf(sum.getValue())) * 100.0) / 100.0;
                                                 }
 
-                                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),
+                                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),sum.getEmail(),
                                                         selectedCurrency, true));
 
                                             }else{
