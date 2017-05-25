@@ -10,16 +10,18 @@
     android:clickable="true"
     android:onClick="onClick"
     android:background="@color/background"
+    android:layout_marginTop="@dimen/margin_half"
+    android:layout_marginBottom="@dimen/margin_half"
     >
 
     <it.polito.mad14.myDataStructures.CircularImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="65dp"
+        android:layout_height="65dp"
         android:id="@+id/group_icon"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_marginLeft="15dp"
-        android:layout_marginStart="15dp"
+        android:layout_marginLeft="@dimen/margin"
+        android:layout_marginStart="@dimen/margin"
         android:layout_marginTop="10dp"
         android:layout_marginRight="@dimen/margin_double"
         android:layout_marginEnd="@dimen/margin_double"
@@ -35,6 +37,7 @@
         android:layout_toRightOf="@+id/group_icon"
         android:layout_toEndOf="@id/group_icon"
         android:text="@string/group_name"
+        android:layout_marginBottom="@dimen/margin_half"
         android:layout_marginTop="10dp"/>
 
 
@@ -49,10 +52,7 @@
         android:layout_alignLeft="@+id/group_name"
         android:layout_alignStart="@+id/group_name"
         android:layout_marginTop="5dp"
-        android:layout_marginLeft="5dp"
-        android:layout_marginStart="5dp"
-        android:layout_marginRight="16dp"
-        android:layout_marginEnd="16dp"/>
+        />
 
     <TextView
         android:id="@+id/group_summary2"
@@ -63,10 +63,10 @@
         android:text="@string/summary2"
         android:layout_alignBaseline="@+id/group_summary1"
         android:layout_alignBottom="@+id/group_summary1"
-        android:layout_toRightOf="@+id/group_summary1"
-        android:layout_toEndOf="@+id/group_summary1"
-        android:layout_marginLeft="10dp"
-        android:layout_marginStart="10dp"
+        android:layout_toLeftOf="@+id/group_notification"
+        android:layout_toStartOf="@id/group_notification"
+        android:layout_marginRight="@dimen/margin_double"
+        android:layout_marginEnd="@dimen/margin_double"
         android:layout_marginTop="5dp"
         />
 
@@ -75,15 +75,16 @@
         android:layout_width="@dimen/icon_dimension"
         android:layout_height="@dimen/icon_dimension"
         android:background="@mipmap/notification_icon"
-        android:layout_marginRight="15dp"
-        android:layout_marginEnd="15dp"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
         android:layout_alignTop="@+id/group_name"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_marginTop="@dimen/margin"
         android:textAlignment="center"
         android:textColor="@color/writing"
-        android:gravity="center" />
+        android:gravity="center"
+        android:visibility="invisible"/>
 
 
 
