@@ -290,13 +290,9 @@ public class GroupActivity extends AppCompatActivity {
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(expense2.getDate());
                                     long timestamp2 = d2.getTime();
-                                    Log.e("-------timestamp1",String.valueOf(timestamp1));
-                                    Log.e("timestamp2",String.valueOf(timestamp2));
                                     if (timestamp1 <= timestamp2) {
-                                        Log.e("return","1");
                                         return 1;
                                     } else {
-                                        Log.e("return","0");
                                         return -1;
                                     }
                                 } catch(ParseException e){
@@ -367,10 +363,12 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val + Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin > 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(), credit));
+
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), credit));
                                         }else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getEmail(), false));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(), old.getEmail(),old.getCurrency(), false));
+
                                         }
 
                                     } else {
@@ -382,17 +380,23 @@ public class GroupActivity extends AppCompatActivity {
                                         Double fin = Math.round((val - Float.valueOf(data.child("Money").getValue().toString()))*100.0)/100.0;
                                         if (fin < 0) {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(), credit));
+
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), credit));
                                         }
                                         else {
                                             summaryList.remove(newIndexSummary);
-                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(), true));
+                                            summaryList.add(newIndexSummary, new Summary(old.getName(), fin.toString(),old.getEmail(),old.getCurrency(), true));
+
+        
                                         }
                                     }
                                 } else {
                                     Summary tmp = new Summary(name,
+
                                             data.child("Money").getValue().toString(),email,
-                                            credit);
+                                            data.child("Currency").getValue().toString(),credit);
+
+                                            
                                     summaryList.add(indexSummary, tmp);
                                     indexSummary++;
                                 }

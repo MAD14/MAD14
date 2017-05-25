@@ -141,8 +141,19 @@
     <string name="friends_added">Amici aggiunti</string>
     <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
     <string name="deleting_expense">Cancellazione spesa...</string>
+
     <string name="impossible_del_exp">\Solo il proprietario può eliminare una spesa</string>
     <string name="settle_expense">Vuoi saldare questa operazione?</string>
     <string name="confirm_user_payment">In attesa della conferma dell\'altro utente </string>
     <string name="wait_confirm">L\'altro utente non ha ancora confermato. Attesa della sua conferma</string>
+
+
+    <string name="currency">Valuta</string>
+    <string name="default_currency">€</string>
+    <string name="choose_your_currency">Scegli la tua valuta</string>
+    <string name="currency_set_to">Valuta impostata</string>
+    <string name="currency_advisor">Puoi cambiarla in futuro dalle impostazioni</string>
+
+    <string name="change_language">Scegli la lingua</string>
+
 </resources>

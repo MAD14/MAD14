@@ -76,6 +76,27 @@
                 android:layout_marginBottom="20dp">
             </EditText>
 
+            <TextView
+                android:id="@+id/select_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_description"
+                android:textSize="20sp"
+                android:layout_marginLeft="@dimen/margin"
+                android:layout_marginStart="@dimen/margin"
+                android:text="@string/currency"/>
+
+            <Spinner
+                android:id="@+id/spinner_currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/group_description"
+                android:layout_toRightOf="@id/select_currency"
+                android:layout_toEndOf="@id/select_currency"
+                android:layout_alignBaseline="@id/select_currency"
+                android:minWidth="100dp"
+                android:spinnerMode="dropdown" />
+
 
             <TextView
                 android:id="@+id/insert_image_text"
@@ -85,7 +106,7 @@
                 android:textSize="15sp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="30dp"
-                android:layout_below="@id/group_description"/>
+                android:layout_below="@id/select_currency"/>
 
             <ImageButton
                 android:id="@+id/insert_image"

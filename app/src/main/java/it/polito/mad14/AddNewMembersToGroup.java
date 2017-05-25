@@ -30,7 +30,7 @@ import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Mail;
 
 public class AddNewMembersToGroup extends AppCompatActivity {
-    private String IDGroup,newUser;
+    private String IDGroup,newUser,actualUser;
     private ArrayList<String> friends_added;
     private ArrayList<Contact> friends;
     private ArrayList<String> members;
@@ -38,10 +38,10 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private ListView list_friends;
     private int nFriends = 0;
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator,oldValue;
     private FirebaseDatabase database;
     private Mail inviteMail;
-    private DatabaseReference temp_reference,myRefGroup;
+    private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
     private AutoCompleteTextView actv;
 
     @Override
@@ -134,7 +134,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    System.out.println(data.getKey().toString().replace(",","."));
                     members.add(membersIndex,data.getKey().toString().replace(",","."));
                     friendsIndex++;
                 }
@@ -230,8 +229,29 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             myRefGroup.child(newUser).child("Debits").setValue("0");
             myRefGroup.child(newUser).child("Credits").setValue("0");
         }
-        myRefGroup = database.getReference("groups/"+ IDGroup + "/members");
+
         temp_reference = database.getReference("users");
+
+        myRefGroup2 = database.getReference("groups/" + IDGroup + "/members/");
+        myRefGroup2.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    Log.e("data key", data.getKey());
+                    Log.e("1---------", "----");
+                    actualUser = data.getKey();
+                    temp_reference.child(actualUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
+                    temp_reference.child(actualUser).child("Members").child(IDGroup).child("Value").setValue(Math.random());
+                    Log.e("3---------", "bdfgd");
+
+                }
+            }
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
         temp_reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -242,6 +262,9 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
                     myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
                     myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
+
+                    temp_reference.child(newUser).child("Members").child(IDGroup).child("Value").setValue("x");
+
                 }
             }
 

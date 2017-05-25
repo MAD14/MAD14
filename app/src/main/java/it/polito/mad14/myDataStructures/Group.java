@@ -8,9 +8,10 @@ public class Group {
     String credit;
     String debit;
     String image;
+    String currency;
 
 
-    public Group(String ID,String name, String author, String date, String credit, String debit, String image) {
+    public Group(String ID,String name, String author, String date, String credit, String debit, String image, String currency) {
         this.ID=ID;
         this.name = name;
         this.author = author;
@@ -18,6 +19,7 @@ public class Group {
         this.credit = credit;
         this.debit = debit;
         this.image = image;
+        this.currency = currency;
     }
     public String getID() {
         return ID;
@@ -93,5 +95,13 @@ public class Group {
 
     public void setImage(String image) {
         this.image = image;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 }
