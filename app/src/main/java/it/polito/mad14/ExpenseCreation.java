@@ -73,8 +73,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private DatabaseReference creditBranch;
     private Double priceEach;
     private Double totCredit;
-
     private String authorDisplayName, et_author, name;
+
     private String debitorDisplayName;
     private DatabaseReference newRef,refDeb, userRef;
 
@@ -273,6 +273,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
 
                             userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
+
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
