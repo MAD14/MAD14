@@ -13,7 +13,7 @@ public class Summary {
     boolean credit;// true è un credito (-> verde); false è un debito (-> rosso)
 //    String image;
 
-    public Summary(String name, String value, String email, String currency boolean credit) {
+    public Summary(String name, String value, String email, String currency, boolean credit) {
 
         this.name = name;
         this.value = value;
