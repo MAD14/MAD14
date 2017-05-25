@@ -8,13 +8,15 @@ public class Summary {
 
     String name;
     String value;
+    String email;
     boolean credit;// true è un credito (-> verde); false è un debito (-> rosso)
 //    String image;
 
-    public Summary(String name, String value, boolean credit) {
+    public Summary(String name, String value, String email, boolean credit) {
         this.name = name;
         this.value = value;
         this.credit = credit;
+        this.email=email;
 //        this.image = image;
     }
 
@@ -45,6 +47,16 @@ public class Summary {
     public boolean equals(Summary s){
         return this.name.equals(s.getName());
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+
 
 //    public boolean hasImage(){
 //        if (image != null)

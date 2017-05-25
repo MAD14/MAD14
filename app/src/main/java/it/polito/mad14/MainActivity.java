@@ -315,7 +315,7 @@ public class MainActivity extends AppCompatActivity {
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
                             credit = false; // debits section --> it's a debit
                             Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
-                                    data.child("Money").getValue().toString(),
+                                    data.child("Money").getValue().toString(),data.child("Paying").getValue().toString(),
                                     credit);
                             indexSummary = debitsList.size();
                             debitsList.add(indexSummary, tmp);
@@ -332,7 +332,7 @@ public class MainActivity extends AppCompatActivity {
                                 boolean flag = true;
                                 if (newtot < 0)
                                     flag = false;
-                                tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), flag));
+                                tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot),sum.getEmail(), flag));
 
                             } else {
                                 tot.put(sum.getName(), sum);
@@ -355,7 +355,7 @@ public class MainActivity extends AppCompatActivity {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                                     credit = true; // credits section --> it's a credit
                                     Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",","."),
-                                            data.child("Money").getValue().toString(),
+                                            data.child("Money").getValue().toString(),data.child("Debitor").getValue().toString(),
                                             credit);
                                     indexSummary = creditsList.size();
                                     creditsList.add(indexSummary, tmp);
@@ -370,7 +370,7 @@ public class MainActivity extends AppCompatActivity {
                                         Float past=Float.valueOf(tot.get(sum.getName()).getValue());
                                         Double newtot=Math.round(past+Float.valueOf(sum.getValue())*100.0)/100.0;
 
-                                        tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),true));
+                                        tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),sum.getEmail(),true));
 
                                     }else{
                                         tot.put(sum.getName(),sum);

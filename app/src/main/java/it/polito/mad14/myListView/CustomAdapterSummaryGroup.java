@@ -71,14 +71,14 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             convertView = inflater.inflate(R.layout.personal_summary_item, parent, false);
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
-        tv.setText(summaryList.get(position).getName());
+        tv.setText(summaryList.get(position).getEmail());
 
         database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
         user = auth.getCurrentUser().getEmail().replace(".", ",");
 
         summ = summaryList.get(position);
-        name = summ.getName();
+        name = summ.getEmail();
         val = summ.getValue();
         cd = summ.getCredit();
 
@@ -94,7 +94,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot data : dataSnapshot.getChildren()){
-                        if(data.child("Name").getValue().toString().equals(name)){
+                        if(data.child("Email").getValue().toString().equals(name)){
                             flag=true;
                             break;
                         }
