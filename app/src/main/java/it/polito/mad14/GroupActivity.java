@@ -290,13 +290,9 @@ public class GroupActivity extends AppCompatActivity {
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(expense2.getDate());
                                     long timestamp2 = d2.getTime();
-                                    Log.e("-------timestamp1",String.valueOf(timestamp1));
-                                    Log.e("timestamp2",String.valueOf(timestamp2));
                                     if (timestamp1 <= timestamp2) {
-                                        Log.e("return","1");
                                         return 1;
                                     } else {
-                                        Log.e("return","0");
                                         return -1;
                                     }
                                 } catch(ParseException e){
