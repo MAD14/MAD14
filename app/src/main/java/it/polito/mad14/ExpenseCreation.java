@@ -271,8 +271,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
-                            String oldValue = dataSnapshot.child("groups").child(IDGroup).child("Expenses").getValue().toString();
-                            userRef.child("groups").child(IDGroup).child("Expenses").setValue(oldValue + "x");
+                            String oldValue = dataSnapshot.child("Expenses").child(IDGroup).getValue().toString();
+                            userRef.child("Expenses").child(IDGroup).setValue(oldValue + "x");
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
