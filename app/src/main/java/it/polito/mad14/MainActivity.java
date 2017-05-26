@@ -296,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                             public int compare(Group group1, Group group2) {
                                 //TODO: bisognerà aggiungere il controllo sul campo "LastChange" per far si che non dipenda dalla data di creazione, ma dall'ultima modifica!
                                 try{
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                                     Date d1 = formatter.parse(group1.getDate());
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(group2.getDate());
@@ -309,7 +309,8 @@ public class MainActivity extends AppCompatActivity {
                                 } catch(ParseException e){
                                     Log.e("error parsing",e.getMessage());
                                 }
-                                return 0;                            }
+                                return 0;
+                            }
                         });
 
 

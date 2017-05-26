@@ -95,7 +95,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         encodedExpenseImage = getString(R.string.no_image);
         hasImage = false;
 
-        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy");
+        SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
 
         bt = (Button) findViewById(R.id.expense_button);
