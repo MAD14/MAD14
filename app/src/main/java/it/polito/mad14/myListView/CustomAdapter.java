@@ -149,11 +149,15 @@ public class CustomAdapter extends BaseAdapter{
 
                                     // remove value from group list
                                     groupList.remove(position);
+
                                 }
                             };
                             Thread t = new Thread(r);
                             t.start();
                             Toast.makeText(context, context.getString(R.string.deleting_group), Toast.LENGTH_SHORT).show();
+                            notifyDataSetChanged();
+                            notifyDataSetInvalidated();
+
 
 
                         } else {
