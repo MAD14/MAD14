@@ -70,8 +70,6 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -250,6 +248,10 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+
+            String groupName = getActivity().getIntent().getStringExtra("Name");
+            Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+            toolbar.setTitle(groupName);
 
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             database = FirebaseDatabase.getInstance();

@@ -214,11 +214,17 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("x");
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
-                    myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("x");
-                    myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-
+                    if (user == groupAuthor){
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
+                    } else {
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
+                    }
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added

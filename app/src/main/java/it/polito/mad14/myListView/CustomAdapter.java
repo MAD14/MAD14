@@ -104,6 +104,7 @@ public class CustomAdapter extends BaseAdapter{
             public void onClick(View view){
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
+                intent.putExtra("Name",groupList.get(position).getName());
                 context.startActivity(intent);
             }
         });
