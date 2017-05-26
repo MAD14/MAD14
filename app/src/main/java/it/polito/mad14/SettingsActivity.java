@@ -32,7 +32,7 @@ import java.util.Locale;
 public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
-    private Button changeCurrency;
+    private Button changeCurrencyEUR, changeCurrencyUSD;
     private String selectedCurrency, buttonText;
     private static FirebaseDatabase database;
     private static DatabaseReference currencyRef;
@@ -58,11 +58,34 @@ public class SettingsActivity extends AppCompatActivity {
         currency = (TextView) findViewById(R.id.currency);
         currency.setText(getString(R.string.choose_your_currency));
 
-        changeCurrency = (Button) findViewById(R.id.button_currency);
-        changeCurrency.setOnClickListener(new View.OnClickListener() {
+        changeCurrencyEUR = (Button) findViewById(R.id.button_currency_EUR);
+        changeCurrencyUSD = (Button) findViewById(R.id.button_currency_USD);
+
+        changeCurrencyEUR.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onClickChangeCurrency();
+                selectedCurrency = "€";
+                currencyRef.child("MyCurrency").setValue(selectedCurrency);
+                changeCurrencyEUR.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                changeCurrencyEUR.setTextColor(getResources().getColor(R.color.white));
+                changeCurrencyUSD.setBackgroundResource(android.R.drawable.btn_default);
+                changeCurrencyUSD.setTextColor(getResources().getColor(R.color.writing));
+                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
+                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        changeCurrencyUSD.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                selectedCurrency = "$";
+                currencyRef.child("MyCurrency").setValue(selectedCurrency);
+                changeCurrencyUSD.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                changeCurrencyUSD.setTextColor(getResources().getColor(R.color.white));
+                changeCurrencyEUR.setBackgroundResource(android.R.drawable.btn_default);
+                changeCurrencyEUR.setTextColor(getResources().getColor(R.color.writing));
+                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
+                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -73,9 +96,18 @@ public class SettingsActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 selectedCurrency = dataSnapshot.child("MyCurrency").getValue().toString();
-                if (selectedCurrency.equals("€")) buttonText = "EUR (" + selectedCurrency + ")";
-                else buttonText = "USD (" + selectedCurrency + ")";
-                changeCurrency.setText(buttonText);
+                if (selectedCurrency.equals("€")) {
+                    //buttonText = "EUR (" + selectedCurrency + ")";
+                    changeCurrencyEUR.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    changeCurrencyEUR.setTextColor(getResources().getColor(R.color.white));
+                }
+                else{
+                    //buttonText = "USD (" + selectedCurrency + ")";
+                    changeCurrencyUSD.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
+                    changeCurrencyUSD.setTextColor(getResources().getColor(R.color.white));
+                }
+                //changeCurrency.setText(buttonText);
+
             }
 
             @Override
@@ -127,7 +159,7 @@ public class SettingsActivity extends AppCompatActivity {
         startActivity(getIntent());
     }
 
-    private void onClickChangeCurrency(){
+    /*private void onClickChangeCurrency(){
         LayoutInflater li = LayoutInflater.from(SettingsActivity.this);
         View promptsView = li.inflate(R.layout.spinner_first_currency, null);
         AlertDialog.Builder alertDialogueBuilder = new AlertDialog.Builder(SettingsActivity.this);
@@ -162,5 +194,5 @@ public class SettingsActivity extends AppCompatActivity {
         AlertDialog chooseYourCurrency = alertDialogueBuilder.create();
         chooseYourCurrency.show();
 
-    }
+    }*/
 }
