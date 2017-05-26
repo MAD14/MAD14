@@ -159,6 +159,7 @@ public class CustomAdapter extends BaseAdapter{
                             notifyDataSetInvalidated();
 
 
+
                         } else {
                             Toast.makeText(context,context.getString(R.string.delete_group_error),Toast.LENGTH_LONG).show();
                         }

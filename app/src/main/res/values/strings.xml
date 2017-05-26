@@ -159,7 +159,6 @@
 
     <string name="pay">Pay</string>
     <string name="confirm">Confirm</string>
+
     <string name="waiting">Waiting...</string>
-
-
 </resources>
