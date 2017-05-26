@@ -166,4 +166,6 @@
     <string name="pay">Salda</string>
     <string name="confirm">Conferma</string>
     <string name="waiting">In attesa...</string>
+
+    <string name="add_as_friend">Aggiungi ai contatti</string>
 </resources>

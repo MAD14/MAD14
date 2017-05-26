@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v4.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context="it.polito.mad14.EditExpenseActivity"
+    tools:showIn="@layout/activity_edit_expense"
+    android:background="@color/background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginTop="30dp"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:text="@string/Import"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentTop="true"/>
+
+        <TextView
+            android:id="@+id/tv_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:layout_margin="@dimen/margin"
+            android:textColor="@color/writing"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@id/value"
+            android:layout_alignBottom="@id/value" />
+
+        <ImageView
+            android:id="@+id/edit_expense_value"
+            android:layout_width="@dimen/icon_dimension"
+            android:layout_height="@dimen/icon_dimension"
+            android:src="@mipmap/ic_menu_edit"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:layout_toRightOf="@id/value"
+            android:layout_toEndOf="@id/value"
+            android:layout_alignTop="@id/value"
+            android:layout_marginLeft="@dimen/margin_half"
+            />
+
+        <TextView
+            android:id="@+id/author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:text="@string/Author"
+            android:textSize="@dimen/summary"
+            android:layout_below="@id/tv_value"/>
+
+        <TextView
+            android:id="@+id/tv_author"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:textColor="@color/writing"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/author"
+            android:layout_alignBottom="@+id/author"/>
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:text="@string/Description"
+            android:textSize="@dimen/summary"
+            android:layout_below="@id/tv_author"
+            />
+
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:elevation="4dp"
+            android:textColor="@color/writing"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/description"
+            android:layout_alignBottom="@+id/description"
+            android:text="-"
+            />
+
+        <ImageView
+            android:id="@+id/edit_expense_description"
+            android:layout_width="@dimen/icon_dimension"
+            android:layout_height="@dimen/icon_dimension"
+            android:src="@mipmap/ic_menu_edit"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:layout_toRightOf="@id/description"
+            android:layout_toEndOf="@id/description"
+            android:layout_alignTop="@id/description"
+            android:layout_marginLeft="@dimen/margin_half"
+            />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:text="@string/date"
+            android:textSize="@dimen/summary"
+            android:layout_below="@id/tv_description"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin"
+            android:elevation="4dp"
+            android:textColor="@color/writing"
+            android:textSize="@dimen/summary"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignBaseline="@+id/date"
+            android:layout_alignBottom="@+id/date"
+            android:text="-"
+            />
+
+        <ImageView
+            android:id="@+id/edit_expense_date"
+            android:layout_width="@dimen/icon_dimension"
+            android:layout_height="@dimen/icon_dimension"
+            android:src="@mipmap/ic_menu_edit"
+            android:clickable="true"
+            android:elevation="4dp"
+            android:layout_toRightOf="@id/date"
+            android:layout_toEndOf="@id/date"
+            android:layout_alignTop="@id/date"
+            android:layout_marginLeft="@dimen/margin_half"
+            />
+
+    </RelativeLayout>
+
+</android.support.v4.widget.NestedScrollView>

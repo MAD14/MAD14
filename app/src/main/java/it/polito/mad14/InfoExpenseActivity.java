@@ -14,6 +14,7 @@ import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,28 +26,30 @@ import org.w3c.dom.Text;
 public class InfoExpenseActivity extends AppCompatActivity {
 
     private TextView tvValue,tvDescription,tvAuthor,tvDate;
-    private String IDGroup;
+    private String IDGroup, expenseName, description, date, value, author;
     private FirebaseDatabase database;
     private String image;
-
+    private String currentUser;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_expense);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
 
         Intent intent = getIntent();
         IDGroup = getIntent().getStringExtra("IDGroup");
-        String expenseName = intent.getStringExtra("Name");
-        String value = intent.getStringExtra("Import");
-        String description = intent.getStringExtra("Description");
-        String author = intent.getStringExtra("Author");
+        expenseName = intent.getStringExtra("Name");
+        value = intent.getStringExtra("Import");
+        description = intent.getStringExtra("Description");
+        author = intent.getStringExtra("Author");
         image = intent.getStringExtra("Image");
-        String date = intent.getStringExtra("Date");
+        date = intent.getStringExtra("Date");
 
         byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
-        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+        final Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
         BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
         int sdk = android.os.Build.VERSION.SDK_INT;
         if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
@@ -67,13 +70,25 @@ public class InfoExpenseActivity extends AppCompatActivity {
         tvDate.setText(date);
 
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_expense);
+        if (author.replace(".",",") == currentUser) {
+            fab.setVisibility(View.VISIBLE);
+            fab.bringToFront();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(InfoExpenseActivity.this, EditExpenseActivity.class);
+                    intent.putExtra("IDGroup",IDGroup);
+                    intent.putExtra("Name",expenseName);
+                    intent.putExtra("Date",date);
+                    intent.putExtra("Description",description);
+                    intent.putExtra("Image",image);
+                    intent.putExtra("Author",author);
+                    intent.putExtra("Value",value);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
     }
 }
