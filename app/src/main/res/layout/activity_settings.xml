@@ -7,79 +7,110 @@
     tools:context="it.polito.mad14.SettingsActivity"
     android:background="@color/background">
 
-    <!--<android.support.design.widget.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:theme="@style/AppTheme.AppBarOverlay">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
-    </android.support.design.widget.AppBarLayout>-->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ImageButton
-            android:id="@+id/uk_flag"
-            android:layout_width="wrap_content"
+        <RelativeLayout
+            android:id="@+id/relative1"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:background="@mipmap/ic_uk_flag" />
+            android:layout_marginTop="@dimen/margin_double"
+            android:layout_marginRight="@dimen/margin"
+            android:layout_marginEnd="@dimen/margin"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_marginBottom="@dimen/margin"
+            android:background="@color/padding_light">
 
-        <ImageButton
-            android:id="@+id/italy_flag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin"
-            android:layout_toLeftOf="@id/uk_flag"
-            android:layout_toStartOf="@id/uk_flag"
-            android:background="@mipmap/ic_italy_flag" />
+            <TextView
+                android:id="@+id/language"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_margin="@dimen/margin"
+                android:text="@string/change_language"
+                android:textColor="@color/writing"
+                android:textSize="@dimen/main_text"/>
 
-        <TextView
-            android:id="@+id/language"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@id/italy_flag"
-            android:layout_alignTop="@id/italy_flag"
-            android:layout_margin="@dimen/margin"
-            android:layout_toLeftOf="@id/italy_flag"
-            android:layout_toStartOf="@id/italy_flag"
-            android:text="@string/change_language"
-            android:textColor="@color/writing"
-            android:textSize="@dimen/main_text"/>
+            <RelativeLayout
+                android:id="@+id/relative_settings_flags"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
 
-        <Button
-            android:id="@+id/button_currency"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/italy_flag"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_margin="@dimen/margin"
-            android:textSize="@dimen/main_text"
-            android:clickable="true"
-            android:onClick="onClickChangeCurrency"/>
+                <ImageButton
+                    android:id="@+id/italy_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin"
+                    android:background="@mipmap/ic_italy_flag" />
 
-        <TextView
-            android:id="@+id/currency"
-            android:layout_width="fill_parent"
+                <ImageButton
+                    android:id="@+id/uk_flag"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin"
+                    android:layout_below="@id/italy_flag"
+                    android:background="@mipmap/ic_uk_flag" />
+
+            </RelativeLayout>
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/relative2"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_below="@id/relative1"
             android:layout_margin="@dimen/margin"
-            android:layout_below="@id/italy_flag"
-            android:layout_toLeftOf="@id/button_currency"
-            android:layout_toStartOf="@id/button_currency"
-            android:layout_alignBaseline="@id/button_currency"
-            android:textColor="@color/writing"
-            android:text="@string/choose_your_currency"
-            android:textSize="@dimen/main_text"/>
+            android:background="@color/padding_light">
+
+            <TextView
+                android:id="@+id/currency"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin"
+                android:layout_centerVertical="true"
+                android:textColor="@color/writing"
+                android:text="@string/choose_your_currency"
+                android:textSize="@dimen/main_text"/>
+
+            <RelativeLayout
+                android:id="@+id/relative_settings_currencies"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true">
+
+                <Button
+                    android:id="@+id/button_currency_EUR"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin"
+                    android:text="EUR (€)"
+                    android:textSize="@dimen/main_text"
+                    android:clickable="true"
+                    android:onClick="onClickChangeCurrency"/>
+
+                <Button
+                    android:id="@+id/button_currency_USD"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/button_currency_EUR"
+                    android:layout_margin="@dimen/margin"
+                    android:text="USD ($)"
+                    android:textSize="@dimen/main_text"
+                    android:clickable="true"
+                    android:onClick="onClickChangeCurrency"/>
+
+
+            </RelativeLayout>
+
+        </RelativeLayout>
+
 
     </RelativeLayout>
 
@@ -90,6 +121,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         android:src="@mipmap/check_icon"
+
         />
 
 
