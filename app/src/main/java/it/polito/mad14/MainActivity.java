@@ -50,6 +50,7 @@ import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterContacts;
 import it.polito.mad14.myListView.CustomAdapterSummary;
+import it.polito.mad14.myListView.FirebaseBackgroundService;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -92,6 +93,17 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        //////////////////////////
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                startService(new Intent(MainActivity.this,FirebaseBackgroundService.class));
+                System.out.println("inizio!");
+            }
+        };
+        Thread t = new Thread(r);
+        t.start();
+        //////////////////////////
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
@@ -396,6 +408,7 @@ public class MainActivity extends AppCompatActivity {
                                         } else {
                                             Float past = Float.valueOf(tot.get(sum.getName()).getValue());
                                             newtot = Math.round((past - Float.valueOf(sum.getValue())) * 100.0) / 100.0;
+                                            Toast.makeText(getContext(),"newtot: "+newtot.toString(),Toast.LENGTH_SHORT).show();
                                         }
                                         boolean flag = true;
                                         if (newtot < 0)
