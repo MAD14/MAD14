@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
+import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -68,6 +69,7 @@ public class FirebaseBackgroundService extends Service {
                         if( i == 0 ){
                             try {
                                 valueMostRecentM = data.child("Value").getValue().toString();
+                                Log.e("date","prova1: " + data.child("Date").getValue().toString());
                                 mostRecentDateM = formatter.parse(data.child("Date").getValue().toString());
                                 mostRecentTimestampM = mostRecentDateM.getTime();
                                 IDMostRecentM = data.getKey().toString();
@@ -78,9 +80,9 @@ public class FirebaseBackgroundService extends Service {
                             i++;
                         }
                         else{
-                            Date d1 = null;
-                            System.out.println("PRINTO"+data.child("Date").getValue().toString());
+                            Date d1;
                             try {
+                                Thread.sleep(6000);
                                 System.out.println("PRINTO"+data.getKey().toString());
                                 d1 = formatter.parse(data.child("Date").getValue().toString());
                                 long timestamp1 = d1.getTime();
@@ -92,6 +94,9 @@ public class FirebaseBackgroundService extends Service {
                                 }
                             } catch (ParseException e) {
                                 System.out.println("Mannaggia");
+                            } catch (InterruptedException t){
+                                System.out.println("Porca ****");
+
                             }
                         }
                     }
