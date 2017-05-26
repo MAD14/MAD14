@@ -163,4 +163,6 @@
     <string name="summary1">Sommario1</string>
     <string name="summary2">Sommario2</string>
 
+    <string name="pay">Salda</string>
+    <string name="confirm">Conferma</string>
 </resources>

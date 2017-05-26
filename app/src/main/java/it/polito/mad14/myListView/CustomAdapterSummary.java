@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -28,6 +29,8 @@ public class CustomAdapterSummary extends BaseAdapter {
     ArrayList<Summary> summaryList;
     LayoutInflater inflater;
     private String encodedImage;
+    private Button button;
+
 
     public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList) {
         this.context = context;
@@ -59,15 +62,20 @@ public class CustomAdapterSummary extends BaseAdapter {
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
         tv.setText(summaryList.get(position).getName());
 
+        button = (Button) convertView.findViewById(R.id.button_payment);
+
         tv = (TextView) convertView.findViewById(R.id.summary_import);
         if (summaryList.get(position).getCredit()) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context,R.color.green));
             tv.setText("+"+summaryList.get(position).getValue().toString());
+            button.setBackgroundResource(R.mipmap.green_arrow);
+
         } else {
             // se è false rosso
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
             tv.setText("-"+summaryList.get(position).getValue().toString());
+            button.setBackgroundResource(R.mipmap.red_arrow);
         }
 
 

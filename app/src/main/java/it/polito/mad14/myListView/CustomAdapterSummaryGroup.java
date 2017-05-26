@@ -2,12 +2,14 @@ package it.polito.mad14.myListView;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private Boolean cd;
     private String val;
     private DatabaseReference dataref;
+    private Button button;
 
     public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup) {
         this.context = context;
@@ -71,7 +74,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             convertView = inflater.inflate(R.layout.personal_summary_item, parent, false);
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
-        tv.setText(summaryList.get(position).getEmail());
+        tv.setText(summaryList.get(position).getName());
 
         database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -82,25 +85,30 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
         val = summ.getValue();
         cd = summ.getCredit();
 
+        button = (Button) convertView.findViewById(R.id.button_payment);
+
         tv = (TextView) convertView.findViewById(R.id.summary_import);
         if (cd) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context, R.color.green));
-            tv.setText("+" + summaryList.get(position).getValue().toString());
+            String credit = "+" + summaryList.get(position).getValue();
+            tv.setText(credit);
+
+            button.setText(R.string.confirm);
+            button.setTextColor(context.getResources().getColor(R.color.darkgreen));
+            button.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
 
             // check if it's a pending transaction
-            DatabaseReference ref= database.getReference("groups/"+IDGroup+"PendingPayment");
+            DatabaseReference ref= database.getReference("groups/" + IDGroup + "PendingPayment");
             ref.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     for(DataSnapshot data : dataSnapshot.getChildren()){
                         if(data.child("Email").getValue().toString().equals(name)){
-                            flag=true;
+                            // change text in button --> bold
+                            button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                             break;
                         }
-                    }
-                    if(flag){
-                        // TODO add "!" to the card
                     }
                 }
 
@@ -111,13 +119,23 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             });
         } else {
             // se è false rosso
+            String debit;
             tv.setTextColor(ContextCompat.getColor(context, R.color.red));
-            tv.setText("-" + summaryList.get(position).getValue().toString());
+            if (summaryList.get(position).getValue().contains("-")) {
+                debit = summaryList.get(position).getValue();
+            }else {
+                debit = "-" + summaryList.get(position).getValue();
+            }
+            tv.setText(debit);
+
+            button.setText(R.string.pay);
+            button.setTextColor(context.getResources().getColor(R.color.darkred));
+            button.setBackgroundColor(context.getResources().getColor(R.color.lightred));
         }
 
-        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View view) {
+            public void onClick(View view) {
                 final AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
                 dialogAlert.setTitle("");
                 dialogAlert.setMessage(R.string.settle_expense);
@@ -218,7 +236,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                 });
                 AlertDialog alert = dialogAlert.create();
                 alert.show();
-                return true;
+
             }
 
         });

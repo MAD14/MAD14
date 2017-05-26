@@ -11,7 +11,7 @@ public class Summary {
     String currency;
     String email;
     boolean credit;// true è un credito (-> verde); false è un debito (-> rosso)
-//    String image;
+    int paymentSituation;
 
     public Summary(String name, String value, String email, String currency, boolean credit) {
 
@@ -20,8 +20,8 @@ public class Summary {
         this.currency = currency;
         this.credit = credit;
         this.email=email;
+        this.paymentSituation = 0;
       
-//        this.image = image;
     }
 
     public String getName() {
@@ -68,19 +68,11 @@ public class Summary {
         return email;
     }
 
+    public int getPaymentSituation() {
+        return paymentSituation;
+    }
 
-
-//    public boolean hasImage(){
-//        if (image != null)
-//            return true;
-//        return false;
-//    }
-//
-//    public String getImage() {
-//        return image;
-//    }
-//
-//    public void setImage(String image) {
-//        this.image = image;
-//    }
+    public void setPaymentSituation(int paymentSituation) {
+        this.paymentSituation = paymentSituation;
+    }
 }
