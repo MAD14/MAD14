@@ -7,9 +7,15 @@
     <color name="backgroundDark">#dbdeda</color>
     <color name="writing">#000000</color>
     <color name="red">#f90303</color>
+    <color name="darkred">#bf331d</color>
     <color name="green">#2ac119</color>
+    <color name="darkgreen">#024e08</color>
     <color name="lightgrey">#a3aca1</color>
     <color name="padding">#23a3ac</color>
     <color name="last_frame">#212fa6</color>
     <color name="white">#f9f9fa</color>
+    <color name="lightgreen">#448f63</color>
+    <color name="lightred">#af6b60</color>
+
+
 </resources>

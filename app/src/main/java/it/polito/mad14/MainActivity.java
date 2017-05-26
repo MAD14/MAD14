@@ -216,12 +216,6 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
 
-        /**
-         * ELENA:
-         *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
-         *  popolate tramite la lettura dal database!
-         */
-
         private ArrayList<Group> groupsList=new ArrayList<>();
         private ArrayList<Contact> contactsList=new ArrayList<>();
         private int indexGroup=0;

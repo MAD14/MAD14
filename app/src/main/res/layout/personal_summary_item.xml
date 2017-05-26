@@ -5,15 +5,15 @@
     android:orientation="horizontal"
     android:background="@color/background">
 
-        <it.polito.mad14.myDataStructures.CircularImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:id="@+id/image_person"
-            android:layout_alignParentLeft="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="20dp"/>
+        <Button
+            android:id="@+id/button_payment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/summary"
+            android:layout_marginLeft="@dimen/margin"
+            android:layout_marginStart="@dimen/margin"
+            android:layout_gravity="center_vertical"
+            />
 
         <TextView
             android:id="@+id/summary_name"
@@ -28,8 +28,8 @@
             android:layout_marginStart="15dp"
             android:layout_marginRight="@dimen/margin"
             android:layout_marginEnd="@dimen/margin"
-            android:textAppearance="@color/colorPrimary"
             android:textSize="@dimen/main_text"
+            android:textColor="@color/writing"
             />
 
         <TextView

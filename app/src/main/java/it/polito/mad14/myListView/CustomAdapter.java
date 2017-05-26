@@ -89,7 +89,7 @@ public class CustomAdapter extends BaseAdapter{
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.group_icon);
         if (groupList.get(position).getImage().equals("no_image")) {
-            imgbt.setImageResource(R.mipmap.person_icon);
+            imgbt.setImageResource(R.mipmap.group_icon);
         } else {
             encodedImage = groupList.get(position).getImage();
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
@@ -135,7 +135,7 @@ public class CustomAdapter extends BaseAdapter{
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                // elimino la ref negi membri
+                                                // elimino la ref nei membri
                                                 users.child(data.getKey()).child("groups").child(group.getID()).removeValue();
                                             }
                                             // elimino la ref nei gruppi
@@ -149,12 +149,12 @@ public class CustomAdapter extends BaseAdapter{
 
                                     // remove value from group list
                                     groupList.remove(position);
-                                    groupList.notify();
                                 }
                             };
                             Thread t = new Thread(r);
                             t.start();
                             Toast.makeText(context, context.getString(R.string.deleting_group), Toast.LENGTH_SHORT).show();
+
 
                         } else {
                             Toast.makeText(context,context.getString(R.string.delete_group_error),Toast.LENGTH_LONG).show();
