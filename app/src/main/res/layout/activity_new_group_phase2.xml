@@ -65,7 +65,7 @@
             android:gravity="center"
             android:onClick="onClick"
             android:text="@string/add"
-            android:textSize="@dimen/main_text" />
+            />
 
         <ListView
             android:id="@+id/lv_friends"

@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,6 +36,7 @@ public class SettingsActivity extends AppCompatActivity {
     private String selectedCurrency, buttonText;
     private static FirebaseDatabase database;
     private static DatabaseReference currencyRef;
+    private TextView language, currency;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +52,11 @@ public class SettingsActivity extends AppCompatActivity {
         conf.locale = new Locale(lang);
         Log.e("myapp", lang+" = "+conf.locale+" = "+conf.locale.getDisplayName());
         res.updateConfiguration(conf, res.getDisplayMetrics());
+
+        language = (TextView) findViewById(R.id.language);
+        language.setText(getString(R.string.change_language));
+        currency = (TextView) findViewById(R.id.currency);
+        currency.setText(getString(R.string.choose_your_currency));
 
         changeCurrency = (Button) findViewById(R.id.button_currency);
         changeCurrency.setOnClickListener(new View.OnClickListener() {
@@ -92,22 +100,31 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_settings);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
+                startActivity(intent);
+            }
+        });
+
     }
 
     private void ChangeToItalian(){
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("LANGUAGE", "it");
         editor.commit();
-        Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
-        startActivity(intent);
+        finish();
+        startActivity(getIntent());
     }
 
     private void ChangeToEnglish(){
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("LANGUAGE", "en");
         editor.commit();
-        Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
-        startActivity(intent);
+        finish();
+        startActivity(getIntent());
     }
 
     private void onClickChangeCurrency(){
@@ -127,12 +144,12 @@ public class SettingsActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         String str = currencySpinner.getSelectedItem().toString();
                         String[] parts = str.split(" ");
+                        buttonText = str;
                         selectedCurrency = parts[1].replace("(","").replace(")","");
                         currencyRef.child("MyCurrency").setValue(selectedCurrency);
+                        changeCurrency.setText(buttonText);
                         Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
                                 selectedCurrency + ".", Toast.LENGTH_LONG).show();
-                        Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
-                        startActivity(intent);
                     }
                 });
         alertDialogueBuilder.setNegativeButton(getString(R.string.negative_button_dialogue),
