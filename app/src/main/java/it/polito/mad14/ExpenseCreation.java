@@ -253,8 +253,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     newRef.child("DisplayNameReceiver").setValue(authorDisplayName);
                     newRef.child("Currency").setValue(groupCurrency);
 
-
-
                     Log.e("authorDisplayName",authorDisplayName);
 
                     //updating debitors list inside the author
@@ -270,9 +268,14 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
+                            Log.e("debitor","debitor " +debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
+                            if (name == et_author){
+                                userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue("L'HO CREATO IO!!!");
+                            } else {
+                                userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
 
-                            userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
+                            }
 
                         }
                         @Override
