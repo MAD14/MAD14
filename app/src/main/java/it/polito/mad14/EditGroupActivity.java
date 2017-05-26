@@ -31,6 +31,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.theartofdev.edmodo.cropper.CropImage;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -41,7 +42,8 @@ import it.polito.mad14.myListView.CustomAdapterInfoGroup;
 
 public class EditGroupActivity extends AppCompatActivity {
 
-    private String IDGroup, groupName, dateCreation, description, encodedImage,groupAuthor;
+    private static final int CHANGE_IMAGE = 1;
+    private String IDGroup, groupName, dateCreation, description, encodedImage,groupAuthor,strImageUri;
     private Bitmap imageBitmap;
     private ImageButton imgbt;
     private ImageButton photo;
@@ -140,25 +142,37 @@ public class EditGroupActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK){
+        if (requestCode == CHANGE_IMAGE) {
             Uri imageUri = ImagePicker.getImageFromResult(this, resultCode, data);
-            try {
-                imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(imageUri));
-                BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), imageBitmap);
-                CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
-                toolbar.setBackground(bDrawable);
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-                byte[] byteArrayImage = baos.toByteArray();
-                encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-                groupPhoto = encodedImage;
-                database = FirebaseDatabase.getInstance();
-                DatabaseReference myRef=database.getReference("groups/"+IDGroup);
-                myRef.child("Image").setValue(encodedImage);
-            }catch (FileNotFoundException e){
-                e.printStackTrace();
-            }
+            strImageUri = imageUri.toString();
 
+            CropImage.activity(imageUri)
+                    .setMinCropResultSize(100,100)
+                    .setMaxCropResultSize(1000,1000)
+                    .start(this);
+        }
+        if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
+            CropImage.ActivityResult result = CropImage.getActivityResult(data);
+            if (resultCode == RESULT_OK) {
+                Uri resultUri = result.getUri();
+                try {
+                    imageBitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(resultUri));
+                    BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), imageBitmap);
+                    CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                    toolbar.setBackground(bDrawable);
+                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                    imageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                    byte[] byteArrayImage = baos.toByteArray();
+                    encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+                    groupPhoto = encodedImage;
+                    database = FirebaseDatabase.getInstance();
+                    DatabaseReference myRef = database.getReference("groups/" + IDGroup);
+                    myRef.child("Image").setValue(encodedImage);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+            }
         }
     }
 
@@ -166,13 +180,10 @@ public class EditGroupActivity extends AppCompatActivity {
         progressBar = (ProgressBar)findViewById(R.id.progressBar_edit);
         progressBar.setVisibility(View.VISIBLE);
 
-        // TODO devo aggiornare il gruppo nell'utente corrente
         myRef = database.getReference("users/"+currentUser+"/groups/"+IDGroup);
         myRef.child("Name").setValue(groupName);
         myRef.child("Description").setValue(description);
         myRef.child("Image").setValue(groupPhoto);
-
-        // TODO: poi sganciare il thread che aggiorni gli altri utenti!
 
         Runnable r = new Runnable() {
             @Override
@@ -281,6 +292,6 @@ public class EditGroupActivity extends AppCompatActivity {
 
     public void onClickChangePhoto(View view){
         Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditGroupActivity.this);
-        startActivityForResult(chooseImageIntent, 1);
+        startActivityForResult(chooseImageIntent, CHANGE_IMAGE);
     }
 }
