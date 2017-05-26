@@ -285,7 +285,7 @@ public class GroupActivity extends AppCompatActivity {
                             @Override
                             public int compare(Expense expense1, Expense expense2) {
                                 try{
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                                     Date d1 = formatter.parse(expense1.getDate());
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(expense2.getDate());
