@@ -394,12 +394,10 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-
                                     credit = false; // debits section --> it's a debit
                                     Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
                                             data.child("Money").getValue().toString(),data.child("Paying").getValue().toString(),
                                             data.child("Currency").getValue().toString(),
-
                                             credit);
                                     indexSummary = debitsList.size();
                                     debitsList.add(indexSummary, tmp);
@@ -467,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
                                         //creditsList.addAll(tmpList);
                                         Iterator<Summary> itCred=creditsList.iterator();
                                         while(itCred.hasNext()){
-                                            Summary sum=itCred.next();
+                                            Summary sum = itCred.next();
                                             if(tot.containsKey(sum.getName())){
                                                 Double newtot;
                                                 if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
@@ -528,14 +526,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-                //TODO: possibilità di segnare che si è pagato qualcuno
-                //TODO: grafico riepilogo crediti/debiti
-
-
                 return rootView;
-
 
             } else {
                 rootView = inflater.inflate(R.layout.contacts_section_page, container, false);

@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myListView.CustomAdapterContactSuggested;
@@ -34,6 +35,8 @@ public class AddNewContacts extends AppCompatActivity {
     // Filtered list of contacts after user begins typing in search field
     private ArrayList<Contact> partialNames = new ArrayList<>();
 
+    private ArrayList<Contact> actualFriends = new ArrayList<>();
+
     // List of names matching criteria are listed here
     private ListView list;
 
@@ -44,8 +47,7 @@ public class AddNewContacts extends AppCompatActivity {
     private CustomAdapterContactSuggested adapter;
 
     private DatabaseReference myRef;
-    private String actualName;
-    private String actualEmail;
+    private String actualEmail,currentUser;
 
     private ProgressBar progressBar;
     private TextView loading;
@@ -59,6 +61,7 @@ public class AddNewContacts extends AppCompatActivity {
         setSupportActionBar(toolbar);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loading = (TextView) findViewById(R.id.loading_tv);
+
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
@@ -76,45 +79,68 @@ public class AddNewContacts extends AppCompatActivity {
 
         progressBar.setVisibility(View.VISIBLE);
         loading.setVisibility(View.VISIBLE);
-        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        DatabaseReference myRefUser = database.getReference("users").child(currentUser);
+        myRefUser.child("contacts").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    searchNames.add(
+                    actualFriends.add(
                             new Contact(data.child("Name").getValue().toString(),
                                     data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
                                     data.child("Email").getValue().toString(),
                                     "no_image"));
                 }
-
-                progressBar.setVisibility(View.GONE);
-                loading.setVisibility(View.GONE);
-
-                nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
-                nameCapture.setVisibility(View.VISIBLE);
-
-                AlterAdapter();
-
-                nameCapture.addTextChangedListener(new TextWatcher() {
-                    // As the user types in the search field, the list is
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            searchNames.add(
+                                    new Contact(data.child("Name").getValue().toString(),
+                                            data.child("Surname").getValue().toString(), data.child("Username").getValue().toString(),
+                                            data.child("Email").getValue().toString(),
+                                            "no_image"));
+                        }
+
+                        searchNames = cleanDuplicates(searchNames,actualFriends);
+                        progressBar.setVisibility(View.GONE);
+                        loading.setVisibility(View.GONE);
+
+                        nameCapture = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_new_contacts);
+                        nameCapture.setVisibility(View.VISIBLE);
+
                         AlterAdapter();
+
+                        nameCapture.addTextChangedListener(new TextWatcher() {
+                            // As the user types in the search field, the list is
+                            @Override
+                            public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                                AlterAdapter();
+                            }
+                            // Not used for this program
+                            @Override
+                            public void afterTextChanged(Editable arg0) {
+                            }
+                            // Not uses for this program
+                            @Override
+                            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                            }
+                        });
                     }
-                    // Not used for this program
                     @Override
-                    public void afterTextChanged(Editable arg0) {
-                    }
-                    // Not uses for this program
-                    @Override
-                    public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
+                    public void onCancelled(DatabaseError error) {
                     }
                 });
             }
+
             @Override
-            public void onCancelled(DatabaseError error) {
+            public void onCancelled(DatabaseError databaseError) {
             }
         });
+
+
+
     }
     private void AlterAdapter() {
         if (nameCapture.getText().toString().isEmpty()) {
@@ -135,10 +161,25 @@ public class AddNewContacts extends AppCompatActivity {
         }
     }
 
+
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
     }
 
+
+    public ArrayList<Contact> cleanDuplicates(ArrayList<Contact> list1, ArrayList<Contact> list2){
+
+        for (Iterator<Contact> it = list1.iterator(); it.hasNext(); ){
+            Contact tmp1 = it.next();
+                for (Contact tmp2 : list2) {
+                    if (tmp1.getEmail().equals(tmp2.getEmail())) {
+                        it.remove();
+                        break;
+                    }
+                }
+        }
+        return list1;
+    }
 }

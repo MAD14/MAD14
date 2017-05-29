@@ -94,6 +94,7 @@ public class InviteToJoinCommunity extends AppCompatActivity {
                 Toast.makeText(InviteToJoinCommunity.this, getString(R.string.emails_sent), Toast.LENGTH_SHORT).show();
                 Intent intent = new Intent(InviteToJoinCommunity.this,MainActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
         list_invitation = (ListView) findViewById(R.id.lv_invitation);
