@@ -45,7 +45,7 @@ public class EditExpenseActivity extends AppCompatActivity {
     private String IDGroup, name, date, description, image, author, value, encodedImage,strImageUri, IDExpense;
     private Bitmap imageBitmap;
     private FirebaseDatabase database;
-    private DatabaseReference myRef, reference, newRef;
+    private DatabaseReference myRefNew, reference, newRef;
     private ProgressBar progressBar;
     private CollapsingToolbarLayout collapsingToolbar;
     private ArrayList<String> membersList = new ArrayList<>();
@@ -256,12 +256,12 @@ public class EditExpenseActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         progressBar.bringToFront();
 
-        DatabaseReference myRef = database.getReference("groups/"+ IDGroup + "/items/"+ IDExpense);
-        myRef.child("Price").setValue(value);
-        myRef.child("Date").setValue(date);
-        myRef.child("Description").setValue(description);
-        myRef.child("Name").setValue(name);
-        myRef.child("Image").setValue(encodedImage);
+        DatabaseReference myRefNew = database.getReference("groups/"+ IDGroup + "/items/"+ IDExpense);
+        myRefNew.child("Price").setValue(value);
+        myRefNew.child("Date").setValue(date);
+        myRefNew.child("Description").setValue(description);
+        myRefNew.child("Name").setValue(name);
+        myRefNew.child("Image").setValue(encodedImage);
 
 
         Runnable r = new Runnable() {

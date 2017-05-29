@@ -138,7 +138,7 @@
                     android:text="@string/add_as_friend"
                     android:textSize="@dimen/main_text"
                     android:textColor="@color/writing"
-                    android:textStyle="bold"
+                    android:textStyle="italic"
                     android:clickable="true"
                     android:layout_below="@id/info2"
                     android:layout_margin="@dimen/margin"/>

@@ -64,7 +64,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private EditText et_import, et_name, et_description;
     private String finalDescription;
-    private boolean hasImage;
     private String date;
 
     private double oldValue;
@@ -93,8 +92,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R .layout.activity_expense_creation);
-        encodedExpenseImage = getString(R.string.no_image);
-        hasImage = false;
+        encodedExpenseImage = "no_image";
 
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
@@ -157,7 +155,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 nMembers=dataSnapshot.getChildrenCount();
                 // collecting into a set the names of the members
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    contacts.add(data.getKey().toString());
+                    contacts.add(data.getKey());
                 }
             }
             @Override
@@ -198,7 +196,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             DatabaseReference refExp = database.getReference("groups/"+IDGroup+"/items").push();
             userRef = database.getReference("users");
-            IDExpense = refExp.getKey().toString();
+            IDExpense = refExp.getKey();
 
 
             refExp.child("Price").setValue(price);
@@ -325,7 +323,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("name",et_name.getText().toString());
                     intent.putExtra("import",price);
                     intent.putExtra("description",finalDescription);
-                    intent.putExtra("expenseImage",hasImage);
                     intent.putExtra("date",date);
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
@@ -367,12 +364,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                         .setMinCropResultSize(100,100)
                         .setMaxCropResultSize(1000,1000)
                         .start(this);
-
-//                Intent intent = CropImage.activity(imageUri).getIntent(NewGroupActivityPhase1.this);
-//                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
-
-//                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
-
             }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -387,7 +378,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                     byte[] byteArrayImage = baos.toByteArray();
                     encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-                    hasImage = true;
                     Log.d("IMAGE", encodedExpenseImage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
