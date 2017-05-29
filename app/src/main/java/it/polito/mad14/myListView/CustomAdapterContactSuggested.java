@@ -46,6 +46,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
     private String encodedImage;
     private DatabaseReference myRef;
     private String image;
+    private ImageButton img;
 
 
     public CustomAdapterContactSuggested(Context context, ArrayList<Contact> partialNames) {
@@ -80,12 +81,14 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
         tv = (TextView) convertView.findViewById(R.id.tv_contact_email_suggestion);
         tv.setText(partialNames.get(position).getUsername());
 
-        ImageButton img = (ImageButton) convertView.findViewById(R.id.add_contact_suggestion);
+        img = (ImageButton) convertView.findViewById(R.id.add_contact_suggestion);
 
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Toast.makeText(context,context.getString(R.string.friends_added),Toast.LENGTH_SHORT).show();
+
+                img.setImageResource(R.mipmap.check_icon_green);
 
                 Runnable r = new Runnable() {
                     @Override

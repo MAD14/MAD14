@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.support.v4.content.ContextCompat;
 import android.util.Base64;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class CustomAdapterSummary extends BaseAdapter {
     private String encodedImage;
     private String currency;
     private Button button;
+    private String value;
 
 
     public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList, String currency) {
@@ -69,19 +71,28 @@ public class CustomAdapterSummary extends BaseAdapter {
         button = (Button) convertView.findViewById(R.id.button_payment);
 
         tv = (TextView) convertView.findViewById(R.id.summary_import);
+
         if (summaryList.get(position).getCredit()) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context,R.color.green));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.green));
-            tv.setText("+"+summaryList.get(position).getValue().toString());
-            button.setBackgroundResource(R.mipmap.green_arrow);
+            value = summaryList.get(position).getValue().replace("+","");
+            String newValue = "+" + value;
+            tv.setText(newValue);
+            button.setBackgroundResource(R.mipmap.expense_icon_green);
+            button.getLayoutParams().height = (int)context.getResources().getDimension(R.dimen.icon_dimension_group);
+            button.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.icon_dimension_group);
 
         } else {
             // se è false rosso
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.red));
-            tv.setText("-"+summaryList.get(position).getValue().toString());
-            button.setBackgroundResource(R.mipmap.red_arrow);
+            value = summaryList.get(position).getValue().replace("-","");
+            String newValue = "-" + value;
+            tv.setText(newValue);
+            button.setBackgroundResource(R.mipmap.expense_icon_red);
+            button.getLayoutParams().height = (int)context.getResources().getDimension(R.dimen.icon_dimension_group);
+            button.getLayoutParams().width = (int)context.getResources().getDimension(R.dimen.icon_dimension_group);
         }
 
 
