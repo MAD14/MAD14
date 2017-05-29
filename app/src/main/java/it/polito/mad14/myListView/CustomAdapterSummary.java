@@ -29,12 +29,14 @@ public class CustomAdapterSummary extends BaseAdapter {
     ArrayList<Summary> summaryList;
     LayoutInflater inflater;
     private String encodedImage;
+    private String currency;
     private Button button;
 
 
-    public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList) {
+    public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList, String currency) {
         this.context = context;
         this.summaryList = summaryList;
+        this.currency = currency;
     }
 
     @Override
@@ -61,6 +63,8 @@ public class CustomAdapterSummary extends BaseAdapter {
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
         tv.setText(summaryList.get(position).getName());
+        TextView tvCurrency = (TextView) convertView.findViewById(R.id.summary_currency);
+        tvCurrency.setText(currency);
 
         button = (Button) convertView.findViewById(R.id.button_payment);
 
@@ -68,12 +72,14 @@ public class CustomAdapterSummary extends BaseAdapter {
         if (summaryList.get(position).getCredit()) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context,R.color.green));
+            tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.green));
             tv.setText("+"+summaryList.get(position).getValue().toString());
             button.setBackgroundResource(R.mipmap.green_arrow);
 
         } else {
             // se è false rosso
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
+            tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.red));
             tv.setText("-"+summaryList.get(position).getValue().toString());
             button.setBackgroundResource(R.mipmap.red_arrow);
         }

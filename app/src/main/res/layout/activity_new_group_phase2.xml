@@ -89,6 +89,7 @@
             android:layout_gravity="end|bottom"
             app:elevation="0dp"
             app:srcCompat="@mipmap/check_icon"
+            app:backgroundTint="@color/colorFab"
             android:clickable="true"
             android:onClick="onClickCompletedAction"
 

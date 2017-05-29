@@ -25,7 +25,6 @@
             android:layout_below="@+id/header_cover_image"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="-60dp"
-
             android:background="@drawable/profile_circular_border_imageview"
             android:elevation="15dp"
             android:padding="20dp"

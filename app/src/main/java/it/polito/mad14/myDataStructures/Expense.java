@@ -7,6 +7,7 @@ package it.polito.mad14.myDataStructures;
 public class Expense {
     private String name;
     private String value; //double
+    private String currency;
     private String description;
     private String author;
     private String group;
@@ -14,9 +15,11 @@ public class Expense {
     private String date;
     private String ID;
 
-    public Expense(String name, String value, String description, String author,String group, String image, String date,String ID) {
+
+    public Expense(String name, String value, String currency, String description, String author,String group, String image, String date,String ID) {
         this.name = name;
         this.value = value;
+        this.currency = currency;
         this.description = description;
         this.author = author;
         this.group= group;
@@ -39,6 +42,14 @@ public class Expense {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
     }
 
     public String getDescription() {

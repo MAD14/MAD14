@@ -246,7 +246,7 @@ public class GroupActivity extends AppCompatActivity {
         private View rootView;
         private ListView list_expenses,list_summary;
         private String name,email;
-        private String IDGroup;
+        private String IDGroup, groupCurrency;
         private TextView noExpense_textView, noReport_textView;
 
 
@@ -261,6 +261,7 @@ public class GroupActivity extends AppCompatActivity {
             toolbar.setTitle(groupName);
 
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
+            groupCurrency = getActivity().getIntent().getStringExtra("GroupCurrency");
             database = FirebaseDatabase.getInstance();
             user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
@@ -283,6 +284,7 @@ public class GroupActivity extends AppCompatActivity {
                             String currentExpense = data.getKey();
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
+                                        data.child("Currency").getValue().toString(),
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString(),
                                         IDGroup,
@@ -334,7 +336,7 @@ public class GroupActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
                 noReport_textView = (TextView) rootView.findViewById(R.id.noReport_tv);
 
-                CustomAdapterSummaryGroup adapter = new CustomAdapterSummaryGroup(getContext(),summaryList,IDGroup);
+                CustomAdapterSummaryGroup adapter = new CustomAdapterSummaryGroup(getContext(),summaryList,IDGroup,groupCurrency);
                 list_summary.setAdapter(adapter);
 
                 myRef_summary.addListenerForSingleValueEvent(new ValueEventListener() {

@@ -33,6 +33,7 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SharedPreferences prefs;
     private Button changeCurrencyEUR, changeCurrencyUSD;
+    private ImageButton italy, uk;
     private String selectedCurrency, buttonText;
     private static FirebaseDatabase database;
     private static DatabaseReference currencyRef;
@@ -57,6 +58,17 @@ public class SettingsActivity extends AppCompatActivity {
         language.setText(getString(R.string.change_language));
         currency = (TextView) findViewById(R.id.currency);
         currency.setText(getString(R.string.choose_your_currency));
+
+        italy = (ImageButton) findViewById(R.id.italy_flag);
+        uk = (ImageButton) findViewById(R.id.uk_flag);
+        int paddingDP = 35;
+        float density = getResources().getDisplayMetrics().density;
+        int paddingPixels = (int)(paddingDP*density);
+        if (lang.equals("it")){
+            italy.setPadding(paddingPixels,paddingPixels,paddingPixels,paddingPixels);
+        } else {
+            uk.setPadding(paddingPixels,paddingPixels,paddingPixels,paddingPixels);
+        }
 
         changeCurrencyEUR = (Button) findViewById(R.id.button_currency_EUR);
         changeCurrencyUSD = (Button) findViewById(R.id.button_currency_USD);
@@ -116,7 +128,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton italy = (ImageButton) findViewById(R.id.italy_flag);
         italy.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -124,7 +135,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-        ImageButton uk = (ImageButton) findViewById(R.id.uk_flag);
         uk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
