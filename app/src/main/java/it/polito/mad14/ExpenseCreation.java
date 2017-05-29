@@ -80,7 +80,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private Spinner selectCurrency;
     private String selectedCurrency;
-    private String groupCurrency;
+    private String groupCurrency, groupName;
     private ArrayAdapter<String> spinnerAdapter;
     private String price;
 
@@ -110,6 +110,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         authorDisplayName = auth.getCurrentUser().getDisplayName().replace("."," ");
 
         IDGroup= getIntent().getStringExtra("IDGroup");
+        groupName = getIntent().getStringExtra("GroupName");
 
         contacts= new HashSet<>();
 
@@ -323,6 +324,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("date",date);
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
+                    intent.putExtra("GroupName",groupName);
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);

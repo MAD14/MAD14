@@ -34,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
 import it.polito.mad14.myDataStructures.Summary;
@@ -93,8 +94,8 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
+                intent.putExtra("GroupName",groupName);
                 startActivityForResult(intent,EXPENSE_CREATION);
-//                startActivity(intent);
                 finish();
             }
         });
@@ -111,6 +112,9 @@ public class GroupActivity extends AppCompatActivity {
                 ListView list = (ListView) findViewById(R.id.list_view_expenses);
                 list.invalidate();
                 list.requestLayout();
+                String NameOfGroup = intent.getStringExtra("GroupName");
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
+                toolbar.setTitle(NameOfGroup);
             }
         }
     }
@@ -250,7 +254,7 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             String groupName = getActivity().getIntent().getStringExtra("Name");
-            Toolbar toolbar = (Toolbar) rootView.findViewById(R.id.toolbar);
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
             toolbar.setTitle(groupName);
 
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -30,6 +31,8 @@ public class InfoExpenseActivity extends AppCompatActivity {
     private FirebaseDatabase database;
     private String image;
     private String currentUser;
+    private Bitmap imageBitmap;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,14 +51,24 @@ public class InfoExpenseActivity extends AppCompatActivity {
         image = intent.getStringExtra("Image");
         date = intent.getStringExtra("Date");
 
-        byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
-        final Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
         int sdk = android.os.Build.VERSION.SDK_INT;
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            toolbar.setBackgroundDrawable(bDrawable);
-        } else {
-            toolbar.setBackground(bDrawable);
+        if (image.equals("no_image")){
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.expense_base);
+            Drawable d = new BitmapDrawable(getResources(), bitmap);
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                toolbar.setBackgroundDrawable(d);
+            } else {
+                toolbar.setBackground(d);
+            }
+        } else{
+            byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
+            imageBitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                toolbar.setBackgroundDrawable(bDrawable);
+            } else {
+                toolbar.setBackground(bDrawable);
+            }
         }
 
         setTitle(expenseName);
@@ -71,7 +84,7 @@ public class InfoExpenseActivity extends AppCompatActivity {
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_expense);
-        if (author.replace(".",",") == currentUser) {
+        if (author.replace(".",",").equals(currentUser)) {
             fab.setVisibility(View.VISIBLE);
             fab.bringToFront();
             fab.setOnClickListener(new View.OnClickListener() {
