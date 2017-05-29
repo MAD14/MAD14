@@ -82,8 +82,7 @@ public class FirebaseBackgroundService extends Service {
                         else{
                             Date d1;
                             try {
-                                Thread.sleep(6000);
-                                System.out.println("PRINTO"+data.getKey().toString());
+                                Thread.sleep(1000);
                                 d1 = formatter.parse(data.child("Date").getValue().toString());
                                 long timestamp1 = d1.getTime();
                                 if (timestamp1 > mostRecentTimestampM){

@@ -255,9 +255,7 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             String groupName = getActivity().getIntent().getStringExtra("Name");
-
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
-
             toolbar.setTitle(groupName);
 
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");

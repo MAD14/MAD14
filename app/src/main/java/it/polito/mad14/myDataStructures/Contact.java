@@ -1,5 +1,7 @@
 package it.polito.mad14.myDataStructures;
 
+import java.util.ArrayList;
+
 /**
  * Created by Utente on 02/05/2017.
  */
@@ -67,4 +69,6 @@ public class Contact {
     public void setImage(String image) {
         this.image = image;
     }
+
+
 }
