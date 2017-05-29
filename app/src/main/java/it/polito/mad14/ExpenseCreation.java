@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -93,6 +94,9 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         super.onCreate(savedInstanceState);
         setContentView(R .layout.activity_expense_creation);
         encodedExpenseImage = "no_image";
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
@@ -421,6 +425,12 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         if (value.isEmpty()) Toast.makeText(ExpenseCreation.this,getString(R.string.error_field_required), Toast.LENGTH_SHORT).show();
 
         return false;
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

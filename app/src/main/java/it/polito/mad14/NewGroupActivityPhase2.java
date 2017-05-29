@@ -3,6 +3,7 @@ package it.polito.mad14;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -66,6 +67,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         setContentView(R.layout.activity_new_group_phase2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         groupName = getIntent().getStringExtra("Name");
         groupAuthor= getIntent().getStringExtra("Author");
@@ -308,6 +312,11 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
 
 }
 

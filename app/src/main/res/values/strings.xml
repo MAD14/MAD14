@@ -54,7 +54,7 @@
     <string name="title_activity_add_members_to_group">Add members to your group (2of3)</string>
     <string name="add_from_friend">Add members from your friends</string>
     <string name="title_activity_invite_users_to_group">Invite to TA (3of3)</string>
-    <string name="no_network_connection">Check your connection</string>
+    <string name="no_network_connection">The application cannot connect to the network. Check your connection</string>
     <string name="action_logout">Logout</string>
     <string name="action_profile">Personal profile</string>
     <string name="title_activity_login">Sign in</string>

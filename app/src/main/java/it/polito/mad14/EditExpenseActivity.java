@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -59,6 +60,9 @@ public class EditExpenseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_expense);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         database = FirebaseDatabase.getInstance();
 
@@ -332,6 +336,12 @@ public class EditExpenseActivity extends AppCompatActivity {
     public void onClickChangePhoto(View view){
         Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditExpenseActivity.this);
         startActivityForResult(chooseImageIntent, CHANGE_IMAGE);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

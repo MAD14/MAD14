@@ -1,6 +1,7 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -51,6 +52,10 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_members_to_group);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
+
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDgroup");
         groupName = getIntent().getStringExtra("Name");
@@ -304,6 +309,12 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         Intent intent = new Intent(AddNewMembersToGroup.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         startActivity(intent);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

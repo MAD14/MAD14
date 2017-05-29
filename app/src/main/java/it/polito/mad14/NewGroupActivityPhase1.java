@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -65,6 +66,9 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         setSupportActionBar(toolbar);
         encodedImage = null;
         strImageUri = noImage;
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
@@ -193,6 +197,11 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         return ToControl.replaceAll("\\s+","").matches("[a-zA-Z0-9]+");
     }
 
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
+    }
 
 
 }

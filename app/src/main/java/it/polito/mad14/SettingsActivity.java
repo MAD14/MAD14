@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.content.res.Resources;
+import android.net.ConnectivityManager;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -53,6 +54,9 @@ public class SettingsActivity extends AppCompatActivity {
         conf.locale = new Locale(lang);
         Log.e("myapp", lang+" = "+conf.locale+" = "+conf.locale.getDisplayName());
         res.updateConfiguration(conf, res.getDisplayMetrics());
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         language = (TextView) findViewById(R.id.language);
         language.setText(getString(R.string.change_language));
@@ -167,6 +171,12 @@ public class SettingsActivity extends AppCompatActivity {
         editor.commit();
         finish();
         startActivity(getIntent());
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
     /*private void onClickChangeCurrency(){

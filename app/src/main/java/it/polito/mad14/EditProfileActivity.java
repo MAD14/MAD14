@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -54,6 +55,9 @@ public class EditProfileActivity extends AppCompatActivity {
         googleUser = false;
 
         findViewById(R.id.edit_image).bringToFront();
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         for (UserInfo profile : user.getProviderData()){
@@ -251,6 +255,12 @@ public class EditProfileActivity extends AppCompatActivity {
         startActivity(intent);
         finish();
 
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

@@ -116,6 +116,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         Log.v("myapp", lang+" = "+conf.locale+" = "+conf.locale.getDisplayName());
         res.updateConfiguration(conf, res.getDisplayMetrics());
 
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
+
         // before setting the view
         //Get Firebase auth instance
         auth = FirebaseAuth.getInstance();
@@ -538,7 +541,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
     }
