@@ -38,6 +38,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private String IDGroup;
     private String name;
     private String user;
+    private String groupCurrency;
     private Boolean flag=false,flag2=false;
     private Summary summ;
     private Boolean cd;
@@ -45,10 +46,11 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private DatabaseReference dataref;
     private Button button;
 
-    public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup) {
+    public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup, String groupCurrency) {
         this.context = context;
         this.summaryList = summaryList;
         this.IDGroup = IDGroup;
+        this.groupCurrency = groupCurrency;
     }
 
     @Override
@@ -75,6 +77,8 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
         tv.setText(summaryList.get(position).getName());
+        TextView currency = (TextView) convertView.findViewById(R.id.summary_currency);
+        currency.setText(groupCurrency);
 
         database = FirebaseDatabase.getInstance();
         FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -88,9 +92,11 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
         button = (Button) convertView.findViewById(R.id.button_payment);
 
         tv = (TextView) convertView.findViewById(R.id.summary_import);
+
         if (cd) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context, R.color.green));
+            currency.setTextColor(ContextCompat.getColor(context, R.color.green));
             String credit = "+" + summaryList.get(position).getValue();
             tv.setText(credit);
 
@@ -121,6 +127,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             // se è false rosso
             String debit;
             tv.setTextColor(ContextCompat.getColor(context, R.color.red));
+            currency.setTextColor(ContextCompat.getColor(context, R.color.red));
             if (summaryList.get(position).getValue().contains("-")) {
                 debit = summaryList.get(position).getValue();
             }else {

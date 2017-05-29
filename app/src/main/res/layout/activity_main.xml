@@ -51,7 +51,7 @@
         app:srcCompat="@mipmap/add_group_icon"
         android:clickable="true"
         android:onClick="onClickNewGroup"
-        app:rippleColor="@color/colorPrimary"
+        app:backgroundTint="@color/colorFab"
         />
 
     <android.support.design.widget.FloatingActionButton
@@ -63,6 +63,7 @@
         app:srcCompat="@mipmap/add_person_icon"
         android:clickable="true"
         android:onClick="onClickNewContact"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:backgroundTint="@color/colorFab"/>
 
 </android.support.design.widget.CoordinatorLayout>

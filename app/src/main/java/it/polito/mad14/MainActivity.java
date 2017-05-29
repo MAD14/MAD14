@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity {
                         myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                         myRef_summary_credits = database.getReference("users/" + userID + "/credits");
 
-                        CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
+                        CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList,selectedCurrency);
                         list_summary.setAdapter(adapter);
 
                         myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -464,7 +464,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                         summaryList = new ArrayList<>(tot.values());
-                                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+                                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
 
                                         if (list_summary.getAdapter().getCount() == 0){
                                             noSummary_textView.setVisibility(View.VISIBLE);
@@ -477,7 +477,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
                                 summaryList = new ArrayList<>(tot.values());
-                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
 
                             }
                             @Override

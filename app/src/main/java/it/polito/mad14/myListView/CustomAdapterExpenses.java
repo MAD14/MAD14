@@ -84,6 +84,8 @@ public class CustomAdapterExpenses extends BaseAdapter {
         tv.setText(expensesList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.expense_import);
         tv.setText(expensesList.get(position).getValue());
+        tv = (TextView) convertView.findViewById(R.id.expense_currency);
+        tv.setText(expensesList.get(position).getCurrency());
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
         if (!expensesList.get(position).getImage().equals("no_image")) {
