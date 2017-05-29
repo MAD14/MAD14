@@ -275,8 +275,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
                             if (name == et_author){
                                 userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue("L'HO CREATO IO!!!");
+                                userRef.child(name).child("Expenses").child(IDGroup).child("Date").setValue(date);
                             } else {
                                 userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
+                                userRef.child(name).child("Expenses").child(IDGroup).child("Date").setValue(date);
 
                             }
 

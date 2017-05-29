@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -104,7 +105,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
-                        +"/contacts");
+                +"/contacts");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -146,7 +147,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                         return convertView;
                     }
                 });
-                }
+            }
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.w("Failed to read value.", error.toException());
@@ -159,7 +160,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
         if (tmp_name.contains("-")){
-        String[] parts = tmp_name.split(" - ");
+            String[] parts = tmp_name.split(" - ");
             String contUsername = parts[1];
             et.setText("");
             Iterator<Contact> it=friends.iterator();
@@ -218,11 +219,15 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                         myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
                         myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
                         myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
                     } else {
                         myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
                         myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
                         myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
                         myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
                     }
                 }
 
