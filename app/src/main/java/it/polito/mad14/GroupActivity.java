@@ -34,8 +34,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
+import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummaryGroup;
@@ -70,8 +72,6 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
@@ -95,8 +95,8 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
+                intent.putExtra("GroupName",groupName);
                 startActivityForResult(intent,EXPENSE_CREATION);
-//                startActivity(intent);
                 finish();
             }
         });
@@ -113,6 +113,9 @@ public class GroupActivity extends AppCompatActivity {
                 ListView list = (ListView) findViewById(R.id.list_view_expenses);
                 list.invalidate();
                 list.requestLayout();
+                String NameOfGroup = intent.getStringExtra("GroupName");
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
+                toolbar.setTitle(NameOfGroup);
             }
         }
     }
@@ -251,6 +254,12 @@ public class GroupActivity extends AppCompatActivity {
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
+            String groupName = getActivity().getIntent().getStringExtra("Name");
+
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
+
+            toolbar.setTitle(groupName);
+
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
             groupCurrency = getActivity().getIntent().getStringExtra("GroupCurrency");
             database = FirebaseDatabase.getInstance();
@@ -272,6 +281,7 @@ public class GroupActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         expensesList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            String currentExpense = data.getKey();
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Currency").getValue().toString(),
@@ -279,7 +289,8 @@ public class GroupActivity extends AppCompatActivity {
                                         data.child("Author").getValue().toString(),
                                         IDGroup,
                                         data.child("Image").getValue().toString(),
-                                        data.child("Date").getValue().toString());
+                                        data.child("Date").getValue().toString(),
+                                        currentExpense);
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }
@@ -287,7 +298,7 @@ public class GroupActivity extends AppCompatActivity {
                             @Override
                             public int compare(Expense expense1, Expense expense2) {
                                 try{
-                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+                                    SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy HH:mm");
                                     Date d1 = formatter.parse(expense1.getDate());
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(expense2.getDate());

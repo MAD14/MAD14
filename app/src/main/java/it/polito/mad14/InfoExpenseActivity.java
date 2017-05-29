@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -13,7 +14,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -25,34 +28,43 @@ import org.w3c.dom.Text;
 public class InfoExpenseActivity extends AppCompatActivity {
 
     private TextView tvValue,tvDescription,tvAuthor,tvDate;
-    private String IDGroup;
+    private String IDGroup, expenseName, description, date, value, author, IDExpense;
     private FirebaseDatabase database;
-    private String image;
+    private String image,encodedImage;
+    private String currentUser;
+    private Bitmap imageBitmap;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_expense);
 
-        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
         Intent intent = getIntent();
         IDGroup = getIntent().getStringExtra("IDGroup");
-        String expenseName = intent.getStringExtra("Name");
-        String value = intent.getStringExtra("Import");
-        String description = intent.getStringExtra("Description");
-        String author = intent.getStringExtra("Author");
+        IDExpense = getIntent().getStringExtra("IDExpense");
+        expenseName = intent.getStringExtra("Name");
+        value = intent.getStringExtra("Import");
+        description = intent.getStringExtra("Description");
+        author = intent.getStringExtra("Author");
         image = intent.getStringExtra("Image");
-        String date = intent.getStringExtra("Date");
+        date = intent.getStringExtra("Date");
 
-        byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
-        Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
-        BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-        int sdk = android.os.Build.VERSION.SDK_INT;
-        if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            toolbar.setBackgroundDrawable(bDrawable);
-        } else {
-            toolbar.setBackground(bDrawable);
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        collapsingToolbar.setTitle(expenseName);
+
+        if (image.equals("no_image")){
+            Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.expense_base);
+            Drawable d = new BitmapDrawable(getResources(), bitmap);
+            collapsingToolbar.setBackground(d);
+        } else{
+            encodedImage = image;
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
+            collapsingToolbar.setBackground(bDrawable);
         }
 
         setTitle(expenseName);
@@ -67,13 +79,26 @@ public class InfoExpenseActivity extends AppCompatActivity {
         tvDate.setText(date);
 
 
-//        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
-//            }
-//        });
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_edit_expense);
+        if (author.replace(".",",").equals(currentUser)) {
+            fab.setVisibility(View.VISIBLE);
+            fab.bringToFront();
+            fab.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(InfoExpenseActivity.this, EditExpenseActivity.class);
+                    intent.putExtra("IDGroup",IDGroup);
+                    intent.putExtra("Name",expenseName);
+                    intent.putExtra("Date",date);
+                    intent.putExtra("Description",description);
+                    intent.putExtra("Image",image);
+                    intent.putExtra("Author",author);
+                    intent.putExtra("Value",value);
+                    intent.putExtra("IDExpense",IDExpense);
+                    startActivity(intent);
+                    finish();
+                }
+            });
+        }
     }
 }

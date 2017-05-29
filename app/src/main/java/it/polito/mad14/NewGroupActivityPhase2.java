@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -41,7 +42,6 @@ import it.polito.mad14.myDataStructures.Mail;
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
 
     private ListView list_friends;
-    //TODO: friends deve essere popolata degli amici  ++++ molto importante
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
@@ -105,7 +105,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
-                        +"/contacts");
+                +"/contacts");
 
         myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -147,7 +147,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                         return convertView;
                     }
                 });
-                }
+            }
             @Override
             public void onCancelled(DatabaseError error) {
                 Log.w("Failed to read value.", error.toException());
@@ -160,7 +160,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         AutoCompleteTextView et = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView_friends);
         String tmp_name = et.getText().toString();
         if (tmp_name.contains("-")){
-        String[] parts = tmp_name.split(" - ");
+            String[] parts = tmp_name.split(" - ");
             String contUsername = parts[1];
             et.setText("");
             Iterator<Contact> it=friends.iterator();
@@ -214,11 +214,21 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("x");
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
-                    myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("x");
-                    myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-
+                    if (user == groupAuthor){
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
+                    } else {
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
+                    }
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added

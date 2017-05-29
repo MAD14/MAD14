@@ -35,14 +35,15 @@
 
     <include layout="@layout/content_info_expense" />
 
-    <!--<android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_edit_expense"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@android:drawable/ic_dialog_email"
-        app:backgroundTint="@color/colorFab"/>
-    -->
+        app:backgroundTint="@color/colorFab"
+        app:srcCompat="@mipmap/modify_icon"
+        android:visibility="gone"/>
+
 </android.support.design.widget.CoordinatorLayout>

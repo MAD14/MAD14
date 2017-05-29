@@ -47,7 +47,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private Context context;
     private ArrayList<Expense> expensesList;
     private LayoutInflater inflater;
-    private String encodedImage;
+    private String encodedImage, IDExpense;
     private FirebaseDatabase database;
     private Expense expense;
 
@@ -87,6 +87,8 @@ public class CustomAdapterExpenses extends BaseAdapter {
         tv = (TextView) convertView.findViewById(R.id.expense_currency);
         tv.setText(expensesList.get(position).getCurrency());
 
+        IDExpense = expensesList.get(position).getID();
+
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
         if (!expensesList.get(position).getImage().equals("no_image")) {
             encodedImage = expensesList.get(position).getImage();
@@ -102,6 +104,8 @@ public class CustomAdapterExpenses extends BaseAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, InfoExpenseActivity.class);
+                intent.putExtra("IDExpense",IDExpense);
+                intent.putExtra("IDGroup",expensesList.get(position).getGroup());
                 intent.putExtra("Name",expensesList.get(position).getName());
                 intent.putExtra("Import",expensesList.get(position).getValue());
                 intent.putExtra("Description",expensesList.get(position).getDescription());

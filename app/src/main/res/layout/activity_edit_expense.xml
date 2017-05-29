@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="it.polito.mad14.InfoGroupActivity"
-    android:background="@color/background">
+    tools:context="it.polito.mad14.EditExpenseActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -24,18 +23,17 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar_edit"
+                android:id="@+id/toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
                 app:popupTheme="@style/AppTheme.PopupOverlay" />
 
-
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_edit_group"
-        android:id="@+id/include" />
+    <include layout="@layout/content_edit_expense"
+        android:id="@+id/include"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_finished_edit"
@@ -44,8 +42,7 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@mipmap/completed_action"
-        app:backgroundTint="@color/colorFab"/>
+        app:srcCompat="@mipmap/completed_action" />
 
     <ImageButton
         android:id="@+id/edit_name_button"
@@ -71,6 +68,5 @@
         android:clickable="true"
         android:onClick="onClickChangePhoto"
         android:background="@color/colorPrimary"/>
-
 
 </android.support.design.widget.CoordinatorLayout>

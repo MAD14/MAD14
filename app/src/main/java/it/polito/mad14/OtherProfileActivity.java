@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,6 +30,7 @@ public class OtherProfileActivity extends AppCompatActivity {
     private String bio;
     private String encodedImage;
     private ImageButton imgbt;
+    private Button button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,28 +93,31 @@ public class OtherProfileActivity extends AppCompatActivity {
 
 
         imgbt.bringToFront();
-    }
 
-    public void onClickAddAsFriend(View view) {
-        Runnable r = new Runnable() {
+        button = (Button) findViewById(R.id.button_add_as_friend);
+        button.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void run() {
-                String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
-                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
-                String[] parts = displayName.split(" ");
-                myRef.child("Name").setValue(parts[0]);
-                myRef.child("Surname").setValue(parts[1]);
-                myRef.child("Username").setValue(username);
-                myRef.child("Email").setValue(email);
-                myRef.child("Image").setValue(encodedImage);
+            public void onClick(View view) {
+                Runnable r = new Runnable() {
+                    @Override
+                    public void run() {
+                        String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+                        DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
+                        String[] parts = displayName.split(" ");
+                        myRef.child("Name").setValue(parts[0]);
+                        myRef.child("Surname").setValue(parts[1]);
+                        myRef.child("Username").setValue(username);
+                        myRef.child("Email").setValue(email);
+                        myRef.child("Image").setValue(encodedImage);
+                    }
+                };
+
+                Thread t = new Thread(r);
+                t.start();
+
+                Toast.makeText(OtherProfileActivity.this, getString(R.string.added_as_friend), Toast.LENGTH_SHORT).show();
             }
-        };
-
-        Thread t = new Thread(r);
-        t.start();
-
-        Toast.makeText(OtherProfileActivity.this, getString(R.string.added_as_friend), Toast.LENGTH_SHORT).show();
-
+        });
     }
-    }
+}
 

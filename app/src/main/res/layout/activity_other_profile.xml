@@ -39,20 +39,6 @@
             android:paddingBottom="24dp">
 
 
-            <ImageView
-                android:id="@+id/add_friend"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:src="@mipmap/ic_action_user_add"
-                android:clickable="true"
-                android:onClick="onClickAddAsFriend"/>
-
-
             <TextView
                 android:id="@+id/user_profile_name"
                 android:layout_width="wrap_content"
@@ -144,8 +130,23 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
                     />
+
+                <Button
+                    android:id="@+id/button_add_as_friend"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/add_as_friend"
+                    android:textSize="@dimen/main_text"
+                    android:textColor="@color/writing"
+                    android:textStyle="bold"
+                    android:clickable="true"
+                    android:layout_below="@id/info2"
+                    android:layout_margin="@dimen/margin"/>
+
             </RelativeLayout>
 
         </RelativeLayout>
+
     </RelativeLayout>
+
 </ScrollView>
