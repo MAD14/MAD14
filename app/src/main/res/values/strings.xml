@@ -161,4 +161,7 @@
     <string name="confirm">Confirm</string>
 
     <string name="waiting">Waiting...</string>
+    <string name="add_as_friend">Add as friend</string>
+    <string name="title_activity_edit_expense">EditExpenseActivity</string>
+    <string name="insert_value">Insert the price</string>
 </resources>

@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="it.polito.mad14.InfoExpenseActivity"
-    android:background="@color/background">
+    tools:context="it.polito.mad14.EditExpenseActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
@@ -33,16 +32,41 @@
         </android.support.design.widget.CollapsingToolbarLayout>
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_info_expense" />
+    <include layout="@layout/content_edit_expense"
+        android:id="@+id/include"/>
 
     <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab_edit_expense"
+        android:id="@+id/fab_finished_edit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@mipmap/modify_icon"
-        android:visibility="gone"/>
+        app:srcCompat="@mipmap/completed_action" />
+
+    <ImageButton
+        android:id="@+id/edit_name_button"
+        android:layout_width="@dimen/icon_dimension"
+        android:layout_height="@dimen/icon_dimension"
+        android:layout_gravity="top|end"
+        android:layout_margin="0dp"
+        android:src="@mipmap/ic_menu_edit"
+        app:layout_anchor="@id/include"
+        app:layout_anchorGravity="top"
+        android:clickable="true"
+        android:onClick="onClickChangeName"
+        android:background="@color/colorPrimary"
+        />
+
+    <ImageButton
+        android:id="@+id/edit_photo_button"
+        android:layout_width="@dimen/icon_dimension"
+        android:layout_height="@dimen/icon_dimension"
+        android:layout_gravity="top|end"
+        android:layout_margin="@dimen/margin"
+        android:src="@mipmap/ic_menu_edit"
+        android:clickable="true"
+        android:onClick="onClickChangePhoto"
+        android:background="@color/colorPrimary"/>
 
 </android.support.design.widget.CoordinatorLayout>
