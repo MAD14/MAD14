@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Summary;
@@ -45,6 +48,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private String val;
     private DatabaseReference dataref;
     private Button button;
+    private String value;
 
     public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup, String groupCurrency) {
         this.context = context;
@@ -91,13 +95,23 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
         button = (Button) convertView.findViewById(R.id.button_payment);
 
+        value = summaryList.get(position).getValue();
+        Matcher matcher = Pattern.compile("^[\\-0-9]+\\.[0-9]{1}$").matcher(value);
+        if (matcher.find()) {
+            value = value + "0";
+        } else {
+            matcher = Pattern.compile("^[\\-0-9]+$").matcher(value);
+            if (matcher.find()) {
+                value = value + ".00";
+            }}
+
         tv = (TextView) convertView.findViewById(R.id.summary_import);
 
         if (cd) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context, R.color.green));
             currency.setTextColor(ContextCompat.getColor(context, R.color.green));
-            String credit = "+" + summaryList.get(position).getValue();
+            String credit = "+" + value;
             tv.setText(credit);
 
             button.setText(R.string.confirm);
@@ -129,9 +143,9 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             tv.setTextColor(ContextCompat.getColor(context, R.color.red));
             currency.setTextColor(ContextCompat.getColor(context, R.color.red));
             if (summaryList.get(position).getValue().contains("-")) {
-                debit = summaryList.get(position).getValue();
+                debit = value;
             }else {
-                debit = "-" + summaryList.get(position).getValue();
+                debit = "-" + value;
             }
             tv.setText(debit);
 

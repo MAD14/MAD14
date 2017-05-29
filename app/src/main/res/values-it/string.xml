@@ -54,7 +54,7 @@
     <string name="title_activity_add_members_to_group">Aggiungi membri al tuo gruppo (2di3)</string>
     <string name="add_from_friend">Aggiungi membri dai tuoi amici</string>
     <string name="title_activity_invite_users_to_group">Invita a SP (3di3)</string>
-    <string name="no_network_connection">Controlla la tua connessione</string>
+    <string name="no_network_connection">L\'applicazione non riesce a connetersi alla rete. Controlla la tua connessione</string>
     <string name="action_logout">Esci</string>
     <string name="action_profile">Profilo Personale</string>
     <string name="title_activity_login">Entra</string>
@@ -67,7 +67,7 @@
     <string name="error_invalid_username">Nome utente non valido</string>
     <string name="title_activity_invite_to_join_community">InviteToJoinCommunity</string>
     <string name="action_invite_members">Invita i tuoi amici</string>
-    <string name="add_to_list_invitations">Add to receivers list</string>
+    <string name="add_to_list_invitations">Aggiungi ai riceventi</string>
     <string name="email">Email</string>
     <string name="username">Nome utente</string>
     <string name="username_semicolon">Nome utente:</string>

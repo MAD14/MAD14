@@ -1,6 +1,7 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -44,6 +45,9 @@ public class InviteToJoinCommunity extends AppCompatActivity {
         setContentView(R.layout.activity_invite_to_join_community);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         emailsToBeSent = new ArrayList<>();
 
@@ -115,5 +119,11 @@ public class InviteToJoinCommunity extends AppCompatActivity {
             list_invitation.requestLayout();
             actv.setText("");
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }

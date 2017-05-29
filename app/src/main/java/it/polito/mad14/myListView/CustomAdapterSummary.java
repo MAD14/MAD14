@@ -15,6 +15,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Expense;
@@ -30,6 +32,7 @@ public class CustomAdapterSummary extends BaseAdapter {
     LayoutInflater inflater;
     private String encodedImage;
     private String currency;
+    private String value;
     private Button button;
 
 
@@ -68,19 +71,29 @@ public class CustomAdapterSummary extends BaseAdapter {
 
         button = (Button) convertView.findViewById(R.id.button_payment);
 
+        value = summaryList.get(position).getValue();
+        Matcher matcher = Pattern.compile("^[0-9]+\\.[0-9]{1}$").matcher(value);
+        if (matcher.find()) {
+            value = value + "0";
+        } else {
+            matcher = Pattern.compile("^[0-9]+$").matcher(value);
+            if (matcher.find()) {
+                value = value + ".00";
+        }}
+
         tv = (TextView) convertView.findViewById(R.id.summary_import);
         if (summaryList.get(position).getCredit()) {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context,R.color.green));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.green));
-            tv.setText("+"+summaryList.get(position).getValue().toString());
+            tv.setText("+"+value);
             button.setBackgroundResource(R.mipmap.green_arrow);
 
         } else {
             // se è false rosso
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.red));
-            tv.setText("-"+summaryList.get(position).getValue().toString());
+            tv.setText("-"+value);
             button.setBackgroundResource(R.mipmap.red_arrow);
         }
 

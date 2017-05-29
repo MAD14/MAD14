@@ -66,8 +66,8 @@
         android:layout_alignBottom="@+id/group_summary1"
         android:layout_toLeftOf="@+id/group_notification"
         android:layout_toStartOf="@id/group_notification"
-        android:layout_marginRight="@dimen/margin_double"
-        android:layout_marginEnd="@dimen/margin_double"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
         android:layout_marginTop="5dp"
         />
 
