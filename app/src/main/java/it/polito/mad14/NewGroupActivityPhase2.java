@@ -41,7 +41,6 @@ import it.polito.mad14.myDataStructures.Mail;
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
 
     private ListView list_friends;
-    //TODO: friends deve essere popolata degli amici  ++++ molto importante
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;

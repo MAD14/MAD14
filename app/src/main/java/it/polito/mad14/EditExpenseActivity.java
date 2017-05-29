@@ -1,5 +1,6 @@
 package it.polito.mad14;
 
+import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -17,6 +18,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -35,11 +37,12 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 public class EditExpenseActivity extends AppCompatActivity {
 
     private static final int CHANGE_IMAGE = 1;
-    private String IDGroup, name, date, description, image, author, value, encodedImage,strImageUri,currentUser;
+    private String IDGroup, name, date, description, image, author, value, encodedImage,strImageUri, IDExpense;
     private Bitmap imageBitmap;
     private FirebaseDatabase database;
     private DatabaseReference myRef, reference, newRef;
@@ -47,7 +50,7 @@ public class EditExpenseActivity extends AppCompatActivity {
     private CollapsingToolbarLayout collapsingToolbar;
     private ArrayList<String> membersList = new ArrayList<>();
     private EditText input;
-    private TextView editDescription;
+    private TextView editDescription,tv_value, tv_date;
 
 
     @Override
@@ -58,9 +61,9 @@ public class EditExpenseActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         database = FirebaseDatabase.getInstance();
-        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
         IDGroup = getIntent().getStringExtra("IDGroup");
+        IDExpense = getIntent().getStringExtra("IDExpense");
         name = getIntent().getStringExtra("Name");
         date = getIntent().getStringExtra("Date");
         description = getIntent().getStringExtra("Description");
@@ -73,8 +76,9 @@ public class EditExpenseActivity extends AppCompatActivity {
 
         editDescription = (TextView) findViewById(R.id.tv_description);
 
+        TextView tv_author = (TextView) findViewById(R.id.tv_author);
+        tv_author.setText(author);
 
-        // modifica immagine
         if (image.equals("no_image")){
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.expense_base);
             Drawable d = new BitmapDrawable(getResources(), bitmap);
@@ -87,20 +91,44 @@ public class EditExpenseActivity extends AppCompatActivity {
             collapsingToolbar.setBackground(bDrawable);
         }
 
-
-        // modifica nome
-
         // modifica valore
         ImageView et_value = (ImageView) findViewById(R.id.edit_expense_value);
+        tv_value = (TextView) findViewById(R.id.tv_value);
+        tv_value.setText(value);
         et_value.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                AlertDialog.Builder changeBioDialogue = new AlertDialog.Builder(EditExpenseActivity.this);
+                changeBioDialogue.setTitle(getString(R.string.insert_value));
+                input = new EditText(getApplicationContext());
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+                input.setLayoutParams(lp);
+                changeBioDialogue.setView(input);
+                changeBioDialogue.setPositiveButton(getString(R.string.positive_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                String newValue = input.getText().toString();
+                                value = newValue;
+                                tv_value.setText(newValue);
+                            }
+                        });
+                changeBioDialogue.setNegativeButton(getString(R.string.negative_button_dialogue),
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+                changeBioDialogue.show();
             }
         });
 
         // modifica descrizione
         ImageView et_description = (ImageView) findViewById(R.id.edit_expense_description);
+        editDescription.setText(description);
         et_description.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -123,8 +151,6 @@ public class EditExpenseActivity extends AppCompatActivity {
                                 }else {
                                     editDescription.setText(newDescription);
                                 }
-                                DatabaseReference myRef = database.getReference("groups/"+ IDGroup + "/items/"+ name);
-                                myRef.child("Description").setValue(newDescription);
                             }
                         });
                 changeBioDialogue.setNegativeButton(getString(R.string.negative_button_dialogue),
@@ -140,11 +166,28 @@ public class EditExpenseActivity extends AppCompatActivity {
 
 
         // modifica data
-        ImageView et_date = (ImageView) findViewById(R.id.edit_expense_date);
+        final ImageView et_date = (ImageView) findViewById(R.id.edit_expense_date);
+        tv_date = (TextView) findViewById(R.id.tv_date);
+        tv_date.setText(date);
         et_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO
+                //Calendar now = Calendar.getInstance();
+                final Calendar c = Calendar.getInstance();
+
+                DatePickerDialog dpd = new DatePickerDialog(EditExpenseActivity.this,
+                        new DatePickerDialog.OnDateSetListener() {
+
+                            @Override
+                            public void onDateSet(DatePicker view, int year,
+                                                  int monthOfYear, int dayOfMonth) {
+                                date = dayOfMonth + "-" + (monthOfYear + 1) + "-" + year;
+                                tv_date.setText(date);
+                            }
+                        }, c.get(Calendar.YEAR),c.get(Calendar.MONTH),c.get(Calendar.DATE));
+                dpd.show();
+
+
             }
         });
 
@@ -200,9 +243,6 @@ public class EditExpenseActivity extends AppCompatActivity {
                     byte[] byteArrayImage = baos.toByteArray();
                     encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
                     image = encodedImage;
-                    database = FirebaseDatabase.getInstance();
-                    DatabaseReference myRef = database.getReference("groups/" + IDGroup);
-                    myRef.child("Image").setValue(encodedImage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
@@ -216,12 +256,12 @@ public class EditExpenseActivity extends AppCompatActivity {
         progressBar.setVisibility(View.VISIBLE);
         progressBar.bringToFront();
 
-        myRef = database.getReference("groups/"+IDGroup+"/items"+name);
-        myRef.child("Author").setValue(author);
+        DatabaseReference myRef = database.getReference("groups/"+ IDGroup + "/items/"+ IDExpense);
+        myRef.child("Price").setValue(value);
         myRef.child("Date").setValue(date);
         myRef.child("Description").setValue(description);
-        myRef.child("Image").setValue(image);
-        myRef.child("Price").setValue(value);
+        myRef.child("Name").setValue(name);
+        myRef.child("Image").setValue(encodedImage);
 
 
         Runnable r = new Runnable() {
@@ -250,14 +290,48 @@ public class EditExpenseActivity extends AppCompatActivity {
                 intent.putExtra("Date",date);
                 intent.putExtra("Author",author);
                 intent.putExtra("Description",description);
+                intent.putExtra("Import",value);
                 startActivity(intent);
                 progressBar.setVisibility(View.GONE);
                 finish();
             }
         },2000);
+    }
 
+    public void onClickChangeName(View view) {
+        AlertDialog.Builder changeUsernameDialogue = new AlertDialog.Builder(EditExpenseActivity.this);
+        changeUsernameDialogue.setTitle(getString(R.string.insert_group_name));
+        input = new EditText(this);
+        LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.MATCH_PARENT);
+        input.setLayoutParams(lp);
+        changeUsernameDialogue.setView(input);
+        changeUsernameDialogue.setPositiveButton(getString(R.string.positive_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String newName = input.getText().toString();
+                        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+                        toolbar.setTitle(newName);
+                        database = FirebaseDatabase.getInstance();
+                        name = newName;
+                    }
+                });
+        changeUsernameDialogue.setNegativeButton(getString(R.string.negative_button_dialogue),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+        changeUsernameDialogue.show();
 
     }
 
+    public void onClickChangePhoto(View view){
+        Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditExpenseActivity.this);
+        startActivityForResult(chooseImageIntent, CHANGE_IMAGE);
+    }
 
 }

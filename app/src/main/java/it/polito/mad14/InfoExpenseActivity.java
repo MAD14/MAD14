@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -27,11 +28,12 @@ import org.w3c.dom.Text;
 public class InfoExpenseActivity extends AppCompatActivity {
 
     private TextView tvValue,tvDescription,tvAuthor,tvDate;
-    private String IDGroup, expenseName, description, date, value, author;
+    private String IDGroup, expenseName, description, date, value, author, IDExpense;
     private FirebaseDatabase database;
-    private String image;
+    private String image,encodedImage;
     private String currentUser;
     private Bitmap imageBitmap;
+    private CollapsingToolbarLayout collapsingToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,10 +42,9 @@ public class InfoExpenseActivity extends AppCompatActivity {
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
-        CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout)findViewById(R.id.toolbar_layout);
-
         Intent intent = getIntent();
         IDGroup = getIntent().getStringExtra("IDGroup");
+        IDExpense = getIntent().getStringExtra("IDExpense");
         expenseName = intent.getStringExtra("Name");
         value = intent.getStringExtra("Import");
         description = intent.getStringExtra("Description");
@@ -51,24 +52,19 @@ public class InfoExpenseActivity extends AppCompatActivity {
         image = intent.getStringExtra("Image");
         date = intent.getStringExtra("Date");
 
-        int sdk = android.os.Build.VERSION.SDK_INT;
+        collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
+        collapsingToolbar.setTitle(expenseName);
+
         if (image.equals("no_image")){
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.mipmap.expense_base);
             Drawable d = new BitmapDrawable(getResources(), bitmap);
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                toolbar.setBackgroundDrawable(d);
-            } else {
-                toolbar.setBackground(d);
-            }
+            collapsingToolbar.setBackground(d);
         } else{
-            byte[] decodedImage = Base64.decode(image, Base64.DEFAULT);
-            imageBitmap = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
+            encodedImage = image;
+            byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
+            Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
             BitmapDrawable bDrawable = new BitmapDrawable(getApplicationContext().getResources(), image);
-            if(sdk < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-                toolbar.setBackgroundDrawable(bDrawable);
-            } else {
-                toolbar.setBackground(bDrawable);
-            }
+            collapsingToolbar.setBackground(bDrawable);
         }
 
         setTitle(expenseName);
@@ -98,6 +94,7 @@ public class InfoExpenseActivity extends AppCompatActivity {
                     intent.putExtra("Image",image);
                     intent.putExtra("Author",author);
                     intent.putExtra("Value",value);
+                    intent.putExtra("IDExpense",IDExpense);
                     startActivity(intent);
                     finish();
                 }

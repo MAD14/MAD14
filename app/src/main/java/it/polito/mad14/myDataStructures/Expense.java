@@ -12,9 +12,9 @@ public class Expense {
     private String group;
     private String image;
     private String date;
+    private String ID;
 
-
-    public Expense(String name, String value, String description, String author,String group, String image, String date) {
+    public Expense(String name, String value, String description, String author,String group, String image, String date,String ID) {
         this.name = name;
         this.value = value;
         this.description = description;
@@ -22,6 +22,7 @@ public class Expense {
         this.group= group;
         this.image = image;
         this.date = date;
+        this.ID = ID;
     }
 
     public String getName() {
@@ -80,5 +81,13 @@ public class Expense {
 
     public void setDate(String date) {
         this.date = date;
+    }
+
+    public String getID() {
+        return ID;
+    }
+
+    public void setID(String ID) {
+        this.ID = ID;
     }
 }

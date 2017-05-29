@@ -168,4 +168,6 @@
     <string name="waiting">In attesa...</string>
 
     <string name="add_as_friend">Aggiungi ai contatti</string>
+    <string name="insert_value">Inserisci il prezzo</string>
+
 </resources>

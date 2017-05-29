@@ -83,6 +83,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private String groupCurrency, groupName;
     private ArrayAdapter<String> spinnerAdapter;
     private String price;
+    private String IDExpense;
 
     private double EURtoUSD, USDtoEUR;
 
@@ -195,22 +196,23 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 price = et_import.getText().toString();
             }
 
-            DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
+            DatabaseReference refExp = database.getReference("groups/"+IDGroup+"/items").push();
             userRef = database.getReference("users");
-            DatabaseReference ref = myRef.child(et_name.getText().toString());
+            IDExpense = refExp.getKey().toString();
 
-            ref.child("Price").setValue(price);
+
+            refExp.child("Price").setValue(price);
             if (!et_description.getText().toString().isEmpty()){
                 finalDescription = et_description.getText().toString();
             } else {
                 finalDescription = getString(R.string.no_expense_description);
             }
-            ref.child("Description").setValue(finalDescription);
-            ref.child("Name").setValue(et_name.getText().toString());
-            ref.child("Author").setValue(et_author);
-            ref.child("Image").setValue(encodedExpenseImage);
-            ref.child("Date").setValue(date);
-            ref.child("Currency").setValue(groupCurrency);
+            refExp.child("Description").setValue(finalDescription);
+            refExp.child("Name").setValue(et_name.getText().toString());
+            refExp.child("Author").setValue(et_author);
+            refExp.child("Image").setValue(encodedExpenseImage);
+            refExp.child("Date").setValue(date);
+            refExp.child("Currency").setValue(groupCurrency);
 
             // Calculation of credits and debits
             priceEach=Math.round((Double.valueOf(price)/nMembers)*100.0)/100.0;
@@ -316,6 +318,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             handler.postDelayed(new Runnable() {
                 public void run() {
                     Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+                    intent.putExtra("IDExpense",IDExpense);
                     intent.putExtra("author",et_author);
                     intent.putExtra("name",et_name.getText().toString());
                     intent.putExtra("import",price);

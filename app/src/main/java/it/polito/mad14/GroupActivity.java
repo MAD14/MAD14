@@ -37,6 +37,7 @@ import java.util.Date;
 import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
+import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummaryGroup;
@@ -277,13 +278,15 @@ public class GroupActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         expensesList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            String currentExpense = data.getKey();
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString(),
                                         IDGroup,
                                         data.child("Image").getValue().toString(),
-                                        data.child("Date").getValue().toString());
+                                        data.child("Date").getValue().toString(),
+                                        currentExpense);
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }
