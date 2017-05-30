@@ -27,6 +27,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.ByteArrayOutputStream;
@@ -231,6 +233,26 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                         myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
                     }
                     //aggiungi campo per tenere traccia dei gruppi
+
+                    DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
+                    groupCounter.runTransaction(new Transaction.Handler(){
+                        @Override
+                        public Transaction.Result doTransaction(MutableData mutableData) {
+                            Integer currentValue = mutableData.getValue(Integer.class);
+                            if (currentValue == null) {
+                                mutableData.setValue(1);
+                            } else {
+                                mutableData.setValue(currentValue + 1);
+                            }
+
+                            return Transaction.success(mutableData);
+                        }
+
+                        @Override
+                        public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                            System.out.println("Transaction completed");
+                        }
+                    });
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
