@@ -246,12 +246,6 @@ public class MainActivity extends AppCompatActivity {
          * fragment.
          */
 
-        /**
-         * ELENA:
-         *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
-         *  popolate tramite la lettura dal database!
-         */
-
         private ArrayList<Group> groupsList=new ArrayList<>();
         private ArrayList<Contact> contactsList=new ArrayList<>();
         private int indexGroup=0;
@@ -268,6 +262,7 @@ public class MainActivity extends AppCompatActivity {
         private int indexSummary=0;
         private boolean credit;
         private double USDtoEUR, EURtoUSD;
+        private boolean flag = false;
 
         public PlaceholderFragment() {
         }
@@ -285,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list,list_summary;
+        private ListView list,list_summary, list_resume;
 
 
         @Override
@@ -337,8 +332,6 @@ public class MainActivity extends AppCompatActivity {
                                     long timestamp1 = d1.getTime();
                                     Date d2 = formatter.parse(group2.getLastChange());
                                     long timestamp2 = d2.getTime();
-                                    Log.e("timestamp1",String.valueOf(timestamp1));
-                                    Log.e("timestamp2",String.valueOf(timestamp2));
                                     if (timestamp1 <= timestamp2) {
                                         return 1;
                                     } else {
@@ -355,6 +348,7 @@ public class MainActivity extends AppCompatActivity {
                         if (list.getAdapter().getCount() == 0){
                             noGroup_textView.setVisibility(View.VISIBLE);
                         }
+                        flag = true;
                         list.invalidate();
                         list.requestLayout();
                     }
@@ -537,8 +531,6 @@ public class MainActivity extends AppCompatActivity {
                 list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
                 noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
 
-                //TODO: prendere i dati degli amici e visualizzarli qui
-                //con il formato contact_item
                 myRef = database.getReference("users/"+UserID+"/contacts/");
                 if (myRef!=null) {
                     myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -591,6 +583,16 @@ public class MainActivity extends AppCompatActivity {
                 CustomAdapterContacts adapter = new CustomAdapterContacts(getContext(),contactsList);
                 list.setAdapter(adapter);
                 return rootView;
+            }
+        }
+        @Override
+        public void onResume(){
+            super.onResume();
+            list_resume = (ListView) rootView.findViewById(R.id.list_view_main_activity);
+            if (flag) {
+                ((CustomAdapter)list_resume.getAdapter()).notifyDataSetChanged();
+//                list.invalidate();
+//                list.requestLayout();
             }
         }
     }
@@ -657,6 +659,7 @@ public class MainActivity extends AppCompatActivity {
     public void onClickNewGroup(View view) {
         Intent intent = new Intent(view.getContext(), NewGroupActivityPhase1.class);
         startActivityForResult(intent,GROUP_CREATION);
+        finish();
     }
 
     public void onClickNewContact(View view) {

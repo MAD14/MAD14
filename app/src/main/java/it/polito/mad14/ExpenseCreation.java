@@ -49,6 +49,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.polito.mad14.myDataStructures.Group;
+
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private Button bt;
@@ -448,6 +450,15 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+        intent.putExtra("IDGroup",IDGroup);
+        setResult(RESULT_OK,intent);
+        startActivity(intent);
+        finish();
     }
 
 }

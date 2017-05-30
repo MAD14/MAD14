@@ -333,6 +333,5 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     }
 
-
 }
 
