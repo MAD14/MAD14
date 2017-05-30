@@ -49,8 +49,11 @@ import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.polito.mad14.myDataStructures.Group;
+
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
+    private static final int RESULT_BACK = 12;
     private Button bt;
     final static int GET_IMAGE = 1;
 
@@ -314,6 +317,24 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 }
             }
 
+            // prendere membri e aggiornare il campo lastchange in ognuno
+            DatabaseReference refMembers=database.getReference("groups/"+IDGroup+"/members");
+            refMembers.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()){
+                        String currentMember = data.getKey();
+                        userRef.child(currentMember).child("groups").child(IDGroup).child("LastChange").setValue(date);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
             progressBar = (ProgressBar) findViewById(R.id.progressBar_expense);
             progressBar.setVisibility(View.VISIBLE);
 
@@ -431,6 +452,16 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    @Override
+    public void onBackPressed(){
+        Log.e("Back","pressed");
+        Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+        intent.putExtra("IDGroup",IDGroup);
+        intent.putExtra("Name",groupName);
+        startActivity(intent);
+        finish();
     }
 
 }

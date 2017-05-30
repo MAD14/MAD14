@@ -72,7 +72,6 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
 
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
-        Log.e("date",date);
         createGroup = (Button) findViewById(R.id.group_create_button);
         editName = (EditText) findViewById(R.id.group_name);
         editDescription = (EditText) findViewById(R.id.group_description);
@@ -203,5 +202,12 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null;
     }
 
+    @Override
+    public void onBackPressed(){
+        Intent intent = new Intent(NewGroupActivityPhase1.this,MainActivity.class);
+        setResult(RESULT_OK,intent);
+        startActivity(intent);
+        finish();
+    }
 
 }

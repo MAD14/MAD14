@@ -47,7 +47,7 @@ public class AddNewContacts extends AppCompatActivity {
     private CustomAdapterContactSuggested adapter;
 
     private DatabaseReference myRef;
-    private String actualEmail,currentUser;
+    private String actualEmail,currentUser, actualName;
 
     private ProgressBar progressBar;
     private TextView loading;
