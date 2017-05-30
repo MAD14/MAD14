@@ -103,12 +103,10 @@ public class GroupActivity extends AppCompatActivity {
                 intent.putExtra("IDGroup", IDGroup);
                 intent.putExtra("GroupName",groupName);
                 startActivityForResult(intent,EXPENSE_CREATION);
-//                finish();
+                finish();
             }
         });
 
-
-        //
 
     }
 
