@@ -47,7 +47,7 @@ public class AddNewContacts extends AppCompatActivity {
     private CustomAdapterContactSuggested adapter;
 
     private DatabaseReference myRef;
-    private String actualEmail,currentUser, actualName;
+    private String actualEmail,currentUser,actualName;
 
     private ProgressBar progressBar;
     private TextView loading;
@@ -65,6 +65,8 @@ public class AddNewContacts extends AppCompatActivity {
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
+
+        actualName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName().replace("."," ");
 
         actualEmail = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 

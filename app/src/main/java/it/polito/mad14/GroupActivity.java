@@ -442,6 +442,7 @@ public class GroupActivity extends AppCompatActivity {
         }
 
 
+
     }
 
     /**
@@ -486,19 +487,4 @@ public class GroupActivity extends AppCompatActivity {
         return cm.getActiveNetworkInfo() != null;
     }
 
-    @Override
-    public void onBackPressed() {
-
-        int count = getFragmentManager().getBackStackEntryCount();
-
-        if (count == 0) {
-            super.onBackPressed();
-            Intent intent = new Intent(GroupActivity.this,MainActivity.class);
-            startActivity(intent);
-            finish();
-        } else {
-            getFragmentManager().popBackStack();
-        }
-
-    }
 }
