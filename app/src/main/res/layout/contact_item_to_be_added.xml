@@ -34,8 +34,8 @@
 
     <ImageButton
         android:id="@+id/add_contact_suggestion"
-        android:layout_width="@dimen/icon_dimension"
-        android:layout_height="@dimen/icon_dimension"
+        android:layout_width="46dp"
+        android:layout_height="46dp"
         android:src="@mipmap/plus_icon"
         android:background="@color/background"
         android:foregroundGravity="center_vertical"

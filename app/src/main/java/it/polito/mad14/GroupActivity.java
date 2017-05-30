@@ -1,6 +1,7 @@
 package it.polito.mad14;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
@@ -34,8 +35,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
+import it.polito.mad14.myDataStructures.Group;
 import it.polito.mad14.myDataStructures.Summary;
 import it.polito.mad14.myListView.CustomAdapterExpenses;
 import it.polito.mad14.myListView.CustomAdapterSummaryGroup;
@@ -80,6 +83,9 @@ public class GroupActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
+
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
@@ -93,8 +99,8 @@ public class GroupActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
+                intent.putExtra("GroupName",groupName);
                 startActivityForResult(intent,EXPENSE_CREATION);
-//                startActivity(intent);
                 finish();
             }
         });
@@ -111,6 +117,9 @@ public class GroupActivity extends AppCompatActivity {
                 ListView list = (ListView) findViewById(R.id.list_view_expenses);
                 list.invalidate();
                 list.requestLayout();
+                String NameOfGroup = intent.getStringExtra("GroupName");
+                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
+                toolbar.setTitle(NameOfGroup);
             }
         }
     }
@@ -241,7 +250,7 @@ public class GroupActivity extends AppCompatActivity {
         private View rootView;
         private ListView list_expenses,list_summary;
         private String name,email;
-        private String IDGroup;
+        private String IDGroup, groupCurrency;
         private TextView noExpense_textView, noReport_textView;
 
 
@@ -250,10 +259,12 @@ public class GroupActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             String groupName = getActivity().getIntent().getStringExtra("Name");
-            Toolbar toolbar = (Toolbar)  getActivity().findViewById(R.id.toolbar_group_activity);
+
+            Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
             toolbar.setTitle(groupName);
 
             IDGroup = getActivity().getIntent().getStringExtra("IDGroup");
+            groupCurrency = getActivity().getIntent().getStringExtra("GroupCurrency");
             database = FirebaseDatabase.getInstance();
             user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
@@ -273,13 +284,16 @@ public class GroupActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         expensesList = new ArrayList<>();
                         for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            String currentExpense = data.getKey();
                                 Expense tmp = new Expense(data.child("Name").getValue().toString(),
                                         data.child("Price").getValue().toString(),
+                                        data.child("Currency").getValue().toString(),
                                         data.child("Description").getValue().toString(),
                                         data.child("Author").getValue().toString(),
                                         IDGroup,
                                         data.child("Image").getValue().toString(),
-                                        data.child("Date").getValue().toString());
+                                        data.child("Date").getValue().toString(),
+                                        currentExpense);
                                 indexExp = expensesList.size();
                                 expensesList.add(indexExp, tmp);
                         }
@@ -325,7 +339,7 @@ public class GroupActivity extends AppCompatActivity {
                 list_summary = (ListView) rootView.findViewById(R.id.list_view_summary);
                 noReport_textView = (TextView) rootView.findViewById(R.id.noReport_tv);
 
-                CustomAdapterSummaryGroup adapter = new CustomAdapterSummaryGroup(getContext(),summaryList,IDGroup);
+                CustomAdapterSummaryGroup adapter = new CustomAdapterSummaryGroup(getContext(),summaryList,IDGroup,groupCurrency);
                 list_summary.setAdapter(adapter);
 
                 myRef_summary.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -465,6 +479,12 @@ public class GroupActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

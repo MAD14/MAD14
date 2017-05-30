@@ -87,7 +87,7 @@
             android:onClick="onClickCompletedAction"
             app:elevation="0dp"
             app:srcCompat="@mipmap/check_icon"
-
+            app:backgroundTint="@color/colorFab"
             />
     </RelativeLayout>
 

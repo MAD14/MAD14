@@ -18,7 +18,8 @@
         android:src="@mipmap/expense_icon"
         android:layout_marginTop="@dimen/margin"
         android:layout_marginLeft="@dimen/margin"
-        android:layout_marginRight="@dimen/margin"/>
+        android:layout_marginRight="@dimen/margin"
+        android:layout_centerVertical="true"/>
 
     <TextView
         android:id="@+id/expense_name"
@@ -33,6 +34,21 @@
         android:layout_toRightOf="@+id/expense_icon"
         android:layout_toEndOf="@+id/expense_icon" />
 
+    <TextView
+        android:id="@+id/expense_currency"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:elegantTextHeight="true"
+        android:textColor="@color/red"
+        android:textAlignment="center"
+        android:gravity="center"
+        android:text="@string/currency"
+        android:layout_marginRight="23dp"
+        android:layout_marginEnd="23dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignBaseline="@id/expense_name"/>
 
     <TextView
         android:id="@+id/expense_import"
@@ -44,10 +60,10 @@
         android:textAlignment="center"
         android:gravity="center"
         android:text="@string/Import"
-        android:layout_marginRight="23dp"
-        android:layout_marginEnd="23dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
+        android:layout_marginRight="@dimen/margin"
+        android:layout_marginEnd="@dimen/margin"
+        android:layout_toLeftOf="@id/expense_currency"
+        android:layout_toStartOf="@id/expense_currency"
         android:layout_alignBaseline="@id/expense_name"/>
 
 

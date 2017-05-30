@@ -5,10 +5,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 
+import android.net.ConnectivityManager;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -29,11 +33,18 @@ public class OtherProfileActivity extends AppCompatActivity {
     private String bio;
     private String encodedImage;
     private ImageButton imgbt;
+    private Button button;
+    private String alreadyFriend = "false";
+    private ProgressBar progressBar;
+    private String currentUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_other_profile);
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         email = getIntent().getStringExtra("Email");
         username = getIntent().getStringExtra("Username");
@@ -41,16 +52,15 @@ public class OtherProfileActivity extends AppCompatActivity {
 
         // necessario per avere il tondo della foto profilo in primo piano anche con le API<21
         imgbt = (ImageButton) findViewById(R.id.user_profile_photo);
-      
+
         FirebaseDatabase database = FirebaseDatabase.getInstance();
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+        DatabaseReference myRef = database.getReference("users").child(currentUser);
 
-
-        DatabaseReference myRef = database.getReference("users");
-
-        myRef.child(email.replace(".", ",")).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.hasChild("Bio")){
+                if (dataSnapshot.hasChild("Bio")) {
                     bio = dataSnapshot.child("Bio").getValue().toString();
                 } else {
                     bio = getString(R.string.default_bio);
@@ -58,8 +68,8 @@ public class OtherProfileActivity extends AppCompatActivity {
                 TextView tv = (TextView) findViewById(R.id.user_profile_short_bio);
                 tv.setText(bio);
 
-                if (dataSnapshot.hasChild("ProfileImage")){
-                    if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")){
+                if (dataSnapshot.hasChild("ProfileImage")) {
+                    if (dataSnapshot.child("ProfileImage").getValue().toString().equals("no_image")) {
                         encodedImage = "no_image";
                         imgbt.setImageResource(R.mipmap.person_icon_white);
                     } else {
@@ -91,28 +101,66 @@ public class OtherProfileActivity extends AppCompatActivity {
 
 
         imgbt.bringToFront();
-    }
+        button = (Button) findViewById(R.id.button_add_as_friend);
+        button.setVisibility(View.GONE);
 
-    public void onClickAddAsFriend(View view) {
-        Runnable r = new Runnable() {
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_profile);
+        progressBar.setVisibility(View.VISIBLE);
+
+        //lettura da db degli amici
+        myRef.child("contacts").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void run() {
-                String UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
-                DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + UserID + "/contacts/" + email.replace(".",","));
-                String[] parts = displayName.split(" ");
-                myRef.child("Name").setValue(parts[0]);
-                myRef.child("Surname").setValue(parts[1]);
-                myRef.child("Username").setValue(username);
-                myRef.child("Email").setValue(email);
-                myRef.child("Image").setValue(encodedImage);
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot data : dataSnapshot.getChildren()) {
+                    if (data.getKey().equals(email.replace(".",","))) {
+                        alreadyFriend = "true";
+                        break;
+                    }
+                }
+
+                progressBar.setVisibility(View.GONE);
+                if (alreadyFriend.equals("false")) {
+                    button.setVisibility(View.VISIBLE);
+                    button.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            Runnable r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    DatabaseReference myRef = FirebaseDatabase.getInstance().getReference("users/" + currentUser + "/contacts/" + email.replace(".", ","));
+                                    String[] parts = displayName.split(" ");
+                                    myRef.child("Name").setValue(parts[0]);
+                                    myRef.child("Surname").setValue(parts[1]);
+                                    myRef.child("Username").setValue(username);
+                                    myRef.child("Email").setValue(email);
+                                    myRef.child("Image").setValue(encodedImage);
+                                }
+                            };
+
+                            Thread t = new Thread(r);
+                            t.start();
+
+                            Toast.makeText(OtherProfileActivity.this, getString(R.string.added_as_friend), Toast.LENGTH_SHORT).show();
+                            button.setVisibility(View.GONE);
+                        }
+                    });
+                }
+
+
+
             }
-        };
 
-        Thread t = new Thread(r);
-        t.start();
 
-        Toast.makeText(OtherProfileActivity.this, getString(R.string.added_as_friend), Toast.LENGTH_SHORT).show();
-
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
+}
 

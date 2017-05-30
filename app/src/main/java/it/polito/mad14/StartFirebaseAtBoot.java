@@ -17,6 +17,7 @@ public class StartFirebaseAtBoot extends BroadcastReceiver {
         System.out.println("BROADCAST INIT AT BOOT");
         Intent service = new Intent(context, FirebaseBackgroundService.class);
         context.startService(service);
+
     }
 
 }

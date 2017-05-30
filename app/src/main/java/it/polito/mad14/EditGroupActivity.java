@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.provider.ContactsContract;
@@ -77,6 +78,8 @@ public class EditGroupActivity extends AppCompatActivity {
         CollapsingToolbarLayout toolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         toolbar.setTitle(groupName);
 
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         TextView tv = (TextView) findViewById(R.id.tv_date_creation);
         tv.setText(dateCreation);
@@ -293,5 +296,11 @@ public class EditGroupActivity extends AppCompatActivity {
     public void onClickChangePhoto(View view){
         Intent chooseImageIntent = ImagePicker.getPickImageIntent(EditGroupActivity.this);
         startActivityForResult(chooseImageIntent, CHANGE_IMAGE);
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 }

@@ -47,7 +47,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private Context context;
     private ArrayList<Expense> expensesList;
     private LayoutInflater inflater;
-    private String encodedImage;
+    private String encodedImage, IDExpense;
     private FirebaseDatabase database;
     private Expense expense;
 
@@ -84,22 +84,31 @@ public class CustomAdapterExpenses extends BaseAdapter {
         tv.setText(expensesList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.expense_import);
         tv.setText(expensesList.get(position).getValue());
+        tv = (TextView) convertView.findViewById(R.id.expense_currency);
+        tv.setText(expensesList.get(position).getCurrency());
+
+        IDExpense = expensesList.get(position).getID();
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
-        if (!expensesList.get(position).getImage().equals("no_image")) {
-            encodedImage = expensesList.get(position).getImage();
+        String imageStr = expensesList.get(position).getImage();
+        Log.e("image",imageStr);
+        if (imageStr.equals("no_image")) {
+            encodedImage = imageStr;
+            imgbt.setBackgroundResource(R.mipmap.expense_icon);
+        } else {
+            encodedImage = imageStr;
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
             Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
             imgbt.setImageDrawable(bDrawable);
-        } else {
-            imgbt.setBackgroundResource(R.mipmap.expense_icon);
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, InfoExpenseActivity.class);
+                intent.putExtra("IDExpense",IDExpense);
+                intent.putExtra("IDGroup",expensesList.get(position).getGroup());
                 intent.putExtra("Name",expensesList.get(position).getName());
                 intent.putExtra("Import",expensesList.get(position).getValue());
                 intent.putExtra("Description",expensesList.get(position).getDescription());
@@ -124,25 +133,24 @@ public class CustomAdapterExpenses extends BaseAdapter {
                         expense = expensesList.get(position);
 
                         if(expense.getAuthor().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",","))) {
-                            //TODO: posso cancellare la spesa solo se l'ho creata io!
-
                             // remove value from expense list
                             expensesList.remove(position);
                             notifyDataSetChanged();
                             notifyDataSetInvalidated();
                             // remove value from group
                             DatabaseReference myRef = database.getReference("groups/" + expense.getGroup() + "/items");
-                            myRef.child(expense.getName()).removeValue();
+                            myRef.child(expense.getID()).removeValue();
                             DatabaseReference debits = database.getReference("groups/" + expense.getGroup() + "/debits");
                             debits.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        if (data.child("Product").getValue().toString().equals(expense.getName())) {
+                                        String currentExpense = data.getKey();
+                                        if (currentExpense.equals(expense.getID())) {
                                             String creditor = data.child("Receiver").getValue().toString();
                                             String debitor = data.child("Sender").getValue().toString();
-                                            database.getReference("users/" + creditor + "/credits/" + data.getKey()).removeValue();
-                                            database.getReference("users/" + debitor + "/debits/" + data.getKey()).removeValue();
+                                            database.getReference("users/" + creditor + "/credits/" + currentExpense).removeValue();
+                                            database.getReference("users/" + debitor + "/debits/" + currentExpense).removeValue();
                                             data.getRef().removeValue();
                                         }
                                     }

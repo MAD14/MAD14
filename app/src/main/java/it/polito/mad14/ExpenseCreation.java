@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -66,7 +67,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private EditText et_import, et_name, et_description;
     private String finalDescription;
-    private boolean hasImage;
     private String date;
 
     private double oldValue;
@@ -82,9 +82,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
     private Spinner selectCurrency;
     private String selectedCurrency;
-    private String groupCurrency;
+    private String groupCurrency, groupName;
     private ArrayAdapter<String> spinnerAdapter;
     private String price;
+    private String IDExpense;
 
     private double EURtoUSD, USDtoEUR;
 
@@ -94,8 +95,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R .layout.activity_expense_creation);
-        encodedExpenseImage = getString(R.string.no_image);
-        hasImage = false;
+        encodedExpenseImage = "no_image";
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         SimpleDateFormat format1 = new SimpleDateFormat("dd/MM/yyy HH:mm");
         date = format1.format(Calendar.getInstance().getTime());
@@ -112,6 +115,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         authorDisplayName = auth.getCurrentUser().getDisplayName().replace("."," ");
 
         IDGroup= getIntent().getStringExtra("IDGroup");
+        groupName = getIntent().getStringExtra("GroupName");
 
         contacts= new HashSet<>();
 
@@ -157,7 +161,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 nMembers=dataSnapshot.getChildrenCount();
                 // collecting into a set the names of the members
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    contacts.add(data.getKey().toString());
+                    contacts.add(data.getKey());
                 }
             }
             @Override
@@ -196,22 +200,23 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 price = et_import.getText().toString();
             }
 
-            DatabaseReference myRef = database.getReference("groups/"+IDGroup+"/items");
+            DatabaseReference refExp = database.getReference("groups/"+IDGroup+"/items").push();
             userRef = database.getReference("users");
-            DatabaseReference ref = myRef.child(et_name.getText().toString());
+            IDExpense = refExp.getKey();
 
-            ref.child("Price").setValue(price);
+
+            refExp.child("Price").setValue(price);
             if (!et_description.getText().toString().isEmpty()){
                 finalDescription = et_description.getText().toString();
             } else {
                 finalDescription = getString(R.string.no_expense_description);
             }
-            ref.child("Description").setValue(finalDescription);
-            ref.child("Name").setValue(et_name.getText().toString());
-            ref.child("Author").setValue(et_author);
-            ref.child("Image").setValue(encodedExpenseImage);
-            ref.child("Date").setValue(date);
-            ref.child("Currency").setValue(groupCurrency);
+            refExp.child("Description").setValue(finalDescription);
+            refExp.child("Name").setValue(et_name.getText().toString());
+            refExp.child("Author").setValue(et_author);
+            refExp.child("Image").setValue(encodedExpenseImage);
+            refExp.child("Date").setValue(date);
+            refExp.child("Currency").setValue(groupCurrency);
 
             // Calculation of credits and debits
             priceEach=Math.round((Double.valueOf(price)/nMembers)*100.0)/100.0;
@@ -277,6 +282,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             updates1.put("Value",Math.random());
                             userRef.child(name).child("Expenses").child(IDGroup).updateChildren(updates1);
 
+
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {
@@ -315,14 +321,15 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             handler.postDelayed(new Runnable() {
                 public void run() {
                     Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+                    intent.putExtra("IDExpense",IDExpense);
                     intent.putExtra("author",et_author);
                     intent.putExtra("name",et_name.getText().toString());
                     intent.putExtra("import",price);
                     intent.putExtra("description",finalDescription);
-                    intent.putExtra("expenseImage",hasImage);
                     intent.putExtra("date",date);
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
+                    intent.putExtra("GroupName",groupName);
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);
@@ -360,12 +367,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                         .setMinCropResultSize(100,100)
                         .setMaxCropResultSize(1000,1000)
                         .start(this);
-
-//                Intent intent = CropImage.activity(imageUri).getIntent(NewGroupActivityPhase1.this);
-//                startActivityForResult(intent, CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE);
-
-//                CropImage.activity(imageUri).setGuidelines(CropImageView.Guidelines.ON).start(this);
-
             }
         }
         if (requestCode == CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -380,7 +381,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     expenseImageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                     byte[] byteArrayImage = baos.toByteArray();
                     encodedExpenseImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
-                    hasImage = true;
                     Log.d("IMAGE", encodedExpenseImage);
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -424,6 +424,12 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         if (value.isEmpty()) Toast.makeText(ExpenseCreation.this,getString(R.string.error_field_required), Toast.LENGTH_SHORT).show();
 
         return false;
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

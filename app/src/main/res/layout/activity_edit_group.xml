@@ -44,7 +44,8 @@
         android:layout_margin="@dimen/fab_margin"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end"
-        app:srcCompat="@mipmap/completed_action" />
+        app:srcCompat="@mipmap/completed_action"
+        app:backgroundTint="@color/colorFab"/>
 
     <ImageButton
         android:id="@+id/edit_name_button"
@@ -53,7 +54,7 @@
         android:layout_gravity="top|end"
         android:layout_margin="0dp"
         android:src="@mipmap/ic_menu_edit"
-        app:layout_anchor="@+id/include"
+        app:layout_anchor="@id/include"
         app:layout_anchorGravity="top"
         android:clickable="true"
         android:onClick="onClickChangeName"

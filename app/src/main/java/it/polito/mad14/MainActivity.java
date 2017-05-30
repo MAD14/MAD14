@@ -2,6 +2,7 @@ package it.polito.mad14;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
@@ -94,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
+        // Control internet connection
+        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
         //////////////////////////
         Runnable r = new Runnable() {
             @Override
@@ -107,6 +111,7 @@ public class MainActivity extends AppCompatActivity {
 
         //////////////////////////
        /*Runnable r1 = new Runnable() {
+
             @Override
             public void run() {
                 startService(new Intent(MainActivity.this,FirebaseBackgroundService2.class));
@@ -114,6 +119,7 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         Thread t1 = new Thread(r1);
+
         t1.start();*/
         //////////////////////////
 
@@ -383,19 +389,17 @@ public class MainActivity extends AppCompatActivity {
                         myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                         myRef_summary_credits = database.getReference("users/" + userID + "/credits");
 
-                        CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList);
+                        CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList,selectedCurrency);
                         list_summary.setAdapter(adapter);
 
                         myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(DataSnapshot dataSnapshot) {
                                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-
                                     credit = false; // debits section --> it's a debit
                                     Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
                                             data.child("Money").getValue().toString(),data.child("Paying").getValue().toString(),
                                             data.child("Currency").getValue().toString(),
-
                                             credit);
                                     indexSummary = debitsList.size();
                                     debitsList.add(indexSummary, tmp);
@@ -463,7 +467,7 @@ public class MainActivity extends AppCompatActivity {
                                         //creditsList.addAll(tmpList);
                                         Iterator<Summary> itCred=creditsList.iterator();
                                         while(itCred.hasNext()){
-                                            Summary sum=itCred.next();
+                                            Summary sum = itCred.next();
                                             if(tot.containsKey(sum.getName())){
                                                 Double newtot;
                                                 if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
@@ -495,7 +499,7 @@ public class MainActivity extends AppCompatActivity {
 
                                         }
                                         summaryList = new ArrayList<>(tot.values());
-                                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+                                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
 
                                         if (list_summary.getAdapter().getCount() == 0){
                                             noSummary_textView.setVisibility(View.VISIBLE);
@@ -508,7 +512,7 @@ public class MainActivity extends AppCompatActivity {
                                 });
 
                                 summaryList = new ArrayList<>(tot.values());
-                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList));
+                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
 
                             }
                             @Override
@@ -524,14 +528,7 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
-
-
-                //TODO: possibilità di segnare che si è pagato qualcuno
-                //TODO: grafico riepilogo crediti/debiti
-
-
                 return rootView;
-
 
             } else {
                 rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
@@ -687,6 +684,12 @@ public class MainActivity extends AppCompatActivity {
                 Log.e("provaResult","received and added");
             }
         }
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
+
+        return cm.getActiveNetworkInfo() != null;
     }
 
 }

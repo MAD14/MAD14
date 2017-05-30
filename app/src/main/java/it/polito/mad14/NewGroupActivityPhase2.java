@@ -220,6 +220,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Debit").setValue("0");
                     updates.put("Action","A-"+groupAuthor);
                     updates.put("Name",groupName);
+
                     if (user == groupAuthor){
                         updates.put("Value",Math.random());
                         myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);

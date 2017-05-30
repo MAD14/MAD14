@@ -21,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -48,9 +49,10 @@ public class CustomAdapter extends BaseAdapter{
     Set<String> members=new HashSet<>();
 
     private String encodedImage;
-    private DatabaseReference memRef;
+    private DatabaseReference memRef,users, myRef;
     private FirebaseDatabase database;
     private Group group;
+    private String currentUser;
 
     public CustomAdapter(Context context, ArrayList<Group> groupList) {
         this.context = context;
@@ -80,6 +82,8 @@ public class CustomAdapter extends BaseAdapter{
         if (convertView == null)
             convertView = inflater.inflate(R.layout.group_item,parent,false);
 
+        currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
+
         TextView tv = (TextView) convertView.findViewById(R.id.group_name);
         tv.setText(groupList.get(position).getName());
         tv = (TextView) convertView.findViewById(R.id.group_summary1);
@@ -104,6 +108,7 @@ public class CustomAdapter extends BaseAdapter{
             public void onClick(View view){
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
+                intent.putExtra("GroupCurrency",groupList.get(position).getCurrency());
                 intent.putExtra("Name",groupList.get(position).getName());
                 context.startActivity(intent);
             }
@@ -128,10 +133,10 @@ public class CustomAdapter extends BaseAdapter{
                                 @Override
                                 public void run() {
                                     // remove value from group
-                                    final DatabaseReference myRef = database.getReference("groups");
                                     // salvo membri in set
                                     memRef = database.getReference("groups/" + group.getID() + "/members/");
-                                    final DatabaseReference users = database.getReference("users");
+                                    users = database.getReference("users");
+                                    myRef = database.getReference("users/" + currentUser);
                                     memRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -139,9 +144,11 @@ public class CustomAdapter extends BaseAdapter{
                                                 // elimino la ref nei membri
                                                 users.child(data.getKey()).child("groups").child(group.getID()).removeValue();
                                             }
-                                            // elimino la ref nei gruppi
+                                            // elimino la ref del gruppo nell'utente
                                             myRef.child(group.getID()).removeValue();
-
+                                            String IDGroup = group.getID();
+                                            myRef.child("Expenses").child(IDGroup).removeValue();
+                                            myRef.child("Members").child(IDGroup).removeValue();
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {

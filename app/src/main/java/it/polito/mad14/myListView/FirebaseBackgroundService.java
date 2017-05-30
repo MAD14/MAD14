@@ -16,7 +16,9 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
 import com.google.firebase.database.ChildEventListener;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -34,10 +36,12 @@ import it.polito.mad14.R;
 
 public class FirebaseBackgroundService extends Service {
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
+
     private DatabaseReference myRefNumber,myRefMembers,myRefExpenses;
     private FirebaseUser user;
     private boolean notifyMember,notifyExpense;
     private int numberGroups = 0,readMembers = 0, readExpenses =  0;
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -139,20 +143,20 @@ public class FirebaseBackgroundService extends Service {
             }
         });
 
-
-
-
        /* Runnable rMembers = new Runnable() {
             @Override
             public void run() {
                 try {*/
+
         /*myRefMembers.addValueEventListener( new ValueEventListener(){
+
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //membersIDListTMP = new ArrayList<>();
                 SimpleDateFormat formatter =  new SimpleDateFormat("dd/MM/yyy HH:mm");
                 int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (notifyMember) {
+
                         try{
                             Thread.sleep(9000);
                             if( i == 0 ){
@@ -190,6 +194,7 @@ public class FirebaseBackgroundService extends Service {
                             e.printStackTrace();
                         }
                        /* if( i == 0 ){
+
                             try {
                                 valueMostRecentM = data.child("Value").getValue().toString();
                                 Log.e("date","prova1: " + data.child("Date").getValue().toString());
@@ -205,8 +210,6 @@ public class FirebaseBackgroundService extends Service {
                         else{
                             Date d1;
                             try {
-
-                                System.out.println("PRINTO"+data.getKey().toString());
                                 d1 = formatter.parse(data.child("Date").getValue().toString());
                                 long timestamp1 = d1.getTime();
                                 if (timestamp1 > mostRecentTimestampM){
@@ -244,6 +247,7 @@ public class FirebaseBackgroundService extends Service {
 
             }
         });*/
+
 
 
              /*   } catch (Exception e) {

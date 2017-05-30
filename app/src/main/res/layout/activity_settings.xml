@@ -44,6 +44,7 @@
                     android:id="@+id/italy_flag"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
                     android:layout_margin="@dimen/margin"
                     android:background="@mipmap/ic_italy_flag" />
 
@@ -53,6 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="@dimen/margin"
                     android:layout_below="@id/italy_flag"
+                    android:layout_centerHorizontal="true"
                     android:background="@mipmap/ic_uk_flag" />
 
             </RelativeLayout>
@@ -121,7 +123,7 @@
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
         android:src="@mipmap/check_icon"
-
+        app:backgroundTint="@color/colorFab"
         />
 
 
