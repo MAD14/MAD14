@@ -320,7 +320,9 @@ public class AddNewMembersToGroup extends AppCompatActivity {
 
         Intent intent = new Intent(AddNewMembersToGroup.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
+        intent.putExtra("GroupName",groupName);
         startActivity(intent);
+        finish();
     }
 
     private boolean isNetworkConnected() {

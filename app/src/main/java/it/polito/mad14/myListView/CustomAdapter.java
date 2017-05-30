@@ -109,7 +109,7 @@ public class CustomAdapter extends BaseAdapter{
                 Intent intent = new Intent(context, GroupActivity.class);
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 intent.putExtra("GroupCurrency",groupList.get(position).getCurrency());
-                intent.putExtra("Name",groupList.get(position).getName());
+                intent.putExtra("GroupName",groupList.get(position).getName());
                 context.startActivity(intent);
                 ((Activity)context).finish();
             }
