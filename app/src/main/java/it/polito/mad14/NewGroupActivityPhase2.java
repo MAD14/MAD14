@@ -3,7 +3,6 @@ package it.polito.mad14;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -33,7 +32,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -43,6 +44,7 @@ import it.polito.mad14.myDataStructures.Mail;
 public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.OnClickListener{
 
     private ListView list_friends;
+    //TODO: friends deve essere popolata degli amici  ++++ molto importante
     private ArrayList<Contact> friends;
     private int friendsIndex=0;
     private ArrayList<String> friends_added;
@@ -67,9 +69,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         setContentView(R.layout.activity_new_group_phase2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        // Control internet connection
-        if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
         groupName = getIntent().getStringExtra("Name");
         groupAuthor= getIntent().getStringExtra("Author");
@@ -206,6 +205,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void run() {
                 // Insertion of the group in each user
+                Map<String, Object> updates = new HashMap<>();
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");
@@ -218,21 +218,13 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
-                    if (user == groupAuthor){
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
-                    } else {
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
-                    }
+                    updates.put("Action","A-"+groupAuthor);
+                    updates.put("Name",groupName);
+                    updates.put("Value",Math.random());
+                    myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+                    myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
+
+                    //aggiungi campo per tenere traccia dei gruppi
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
@@ -312,11 +304,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
-
-        return cm.getActiveNetworkInfo() != null;
-    }
 
 }
 
