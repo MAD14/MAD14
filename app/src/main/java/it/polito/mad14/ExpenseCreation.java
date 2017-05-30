@@ -458,7 +458,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         Log.e("Back","pressed");
         Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
-        setResult(RESULT_BACK,intent);
+        intent.putExtra("Name",groupName);
         startActivity(intent);
         finish();
     }

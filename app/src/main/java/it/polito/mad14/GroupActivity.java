@@ -501,12 +501,7 @@ public class GroupActivity extends AppCompatActivity {
 //                list.invalidate();
 //                list.requestLayout();
 //            }
-//            if (resultCode == RESULT_BACK){
-//                String name = getIntent().getStringExtra("GroupName");
-//                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
-//                Log.e("groupName",name);
-//                toolbar.setTitle(name);
-//            }
+
 //        }
 //    }
 
