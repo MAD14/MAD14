@@ -12,7 +12,7 @@
         android:layout_width="300dp"
         android:layout_height="300dp"
         android:layout_centerHorizontal="true"
-        android:background="@mipmap/ic_mani_box"
+        android:src="@drawable/mani_box"
         />
 
 
