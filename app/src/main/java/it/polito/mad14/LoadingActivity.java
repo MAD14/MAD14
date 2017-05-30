@@ -66,6 +66,7 @@ public class LoadingActivity extends AppCompatActivity {
         Bitmap bMap = BitmapFactory.decodeResource(getResources(),R.drawable.mani_box, options);
         int h = 300; // height in pixels
         int w = 300; // width in pixels
+
         Bitmap photoBitMap = Bitmap.createScaledBitmap(bMap,h, w, true);
         img.setImageBitmap(photoBitMap);
 //        img.setImageBitmap(bMap);
