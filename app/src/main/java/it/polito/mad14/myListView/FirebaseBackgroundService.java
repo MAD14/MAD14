@@ -9,7 +9,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.IBinder;
+import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
@@ -54,11 +56,15 @@ public class FirebaseBackgroundService extends Service {
         super.onCreate();
         System.out.println("SONO NEL SERVICE");
         user = FirebaseAuth.getInstance().getCurrentUser();
-        myRefNumber = database.getReference("users/"+user.getEmail().replace(".",",")+"/GroupsNumb");
+        myRefNumber = database.getReference("users/"+user.getEmail().replace(".",","));
         myRefNumber.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numberGroups = Integer.valueOf(dataSnapshot.getValue().toString());
+                if (dataSnapshot.hasChild("GroupsNumb")) {
+                    numberGroups = Integer.valueOf(dataSnapshot.child("GroupsNumb").getValue().toString());
+                } else {
+                    numberGroups = 0;
+                }
                 System.out.println("EXT : #groups : "+numberGroups);
                 myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
                 notifyMember = false;
@@ -69,6 +75,7 @@ public class FirebaseBackgroundService extends Service {
                         System.out.println("onChildAdded : "+readMembers);
                         if(readMembers >= numberGroups){
                             //manda notifica per nuovo gruppo: You have been added to a new group!
+                            sendNotification(dataSnapshot.child("Name").getValue().toString(),dataSnapshot.child("Action").getValue().toString(),dataSnapshot.getKey().toString());
                             //String date = dataSnapshot.child("Date").getValue().toString();
                             String name = dataSnapshot.child("Name").getValue().toString();
                             //String name = dataSnapshot.getKey().toString();
@@ -99,12 +106,10 @@ public class FirebaseBackgroundService extends Service {
 
                     @Override
                     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
                     }
 
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
-
                     }
                 });
 
@@ -264,11 +269,19 @@ public class FirebaseBackgroundService extends Service {
         return Service.START_STICKY;
     }
 
-    private void sendNotification(String msg, String IDGruop) {
+    private void sendNotification(String groupName, String action, String groupID) {
+        int sdk = Build.VERSION.SDK_INT;
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (sdk < Build.VERSION_CODES.JELLY_BEAN){
+            //StatusBarNotification[] statusBar = mNotificationManager.getActiveNotifications();
+        }
+        else{
+
+        }
         int NOTIFICATION_ID = 1;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent resultIntent = new Intent(this, GroupActivity.class);
-        resultIntent.putExtra("IDGroup",IDGruop);
+        resultIntent.putExtra("IDGroup",groupID);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack
         stackBuilder.addParentStack(GroupActivity.class);
@@ -278,19 +291,23 @@ public class FirebaseBackgroundService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_mani_box)
                 .setContentTitle("Shared Pocket")
-                .setContentText(msg)
+                .setContentText(messageCreation(groupName,action))
                 .setAutoCancel(true) //si elimina quando ci pigi
                 .setDefaults(Notification.DEFAULT_ALL) //vibrazione e suoni delle impostazioni del device
                 .setSound(alarmSound);
         builder.setContentIntent(resultPendingIntent);
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+       mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //System.out.println(mNotificationManager.getActiveNotifications().length);
         mNotificationManager.notify(NOTIFICATION_ID, builder.build());
 
 
     }
 
-     private boolean checkIfAppIsRunningInForeground() {
+    private String messageCreation(String groupName, String action) {
+        return "lalala";
+    }
+
+    private boolean checkIfAppIsRunningInForeground() {
         ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
         for(ActivityManager.RunningAppProcessInfo appProcessInfo : activityManager.getRunningAppProcesses()) {
             if(appProcessInfo.processName.contains(this.getPackageName())) {
