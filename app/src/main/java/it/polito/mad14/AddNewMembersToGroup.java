@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -24,7 +25,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Mail;
@@ -43,6 +46,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
     private AutoCompleteTextView actv;
+    private FirebaseUser userF = FirebaseAuth.getInstance().getCurrentUser();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -189,7 +193,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             }
         }
         else{
-            //System.out.println("ti ho presoooo :P");
             Toast.makeText(AddNewMembersToGroup.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
         }
         Iterator<String> it2=emailsToBeSent.iterator();
@@ -221,6 +224,11 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("Description").setValue(groupDescr);
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
+            Map<String, Object> updates = new HashMap<>();
+            updates.put("Action","A"+userF.getEmail().replace(".",","));
+            updates.put("Name",groupName);
+            updates.put("Value",Math.random());
+            myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
         }
 
         myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
@@ -240,8 +248,13 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     Log.e("data key", data.getKey());
                     Log.e("1---------", "----");
                     actualUser = data.getKey();
-                    temp_reference.child(actualUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-                    temp_reference.child(actualUser).child("Members").child(IDGroup).child("Value").setValue(Math.random());
+                    //temp_reference.child(actualUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
+                    Map<String, Object> updates1 = new HashMap<>();
+                    updates1.put("Action","A"+userF.getEmail().replace(".",","));
+                    updates1.put("Value",Math.random());
+                    updates1.put("Name",groupName);
+                    temp_reference.child(actualUser).child("Members").child(IDGroup).updateChildren(updates1);
+                    //temp_reference.child(actualUser).child("Members").child(IDGroup).child("Action").setValue("A");
                     Log.e("3---------", "bdfgd");
 
                 }

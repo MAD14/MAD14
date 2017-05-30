@@ -32,7 +32,9 @@ import com.google.firebase.database.ValueEventListener;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -203,6 +205,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
             @Override
             public void run() {
                 // Insertion of the group in each user
+                Map<String, Object> updates = new HashMap<>();
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");
@@ -215,21 +218,18 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
+                    updates.put("Action","A-"+groupAuthor);
+                    updates.put("Name",groupName);
                     if (user == groupAuthor){
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue("SONO IO L'AUTORE!");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
+                        updates.put("Value",Math.random());
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
                     } else {
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Name").setValue(groupName);
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Value").setValue("newGroup");
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-                        myRefUser.child(newUser).child("Expenses").child(IDGroup).child("Date").setValue(groupDate);
-                        myRefUser.child(newUser).child("Members").child(IDGroup).child("Date").setValue(groupDate);
+                        updates.put("Value",Math.random());
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
                     }
+                    //aggiungi campo per tenere traccia dei gruppi
                 }
 
                 //Insertion of each user into the group and set debits credits to 0 -> Other parameters can be added
