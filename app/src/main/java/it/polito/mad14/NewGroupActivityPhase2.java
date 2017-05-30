@@ -220,10 +220,16 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Debit").setValue("0");
                     updates.put("Action","A-"+groupAuthor);
                     updates.put("Name",groupName);
-                    updates.put("Value",Math.random());
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
-                    myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
 
+                    if (user == groupAuthor){
+                        updates.put("Value",Math.random());
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
+                    } else {
+                        updates.put("Value",Math.random());
+                        myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+                        myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
+                    }
                     //aggiungi campo per tenere traccia dei gruppi
                 }
 

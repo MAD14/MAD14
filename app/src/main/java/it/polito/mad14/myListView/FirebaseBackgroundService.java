@@ -16,6 +16,9 @@ import android.util.Log;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import com.google.firebase.database.ChildEventListener;
+
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -28,18 +31,16 @@ import java.util.Date;
 
 
 import it.polito.mad14.GroupActivity;
+import it.polito.mad14.MainActivity;
 import it.polito.mad14.R;
 
 public class FirebaseBackgroundService extends Service {
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
-    private DatabaseReference myRefExpenses,myRefMembers;
+
+    private DatabaseReference myRefNumber,myRefMembers,myRefExpenses;
     private FirebaseUser user;
     private boolean notifyMember,notifyExpense;
-    private Date mostRecentDateM,mostRecentDateE;
-    private long mostRecentTimestampM,mostRecentTimestampE;
-    private String valueMostRecentM,nameMostRecentM,IDMostRecentM;
-    private String valueMostRecentE,nameMostRecentE,IDMostRecentE;
-    private String IDNotificated;
+    private int numberGroups = 0,readMembers = 0, readExpenses =  0;
 
 
     @Override
@@ -53,20 +54,147 @@ public class FirebaseBackgroundService extends Service {
         super.onCreate();
         System.out.println("SONO NEL SERVICE");
         user = FirebaseAuth.getInstance().getCurrentUser();
-        myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
-        notifyMember = false;
+        myRefNumber = database.getReference("users/"+user.getEmail().replace(".",",")+"/GroupsNumb");
+        myRefNumber.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                numberGroups = Integer.valueOf(dataSnapshot.getValue().toString());
+                System.out.println("EXT : #groups : "+numberGroups);
+                myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
+                notifyMember = false;
+
+                myRefMembers.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                        System.out.println("onChildAdded : "+readMembers);
+                        if(readMembers >= numberGroups){
+                            //manda notifica per nuovo gruppo: You have been added to a new group!
+                            //String date = dataSnapshot.child("Date").getValue().toString();
+                            String name = dataSnapshot.child("Name").getValue().toString();
+                            //String name = dataSnapshot.getKey().toString();
+                            System.out.println("INT : new group added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                        }
+                        else{
+                            readMembers++;
+                            System.out.println("sono i primi");//check
+                        }
+
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        //manda notifica novità rispetto agli user
+                        //String date = dataSnapshot.child("Date").getValue().toString();
+                        String name = dataSnapshot.child("Name").getValue().toString();
+                        //String name = dataSnapshot.getKey().toString();
+                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Date").getValue().toString());
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                        //manda notifica pr rimozione gruppo
+                        String name = dataSnapshot.child("Name").getValue().toString();
+                        System.out.println("group removed : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+
+                myRefExpenses = database.getReference("users/"+user.getEmail().replace(".",",")+"/Expenses");
+                myRefExpenses.addChildEventListener(new ChildEventListener() {
+                    @Override
+                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                    }
+
+                    @Override
+                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                        //manda notifica novità rispetto agli user
+                        //String date = dataSnapshot.child("Date").getValue().toString();
+                        String name = dataSnapshot.child("Name").getValue().toString();
+                        //String name = dataSnapshot.getKey().toString();
+                        System.out.println("new expence added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                    }
+
+                    @Override
+                    public void onChildRemoved(DataSnapshot dataSnapshot) {
+                    }
+
+                    @Override
+                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+
        /* Runnable rMembers = new Runnable() {
             @Override
             public void run() {
                 try {*/
-        myRefMembers.addValueEventListener( new ValueEventListener(){
+
+        /*myRefMembers.addValueEventListener( new ValueEventListener(){
+
             public void onDataChange(DataSnapshot dataSnapshot) {
                 //membersIDListTMP = new ArrayList<>();
                 SimpleDateFormat formatter =  new SimpleDateFormat("dd/MM/yyy HH:mm");
                 int i = 0;
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     if (notifyMember) {
-                        if( i == 0 ){
+
+                        try{
+                            Thread.sleep(9000);
+                            if( i == 0 ){
+                                try {
+                                    valueMostRecentM = data.child("Value").getValue().toString();
+                                    Log.e("date","prova1: " + data.child("Date").getValue().toString());
+                                    mostRecentDateM = formatter.parse(data.child("Date").getValue().toString());
+                                    mostRecentTimestampM = mostRecentDateM.getTime();
+                                    IDMostRecentM = data.getKey().toString();
+                                    nameMostRecentM = data.child("Name").getValue().toString();
+                                    i++;
+                                } catch (ParseException e) {
+                                    System.out.println("Mannaggia");
+                                }
+                                i++;
+                            }
+                            else{
+                                Date d1;
+                                try {
+
+                                    System.out.println("PRINTO"+data.getKey().toString());
+                                    d1 = formatter.parse(data.child("Date").getValue().toString());
+                                    long timestamp1 = d1.getTime();
+                                    if (timestamp1 > mostRecentTimestampM){
+                                        mostRecentTimestampM = timestamp1;
+                                        valueMostRecentM = data.child("Value").getValue().toString();
+                                        IDMostRecentM = data.getKey().toString();
+                                        nameMostRecentM = data.child("Name").getValue().toString();
+                                    }
+                                } catch (ParseException e) {
+                                    System.out.println("Mannaggia");
+                                }
+                            }
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                       /* if( i == 0 ){
+
                             try {
                                 valueMostRecentM = data.child("Value").getValue().toString();
                                 Log.e("date","prova1: " + data.child("Date").getValue().toString());
@@ -82,7 +210,6 @@ public class FirebaseBackgroundService extends Service {
                         else{
                             Date d1;
                             try {
-                                Thread.sleep(1000);
                                 d1 = formatter.parse(data.child("Date").getValue().toString());
                                 long timestamp1 = d1.getTime();
                                 if (timestamp1 > mostRecentTimestampM){
@@ -119,7 +246,8 @@ public class FirebaseBackgroundService extends Service {
             public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+        });*/
+
 
 
              /*   } catch (Exception e) {

@@ -38,9 +38,11 @@ import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import java.io.ByteArrayOutputStream;
@@ -275,14 +277,11 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
                             Log.e("debitor","debitor " +debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
-                            if (name == et_author){
-                                userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue("L'HO CREATO IO!!!");
-                                userRef.child(name).child("Expenses").child(IDGroup).child("Date").setValue(date);
-                            } else {
-                                userRef.child(name).child("Expenses").child(IDGroup).child("Value").setValue(Math.random());
-                                userRef.child(name).child("Expenses").child(IDGroup).child("Date").setValue(date);
+                            Map<String, Object> updates1 = new HashMap<>();
+                            updates1.put("Action","A"+auth.getCurrentUser().getEmail().replace(".",","));
+                            updates1.put("Value",Math.random());
+                            userRef.child(name).child("Expenses").child(IDGroup).updateChildren(updates1);
 
-                            }
 
                         }
                         @Override

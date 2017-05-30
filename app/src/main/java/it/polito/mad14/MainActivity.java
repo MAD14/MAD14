@@ -95,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
+
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
-
         //////////////////////////
         Runnable r = new Runnable() {
             @Override
@@ -110,7 +110,8 @@ public class MainActivity extends AppCompatActivity {
         t.start();
 
         //////////////////////////
-       Runnable r1 = new Runnable() {
+       /*Runnable r1 = new Runnable() {
+
             @Override
             public void run() {
                 startService(new Intent(MainActivity.this,FirebaseBackgroundService2.class));
@@ -118,7 +119,8 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         Thread t1 = new Thread(r1);
-        t1.start();
+
+        t1.start();*/
         //////////////////////////
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {

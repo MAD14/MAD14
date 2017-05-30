@@ -87,6 +87,7 @@
             android:name=".EditExpenseActivity"
             android:label="@string/title_activity_edit_expense"
             android:theme="@style/AppTheme.NoActionBar"></activity>
+
         <service
             android:name=".myListView.FirebaseBackgroundService"
             android:enabled="true"
