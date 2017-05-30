@@ -67,6 +67,7 @@ public class FirebaseBackgroundService extends Service {
                 }
                 System.out.println("EXT : #groups : "+numberGroups);
                 myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
+
                 notifyMember = false;
 
                 myRefMembers.addChildEventListener(new ChildEventListener() {
