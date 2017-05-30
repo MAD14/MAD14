@@ -174,5 +174,7 @@
     <string name="title_edit_profile">Modifica profilo</string>
     <string name="title_reset_password">Resetta la tua password</string>
     <string name="title_settings">Impostazioni</string>
+    <string name="title_edit_group">Modifica gruppo</string>
+
 
 </resources>
