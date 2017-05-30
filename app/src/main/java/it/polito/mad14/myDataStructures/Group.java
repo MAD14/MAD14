@@ -9,9 +9,10 @@ public class Group {
     String debit;
     String image;
     String currency;
+    String lastChange;
 
 
-    public Group(String ID,String name, String author, String date, String credit, String debit, String image, String currency) {
+    public Group(String ID,String name, String author, String date, String credit, String debit, String image, String currency, String lastChange) {
         this.ID=ID;
         this.name = name;
         this.author = author;
@@ -20,6 +21,7 @@ public class Group {
         this.debit = debit;
         this.image = image;
         this.currency = currency;
+        this.lastChange = lastChange;
     }
     public String getID() {
         return ID;
@@ -49,7 +51,7 @@ public class Group {
         return date;
     }
 
-    public void setData(String date) {
+    public void setDate(String date) {
         this.date = date;
     }
 
@@ -103,5 +105,13 @@ public class Group {
 
     public void setCurrency(String currency) {
         this.currency = currency;
+    }
+
+    public String getLastChange() {
+        return lastChange;
+    }
+
+    public void setLastChange(String lastChange) {
+        this.lastChange = lastChange;
     }
 }

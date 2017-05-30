@@ -314,6 +314,24 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 }
             }
 
+            // prendere membri e aggiornare il campo lastchange in ognuno
+            DatabaseReference refMembers=database.getReference("groups/"+IDGroup+"/members");
+            refMembers.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()){
+                        String currentMember = data.getKey();
+                        userRef.child(currentMember).child("groups").child(IDGroup).child("LastChange").setValue(date);
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
             progressBar = (ProgressBar) findViewById(R.id.progressBar_expense);
             progressBar.setVisibility(View.VISIBLE);
 
