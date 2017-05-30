@@ -51,21 +51,20 @@
     <string name="title_activity_choice_group_members">Add members</string>
     <string name="invite_user">Invite</string>
     <string name="search">Search</string>
-    <string name="title_activity_add_members_to_group">Add members to your group (2of3)</string>
+    <string name="title_activity_add_members_to_group">Add members to your group</string>
     <string name="add_from_friend">Add members from your friends</string>
-    <string name="title_activity_invite_users_to_group">Invite to TA (3of3)</string>
+    <string name="title_activity_invite_users_to_group">Invite to Shared Boxes (3of3)</string>
     <string name="no_network_connection">The application cannot connect to the network. Check your connection</string>
     <string name="action_logout">Logout</string>
     <string name="action_profile">Personal profile</string>
     <string name="title_activity_login">Sign in</string>
     <string name="action_sign_in_short">Sign in</string>
-    <string name="title_activity_new_group_phase1">NewGroupActivityPhase1</string>
-    <string name="title_activity_new_group_phase2">NewGroupActivityPhase2</string>
-    <string name="title_activity_new_group_phase3">NewGroupActivityPhase3</string>
-    <string name="title_activity_add_new_contacts">Add to your contacts list</string>
+    <string name="title_activity_new_group_phase1">Create a new group (1of2)</string>
+    <string name="title_activity_new_group_phase2">Select members (2of2)</string>
+    <string name="title_activity_add_new_contacts">Add new contacts</string>
     <string name="add_from_email">Invite new friends through email</string>
     <string name="error_invalid_username">This username is not valid</string>
-    <string name="title_activity_invite_to_join_community">InviteToJoinCommunity</string>
+    <string name="title_activity_invite_to_join_community">Invite to Shared Boxes</string>
     <string name="action_invite_members">Invite your friends</string>
     <string name="add_to_list_invitations">Add to receivers list</string>
     <string name="email">Email</string>
@@ -77,11 +76,11 @@
     <string name="added">Added</string>
 
     <string name="pick_image_intent_text">Select an application to complete the action</string>
-    <string name="title_activity_info_group">InfoGroupActivity</string>
+    <string name="title_activity_info_group">Group info</string>
     <string name="date_creation">Creation date</string>
     <string name="members">Members</string>
 
-    <string name="title_activity_info_expense">InfoExpenseActivity</string>
+    <string name="title_activity_info_expense">Expense info</string>
     <string name="value">Amount</string>
     <string name="action_edit_profile">Edit profile</string>
     <string name="default_bio">Hi! I\'m there and I\'m using Shared Pockets!</string>
@@ -161,6 +160,11 @@
 
     <string name="waiting">Waiting...</string>
     <string name="add_as_friend">Add as friend</string>
-    <string name="title_activity_edit_expense">EditExpenseActivity</string>
+    <string name="title_activity_edit_expense">Edit expense</string>
     <string name="insert_value">Insert the price</string>
+    
+    <string name="title_your_profile">Your profile</string>
+    <string name="title_edit_profile">Edit profile</string>
+    <string name="title_reset_password">Reset your password</string>
+    <string name="title_settings">Settings</string>
 </resources>
