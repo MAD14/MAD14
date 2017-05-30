@@ -221,16 +221,16 @@ public class MainActivity extends AppCompatActivity {
                 intent.putExtra("sender", UserID);
                 startActivity(intent);
                 break;
-//            case R.id.action_join_a_group:
-//                intent = new Intent(MainActivity.this, JoinGroupActivity.class);
-//                startActivity(intent);
-//                break;
+
         }
 
         return super.onOptionsItemSelected(item);
     }
-
-
+    @Override
+    protected void onResume(){
+        super.onResume();
+        
+    }
     /**
      * A placeholder fragment containing a simple view.
      */
@@ -238,12 +238,6 @@ public class MainActivity extends AppCompatActivity {
         /**
          * The fragment argument representing the section number for this
          * fragment.
-         */
-
-        /**
-         * ELENA:
-         *  qui di seguito metto delle variabili che servono per popolare le view, che verranno poi
-         *  popolate tramite la lettura dal database!
          */
 
         private ArrayList<Group> groupsList=new ArrayList<>();
@@ -359,8 +353,6 @@ public class MainActivity extends AppCompatActivity {
 
                 CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
                 list.setAdapter(adapter);
-
-
 
                     return rootView;
 
@@ -507,7 +499,8 @@ public class MainActivity extends AppCompatActivity {
 
                                 summaryList = new ArrayList<>(tot.values());
                                 list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
-
+                                list_summary.invalidate();
+                                list_summary.requestLayout();
                             }
                             @Override
                             public void onCancelled(DatabaseError error){

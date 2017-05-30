@@ -254,7 +254,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     newRef.child("DisplayNameReceiver").setValue(authorDisplayName);
                     newRef.child("Currency").setValue(groupCurrency);
 
-                    Log.e("authorDisplayName",authorDisplayName);
+//                    Log.e("authorDisplayName",authorDisplayName);
 
                     //updating debitors list inside the author
                     refDeb = userRef.child(et_author).child("credits").child(key);
