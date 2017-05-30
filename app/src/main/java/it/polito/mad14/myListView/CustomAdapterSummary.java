@@ -36,7 +36,6 @@ public class CustomAdapterSummary extends BaseAdapter {
     private String value;
     private Button button;
 
-
     public CustomAdapterSummary(Context context, ArrayList<Summary> summaryList, String currency) {
         this.context = context;
         this.summaryList = summaryList;

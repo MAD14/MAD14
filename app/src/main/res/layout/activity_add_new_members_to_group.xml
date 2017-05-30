@@ -20,8 +20,6 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_add_new_members_to_group" />
-
     <RelativeLayout
         android:id="@+id/relative_layout_add_new_members"
         android:layout_width="match_parent"

@@ -72,16 +72,15 @@ public class FirebaseBackgroundService extends Service {
                 myRefMembers.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        System.out.println("onChildAdded : "+readMembers);
-                        if(readMembers >= numberGroups){
+                        System.out.println("onChildAdded : " + readMembers);
+                        if (readMembers >= numberGroups) {
                             //manda notifica per nuovo gruppo: You have been added to a new group!
                             sendNotification(dataSnapshot.child("Name").getValue().toString(),dataSnapshot.child("Action").getValue().toString(),dataSnapshot.getKey().toString());
                             //String date = dataSnapshot.child("Date").getValue().toString();
                             String name = dataSnapshot.child("Name").getValue().toString();
                             //String name = dataSnapshot.getKey().toString();
-                            System.out.println("INT : new group added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
-                        }
-                        else{
+                            System.out.println("INT : new group added : " + name + " - " + dataSnapshot.child("Action").getValue().toString());
+                        } else {
                             readMembers++;
                             System.out.println("sono i primi");//check
                         }
@@ -94,14 +93,14 @@ public class FirebaseBackgroundService extends Service {
                         //String date = dataSnapshot.child("Date").getValue().toString();
                         String name = dataSnapshot.child("Name").getValue().toString();
                         //String name = dataSnapshot.getKey().toString();
-                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Date").getValue().toString());
+                        System.out.println("new members added : " + name + " - " + dataSnapshot.child("Date").getValue().toString());
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
                         //manda notifica pr rimozione gruppo
                         String name = dataSnapshot.child("Name").getValue().toString();
-                        System.out.println("group removed : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                        System.out.println("group removed : " + name + " - " + dataSnapshot.child("Action").getValue().toString());
                     }
 
                     @Override
@@ -112,6 +111,7 @@ public class FirebaseBackgroundService extends Service {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
+
 
                 myRefExpenses = database.getReference("users/"+user.getEmail().replace(".",",")+"/Expenses");
                 myRefExpenses.addChildEventListener(new ChildEventListener() {

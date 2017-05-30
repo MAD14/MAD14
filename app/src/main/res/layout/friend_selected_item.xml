@@ -9,7 +9,7 @@
         android:id="@+id/image_person"
         android:layout_width="@dimen/icon_dimension_group"
         android:layout_height="@dimen/icon_dimension_group"
-        android:src="@mipmap/person_icon"
+        android:src="@mipmap/person_light_blue"
         android:layout_marginTop="10dp"
         android:layout_marginLeft="@dimen/margin"
         android:layout_marginStart="@dimen/margin"
