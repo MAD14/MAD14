@@ -214,10 +214,10 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Author").setValue(groupAuthor);
                     ref.child("Description").setValue(groupDescr);
                     ref.child("Date").setValue(groupDate);
-                    ref.child("Image").setValue(groupImage);
                     ref.child("Currency").setValue(groupCurrency);
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
+                    ref.child("Image").setValue(groupImage);
                     updates.put("Action","A-"+groupAuthor);
                     updates.put("Name",groupName);
 

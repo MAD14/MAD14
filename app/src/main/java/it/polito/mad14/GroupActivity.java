@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -73,7 +74,8 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -91,6 +93,7 @@ public class GroupActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
+        groupName = myIntent.getStringExtra("GroupName");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
@@ -140,7 +143,7 @@ public class GroupActivity extends AppCompatActivity {
         switch (id){
             case R.id.silenzioso:
                 //TODO: disattivare le notifiche push
-                Toast.makeText(GroupActivity.this,"Notifications disabled",Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add_members:
 //
@@ -257,8 +260,9 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            setHasOptionsMenu(true);
 
-            String groupName = getActivity().getIntent().getStringExtra("Name");
+            String groupName = getActivity().getIntent().getStringExtra("GroupName");
 
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
             toolbar.setTitle(groupName);
@@ -444,6 +448,8 @@ public class GroupActivity extends AppCompatActivity {
 
 
     }
+
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

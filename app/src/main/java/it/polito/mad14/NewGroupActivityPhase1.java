@@ -130,8 +130,8 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                             intent.putExtra("Description",groupDescription);
                             intent.putExtra("Author",author);
                             intent.putExtra("Date",date);
-                            intent.putExtra("Image",strImageUri);
                             intent.putExtra("Currency",groupCurrency);
+                            intent.putExtra("Image",strImageUri);
                             startActivity(intent);
                             finish();
                         } else {

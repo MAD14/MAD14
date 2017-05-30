@@ -330,6 +330,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
                     intent.putExtra("GroupName",groupName);
+                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);
