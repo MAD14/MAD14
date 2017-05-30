@@ -54,27 +54,30 @@ public class FirebaseBackgroundService extends Service {
         super.onCreate();
         System.out.println("SONO NEL SERVICE");
         user = FirebaseAuth.getInstance().getCurrentUser();
-        myRefNumber = database.getReference("users/"+user.getEmail().replace(".",",")+"/GroupsNumb");
+        myRefNumber = database.getReference("users/"+user.getEmail().replace(".",","));
         myRefNumber.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                numberGroups = Integer.valueOf(dataSnapshot.getValue().toString());
-                System.out.println("EXT : #groups : "+numberGroups);
-                myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
+                if (dataSnapshot.hasChild("GroupsNumb")) {
+                    numberGroups = Integer.valueOf(dataSnapshot.child("GroupsNumb").getValue().toString());
+                    System.out.println("EXT : #groups : " + numberGroups);
+                } else {
+                    numberGroups = 0;
+                }
+                myRefMembers = database.getReference("users/" + user.getEmail().replace(".", ",") + "/Members");
                 notifyMember = false;
 
                 myRefMembers.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        System.out.println("onChildAdded : "+readMembers);
-                        if(readMembers >= numberGroups){
+                        System.out.println("onChildAdded : " + readMembers);
+                        if (readMembers >= numberGroups) {
                             //manda notifica per nuovo gruppo: You have been added to a new group!
                             //String date = dataSnapshot.child("Date").getValue().toString();
                             String name = dataSnapshot.child("Name").getValue().toString();
                             //String name = dataSnapshot.getKey().toString();
-                            System.out.println("INT : new group added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
-                        }
-                        else{
+                            System.out.println("INT : new group added : " + name + " - " + dataSnapshot.child("Action").getValue().toString());
+                        } else {
                             readMembers++;
                             System.out.println("sono i primi");//check
                         }
@@ -87,14 +90,14 @@ public class FirebaseBackgroundService extends Service {
                         //String date = dataSnapshot.child("Date").getValue().toString();
                         String name = dataSnapshot.child("Name").getValue().toString();
                         //String name = dataSnapshot.getKey().toString();
-                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Date").getValue().toString());
+                        System.out.println("new members added : " + name + " - " + dataSnapshot.child("Date").getValue().toString());
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
                         //manda notifica pr rimozione gruppo
                         String name = dataSnapshot.child("Name").getValue().toString();
-                        System.out.println("group removed : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                        System.out.println("group removed : " + name + " - " + dataSnapshot.child("Action").getValue().toString());
                     }
 
                     @Override
@@ -107,6 +110,7 @@ public class FirebaseBackgroundService extends Service {
 
                     }
                 });
+
 
                 myRefExpenses = database.getReference("users/"+user.getEmail().replace(".",",")+"/Expenses");
                 myRefExpenses.addChildEventListener(new ChildEventListener() {

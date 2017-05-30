@@ -44,7 +44,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator,oldValue;
     private FirebaseDatabase database;
-    private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
     private AutoCompleteTextView actv;
     private FirebaseUser userF = FirebaseAuth.getInstance().getCurrentUser();
