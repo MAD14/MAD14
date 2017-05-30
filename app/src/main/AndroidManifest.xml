@@ -83,6 +83,7 @@
             android:label="@string/title_edit_profile"/>
         <activity
             android:name=".EditGroupActivity"
+            android:label="@string/title_edit_group"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"

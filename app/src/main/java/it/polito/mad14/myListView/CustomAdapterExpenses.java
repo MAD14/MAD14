@@ -91,7 +91,6 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
         ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
         String imageStr = expensesList.get(position).getImage();
-        Log.e("image",imageStr);
         if (imageStr.equals("no_image")) {
             encodedImage = imageStr;
             imgbt.setBackgroundResource(R.mipmap.expense_icon);
