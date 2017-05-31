@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,7 +32,9 @@ import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import it.polito.mad14.GroupActivity;
@@ -136,18 +139,33 @@ public class CustomAdapter extends BaseAdapter{
                                 public void run() {
                                     // remove value from group
                                     // salvo membri in set
-                                    memRef = database.getReference("groups/" + group.getID() + "/members/");
+                                    memRef = database.getReference("groups/" + group.getID() + "/members");
                                     users = database.getReference("users");
                                     myRef = database.getReference("users/" + currentUser);
                                     memRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
+                                            int i = 0;
+                                            Map<String, Object> updates = new HashMap<>();
+                                            updates.put("Action","DEL-M-"+currentUser.replace(",","."));
+                                            updates.put("Value",Math.random());
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                                // elimino la ref nei membri
-                                                users.child(data.getKey()).child("groups").child(group.getID()).removeValue();
+                                                if (data.getKey().equals(currentUser)){//se sono sul user che sta eliminando, cancello tutto
+                                                    users.child(data.getKey()).child("groups").child(group.getID()).removeValue();
+                                                    users.child(data.getKey()).child("Not").child(group.getID()).removeValue();
+                                                    memRef.child(currentUser).removeValue();
+                                                    i++;
+                                                }
+                                                else{
+                                                    users.child(data.getKey()).child("Not").child(group.getID()).updateChildren(updates);
+                                                    i++;
+                                                }
+
+
                                             }
-                                            // elimino la ref del gruppo nell'utente
-                                            myRef.child(group.getID()).removeValue();
+                                            if (i==1){
+                                                database.getReference("groups/"+group.getID()).removeValue();
+                                            }
                                             // decremento groupNumb
                                             DatabaseReference groupCounter = myRef.child("GroupsNumb");
                                             groupCounter.runTransaction(new Transaction.Handler(){
@@ -168,10 +186,6 @@ public class CustomAdapter extends BaseAdapter{
                                                     System.out.println("Transaction completed");
                                                 }
                                             });
-                                            //////////
-                                            String IDGroup = group.getID();
-                                            myRef.child("Expenses").child(IDGroup).removeValue();
-                                            myRef.child("Members").child(IDGroup).removeValue();
                                         }
                                         @Override
                                         public void onCancelled(DatabaseError databaseError) {

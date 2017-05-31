@@ -243,11 +243,15 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             // Updating debits branch of the group
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
+            Map<String, Object> updates1 = new HashMap<>();
+            updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail());
+            updates1.put("Value",Math.random());
 
             Iterator<String> it=contacts.iterator();
             while(it.hasNext()){
-
                 name=it.next();
+                userRef.child(name).child("Not").child(IDGroup).updateChildren(updates1);
+
                 if(!name.equals(et_author)) {
                     //updating of the group's info
                     newRef = refDebits.push();
@@ -270,7 +274,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     refDeb.child("Money").setValue(priceEach);
                     refDeb.child("Currency").setValue(groupCurrency);
 
-
                     userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
@@ -278,12 +281,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             newRef.child("DisplayNameSender").setValue(debitorDisplayName);
                             Log.e("debitor","debitor " +debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
-                            Map<String, Object> updates1 = new HashMap<>();
-                            updates1.put("Action","A-"+auth.getCurrentUser().getEmail());
-                            updates1.put("Value",Math.random());
-                            userRef.child(name).child("Expenses").child(IDGroup).updateChildren(updates1);
-
-
                         }
                         @Override
                         public void onCancelled(DatabaseError databaseError) {

@@ -37,6 +37,8 @@ import com.theartofdev.edmodo.cropper.CropImage;
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myListView.CustomAdapterInfoGroup;
@@ -191,9 +193,13 @@ public class EditGroupActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("Action","MOD-G-"+currentUser);
+                updates.put("Name",groupName);
+                updates.put("Value",Math.random());
                 for (String user : membersList){
-
                     String userID = user;
+                    database.getReference("users").child(user).child("Not").child(IDGroup).updateChildren(updates);
                     newRef = database.getReference("users/"+userID+"/groups/"+IDGroup);
                     newRef.child("Name").setValue(groupName);
                     newRef.child("Description").setValue(description);

@@ -39,11 +39,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 public class EditExpenseActivity extends AppCompatActivity {
 
     private static final int CHANGE_IMAGE = 1;
-    private String IDGroup, name, date, description, image, author, value, encodedImage,strImageUri, IDExpense;
+    private String IDGroup, name, date, description, image, author, value, encodedImage,strImageUri, IDExpense,oldName;
     private Bitmap imageBitmap;
     private FirebaseDatabase database;
     private DatabaseReference myRefNew, reference, newRef;
@@ -74,6 +76,7 @@ public class EditExpenseActivity extends AppCompatActivity {
         image = getIntent().getStringExtra("Image");
         author = getIntent().getStringExtra("Author");
         value = getIntent().getStringExtra("Value");
+        oldName = name;
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         collapsingToolbar.setTitle(name);
@@ -271,10 +274,14 @@ public class EditExpenseActivity extends AppCompatActivity {
         Runnable r = new Runnable() {
             @Override
             public void run() {
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("Action","MOD-E-"+oldName);
+                updates.put("Value",Math.random());
                 for (String user : membersList){
+                    //creazione mappa
                     String userID = user;
-                    newRef = database.getReference("users/"+userID+"/Expenses/"+IDGroup);
-                    newRef.child("Value").setValue(Math.random());
+                    //upload della mappa
+                    database.getReference("users").child(userID).child("Not").child(IDGroup).updateChildren(updates);
                 }
             }
         };

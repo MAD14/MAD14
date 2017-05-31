@@ -36,7 +36,7 @@ import it.polito.mad14.myDataStructures.Contact;
 import it.polito.mad14.myDataStructures.Mail;
 
 public class AddNewMembersToGroup extends AppCompatActivity {
-    private String IDGroup,newUser,actualUser;
+    private String IDGroup,newUser,actualUser,currency;
     private ArrayList<String> friends_added;
     private ArrayList<Contact> friends;
     private ArrayList<String> members;
@@ -69,6 +69,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         groupDescr= getIntent().getStringExtra("Description");
         groupDate= getIntent().getStringExtra("Date");
         groupImage = getIntent().getStringExtra("Image");
+        currency = getIntent().getStringExtra("Currency");
 
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
@@ -231,12 +232,10 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("Description").setValue(groupDescr);
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
+            ref.child("Currency").setValue(currency);
             ref.child("News").setValue("False");
-            Map<String, Object> updates = new HashMap<>();
-            updates.put("Action","A-"+userF.getEmail().replace(".",","));
-            updates.put("Name",groupName);
-            updates.put("Value",Math.random());
-            myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+            ref.child("Credit").setValue("0");
+            ref.child("Debit").setValue("0");
             //aggiorno campo
             DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
             groupCounter.runTransaction(new Transaction.Handler(){
@@ -272,19 +271,15 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         myRefGroup2.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                Map<String, Object> updates1 = new HashMap<>();
+                updates1.put("Action","ADD-M-"+userF.getEmail());
+                updates1.put("Value",Math.random());
+                updates1.put("Name",groupName);
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Log.e("data key", data.getKey());
                     Log.e("1---------", "----");
                     actualUser = data.getKey();
-                    //temp_reference.child(actualUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
-                    Map<String, Object> updates1 = new HashMap<>();
-                    updates1.put("Action","A-"+userF.getEmail());
-                    updates1.put("Value",Math.random());
-                    updates1.put("Name",groupName);
-                    temp_reference.child(actualUser).child("Members").child(IDGroup).updateChildren(updates1);
-                    //temp_reference.child(actualUser).child("Members").child(IDGroup).child("Action").setValue("A");
-                    Log.e("3---------", "bdfgd");
-
+                    temp_reference.child(actualUser).child("Not").child(IDGroup).updateChildren(updates1);
                 }
             }
             @Override
