@@ -3,8 +3,6 @@ package it.polito.mad14;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -48,8 +46,6 @@ public class LoadingActivity extends AppCompatActivity {
     private int indexGroup = 0;
     private String noImage = "no_image";
     private ImageView img;
-    private Animation translateAnim;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,16 +58,7 @@ public class LoadingActivity extends AppCompatActivity {
 
 //        // Start animating the image
         img = (ImageView) findViewById(R.id.splash);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inScaled = false;
-        Bitmap bMap = BitmapFactory.decodeResource(getResources(),R.drawable.mani_box, options);
-        int h = 300; // height in pixels
-        int w = 300; // width in pixels
-
-        Bitmap photoBitMap = Bitmap.createScaledBitmap(bMap,h, w, true);
-        img.setImageBitmap(photoBitMap);
-//        img.setImageBitmap(bMap);
-        translateAnim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translation_to_middle_screen);
+        final Animation translateAnim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translation_to_middle_screen);
         img.startAnimation(translateAnim);
 
         myRef = database.getReference("users/" + UserID + "/groups/");
@@ -93,6 +80,7 @@ public class LoadingActivity extends AppCompatActivity {
                             String nm = data.child("Name").getValue().toString();
                             String own = data.child("Author").getValue().toString();
                             String dat = data.child("Date").getValue().toString();
+                            String news = data.child("News").getValue().toString();
                             String credit = "0";
                             if (data.hasChild("Credit")) {
                                 credit = data.child("Credit").getValue().toString();
@@ -108,8 +96,7 @@ public class LoadingActivity extends AppCompatActivity {
                                 image = data.child("Image").getValue().toString();
                             }
                             String currency = data.child("Currency").toString();
-                            String lastChange = data.child("LastChange").getValue().toString();
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency, lastChange));
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news));
                             indexGroup++;
                         } catch (Error e) {
                             Toast.makeText(LoadingActivity.this, e.getMessage(),

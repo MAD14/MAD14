@@ -26,6 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -111,7 +113,6 @@ public class CustomAdapter extends BaseAdapter{
                 intent.putExtra("GroupCurrency",groupList.get(position).getCurrency());
                 intent.putExtra("GroupName",groupList.get(position).getName());
                 context.startActivity(intent);
-                ((Activity)context).finish();
             }
         });
 
@@ -147,6 +148,27 @@ public class CustomAdapter extends BaseAdapter{
                                             }
                                             // elimino la ref del gruppo nell'utente
                                             myRef.child(group.getID()).removeValue();
+                                            // decremento groupNumb
+                                            DatabaseReference groupCounter = myRef.child("GroupsNumb");
+                                            groupCounter.runTransaction(new Transaction.Handler(){
+                                                @Override
+                                                public Transaction.Result doTransaction(MutableData mutableData) {
+                                                    Integer currentValue = mutableData.getValue(Integer.class);
+                                                    if (currentValue == null) {
+                                                        mutableData.setValue(0);
+                                                    } else {
+                                                        mutableData.setValue(currentValue - 1);
+                                                    }
+
+                                                    return Transaction.success(mutableData);
+                                                }
+
+                                                @Override
+                                                public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                                                    System.out.println("Transaction completed");
+                                                }
+                                            });
+                                            //////////
                                             String IDGroup = group.getID();
                                             myRef.child("Expenses").child(IDGroup).removeValue();
                                             myRef.child("Members").child(IDGroup).removeValue();

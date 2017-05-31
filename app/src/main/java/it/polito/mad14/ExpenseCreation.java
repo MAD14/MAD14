@@ -49,8 +49,6 @@ import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import it.polito.mad14.myDataStructures.Group;
-
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private static final int RESULT_BACK = 12;
@@ -281,7 +279,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                             Log.e("debitor","debitor " +debitorDisplayName);
                             refDeb.child("DisplayName").setValue(debitorDisplayName);
                             Map<String, Object> updates1 = new HashMap<>();
-                            updates1.put("Action","A-"+auth.getCurrentUser().getEmail().replace(".",","));
+                            updates1.put("Action","A-"+auth.getCurrentUser().getEmail());
                             updates1.put("Value",Math.random());
                             userRef.child(name).child("Expenses").child(IDGroup).updateChildren(updates1);
 
@@ -316,24 +314,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     });
                 }
             }
-
-            // prendere membri e aggiornare il campo lastchange in ognuno
-            DatabaseReference refMembers=database.getReference("groups/"+IDGroup+"/members");
-            refMembers.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot data : dataSnapshot.getChildren()){
-                        String currentMember = data.getKey();
-                        userRef.child(currentMember).child("groups").child(IDGroup).child("LastChange").setValue(date);
-                    }
-                }
-
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-
-                }
-            });
-
 
             progressBar = (ProgressBar) findViewById(R.id.progressBar_expense);
             progressBar.setVisibility(View.VISIBLE);

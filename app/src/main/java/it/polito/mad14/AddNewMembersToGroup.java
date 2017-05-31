@@ -23,6 +23,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -44,6 +46,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
     private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator,oldValue;
     private FirebaseDatabase database;
+    private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
     private AutoCompleteTextView actv;
     private FirebaseUser userF = FirebaseAuth.getInstance().getCurrentUser();
@@ -228,11 +231,32 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("Description").setValue(groupDescr);
             ref.child("Date").setValue(groupDate);
             ref.child("Image").setValue(groupImage);
+            ref.child("News").setValue("False");
             Map<String, Object> updates = new HashMap<>();
-            updates.put("Action","A"+userF.getEmail().replace(".",","));
+            updates.put("Action","A-"+userF.getEmail().replace(".",","));
             updates.put("Name",groupName);
             updates.put("Value",Math.random());
             myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
+            //aggiorno campo
+            DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
+            groupCounter.runTransaction(new Transaction.Handler(){
+                @Override
+                public Transaction.Result doTransaction(MutableData mutableData) {
+                    Integer currentValue = mutableData.getValue(Integer.class);
+                    if (currentValue == null) {
+                        mutableData.setValue(1);
+                    } else {
+                        mutableData.setValue(currentValue + 1);
+                    }
+
+                    return Transaction.success(mutableData);
+                }
+
+                @Override
+                public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
+                    System.out.println("Transaction completed");
+                }
+            });
         }
 
         myRefGroup = database.getReference("groups/" + IDGroup + "/members/");
@@ -254,7 +278,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     actualUser = data.getKey();
                     //temp_reference.child(actualUser).child("Members").child(IDGroup).child("Name").setValue(groupName);
                     Map<String, Object> updates1 = new HashMap<>();
-                    updates1.put("Action","A"+userF.getEmail().replace(".",","));
+                    updates1.put("Action","A-"+userF.getEmail());
                     updates1.put("Value",Math.random());
                     updates1.put("Name",groupName);
                     temp_reference.child(actualUser).child("Members").child(IDGroup).updateChildren(updates1);
@@ -279,8 +303,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     myRefGroup.child(newUser).child("Surname").setValue(dataSnapshot.child(newUser).child("Surname").getValue().toString());
                     myRefGroup.child(newUser).child("Email").setValue(dataSnapshot.child(newUser).child("Email").getValue().toString());
                     myRefGroup.child(newUser).child("Username").setValue(dataSnapshot.child(newUser).child("Username").getValue().toString());
-
-                    temp_reference.child(newUser).child("Members").child(IDGroup).child("Value").setValue("x");
+                    //non sono certa ci vogio la riga seguente
+                    //temp_reference.child(newUser).child("Members").child(IDGroup).child("Value").setValue("x");
 
                 }
             }
