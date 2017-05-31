@@ -51,6 +51,7 @@ import java.util.regex.Pattern;
 
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
+    private static final int RESULT_BACK = 12;
     private Button bt;
     final static int GET_IMAGE = 1;
 
@@ -330,6 +331,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
                     intent.putExtra("GroupName",groupName);
+                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);
@@ -430,6 +432,16 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         ConnectivityManager cm = (ConnectivityManager) getSystemService(this.CONNECTIVITY_SERVICE);
 
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    @Override
+    public void onBackPressed(){
+        Log.e("Back","pressed");
+        Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
+        intent.putExtra("IDGroup",IDGroup);
+        intent.putExtra("Name",groupName);
+        startActivity(intent);
+        finish();
     }
 
 }

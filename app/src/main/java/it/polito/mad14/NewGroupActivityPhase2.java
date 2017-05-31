@@ -223,6 +223,18 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     groupMap.put("Credit","0");
                     groupMap.put("Debit","0");
                     myRefUser.child(newUser).child("groups").child(IDGroup).updateChildren(groupMap);
+                  
+                    DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
+                    ref.child("Name").setValue(groupName);
+                    ref.child("Author").setValue(groupAuthor);
+                    ref.child("Description").setValue(groupDescr);
+                    ref.child("Date").setValue(groupDate);
+                    ref.child("Currency").setValue(groupCurrency);
+                    ref.child("Credit").setValue("0");
+                    ref.child("Debit").setValue("0");
+                    ref.child("Image").setValue(groupImage);
+                    ref.child("LastChange").setValue(groupDate);
+
                     updates.put("Action","A-"+groupAuthor);
                     updates.put("Name",groupName);
                     updates.put("Value",Math.random());

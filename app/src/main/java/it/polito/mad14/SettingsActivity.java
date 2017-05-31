@@ -52,7 +52,6 @@ public class SettingsActivity extends AppCompatActivity {
         String def = Locale.getDefault().getDisplayLanguage();
         String lang = prefs.getString("LANGUAGE",def);
         conf.locale = new Locale(lang);
-        Log.e("myapp", lang+" = "+conf.locale+" = "+conf.locale.getDisplayName());
         res.updateConfiguration(conf, res.getDisplayMetrics());
 
         // Control internet connection
@@ -86,8 +85,8 @@ public class SettingsActivity extends AppCompatActivity {
                 changeCurrencyEUR.setTextColor(getResources().getColor(R.color.white));
                 changeCurrencyUSD.setBackgroundResource(android.R.drawable.btn_default);
                 changeCurrencyUSD.setTextColor(getResources().getColor(R.color.writing));
-                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
-                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
+//                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -100,8 +99,8 @@ public class SettingsActivity extends AppCompatActivity {
                 changeCurrencyUSD.setTextColor(getResources().getColor(R.color.white));
                 changeCurrencyEUR.setBackgroundResource(android.R.drawable.btn_default);
                 changeCurrencyEUR.setTextColor(getResources().getColor(R.color.writing));
-                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
-                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
+//                Toast.makeText(SettingsActivity.this, getString(R.string.currency_set_to) + " " +
+//                        selectedCurrency + ".", Toast.LENGTH_SHORT).show();
             }
         });
 

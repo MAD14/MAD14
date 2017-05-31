@@ -4,7 +4,7 @@
     <string name="action_settings">Impostazioni</string>
     <string name="action_join_a_group">Unisciti a un gruppo</string>
     <string name="title_activity_group">GroupActivity</string>
-    <string name="action_add_members">Aggiungi membro</string>
+    <string name="action_add_members">Aggiungi partecipante</string>
     <string name="action_silence">Silenzia</string>
     <string name="action_info">Info</string>
 
@@ -48,11 +48,11 @@
     <string name="Author">Autore</string>
     <string name="create_group">Crea Gruppo</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_activity_choice_group_members">Aggiungi memebri</string>
+    <string name="title_activity_choice_group_members">Aggiungi partecipanti</string>
     <string name="invite_user">Invita</string>
     <string name="search">Cerca</string>
-    <string name="title_activity_add_members_to_group">Aggiungi membri al tuo gruppo</string>
-    <string name="add_from_friend">Aggiungi membri dai tuoi amici</string>
+    <string name="title_activity_add_members_to_group">Aggiungi partecipanti al gruppo</string>
+    <string name="add_from_friend">Aggiungi partecipanti dai tuoi amici</string>
     <string name="title_activity_invite_users_to_group">Invita a Shared Boxes (3di3)</string>
     <string name="no_network_connection">L\'applicazione non riesce a connetersi alla rete. Controlla la tua connessione</string>
     <string name="action_logout">Esci</string>
@@ -174,5 +174,9 @@
     <string name="title_edit_profile">Modifica profilo</string>
     <string name="title_reset_password">Resetta la tua password</string>
     <string name="title_settings">Impostazioni</string>
+    <string name="title_edit_group">Modifica gruppo</string>
+
+
+    <string name="notification_disabled">Notifiche disabilitate</string>
 
 </resources>

@@ -14,6 +14,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
@@ -46,6 +47,7 @@ import it.polito.mad14.myListView.CustomAdapterSummaryGroup;
 
 public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
+    private static final int RESULT_BACK = 12;
     private DatabaseReference myReference;
     private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator;
     private FirebaseDatabase database;
@@ -73,8 +75,9 @@ public class GroupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_group);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
         setSupportActionBar(toolbar);
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -91,6 +94,7 @@ public class GroupActivity extends AppCompatActivity {
 
         Intent myIntent = getIntent();
         IDGroup = myIntent.getStringExtra("IDGroup");
+        groupName = myIntent.getStringExtra("GroupName");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
@@ -106,23 +110,8 @@ public class GroupActivity extends AppCompatActivity {
         });
 
 
-        //
-
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == EXPENSE_CREATION){
-            if (resultCode == RESULT_OK){
-                ListView list = (ListView) findViewById(R.id.list_view_expenses);
-                list.invalidate();
-                list.requestLayout();
-                String NameOfGroup = intent.getStringExtra("GroupName");
-                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
-                toolbar.setTitle(NameOfGroup);
-            }
-        }
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,7 +129,7 @@ public class GroupActivity extends AppCompatActivity {
         switch (id){
             case R.id.silenzioso:
                 //TODO: disattivare le notifiche push
-                Toast.makeText(GroupActivity.this,"Notifications disabled",Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add_members:
 //
@@ -257,8 +246,9 @@ public class GroupActivity extends AppCompatActivity {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
+            setHasOptionsMenu(true);
 
-            String groupName = getActivity().getIntent().getStringExtra("Name");
+            String groupName = getActivity().getIntent().getStringExtra("GroupName");
 
             Toolbar toolbar = (Toolbar) getActivity().findViewById(R.id.toolbar_group);
             toolbar.setTitle(groupName);
@@ -445,6 +435,8 @@ public class GroupActivity extends AppCompatActivity {
 
     }
 
+
+
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
      * one of the sections/tabs/pages.
@@ -486,5 +478,38 @@ public class GroupActivity extends AppCompatActivity {
 
         return cm.getActiveNetworkInfo() != null;
     }
+
+    @Override
+    public void onBackPressed() {
+
+        int count = getFragmentManager().getBackStackEntryCount();
+
+        if (count == 0) {
+            super.onBackPressed();
+            Intent intent = new Intent(GroupActivity.this,MainActivity.class);
+            startActivity(intent);
+            finish();
+        } else {
+            getFragmentManager().popBackStack();
+        }
+
+    }
+
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//Log.e("prova","passa diqui");
+//        if (requestCode == EXPENSE_CREATION){
+//            if (resultCode == RESULT_OK){
+//                String name = getIntent().getStringExtra("GroupName");
+//                Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
+//                Log.e("groupName",name);
+//                toolbar.setTitle(name);
+//                ListView list = (ListView) findViewById(R.id.list_view_expenses);
+//                list.invalidate();
+//                list.requestLayout();
+//            }
+
+//        }
+//    }
 
 }
