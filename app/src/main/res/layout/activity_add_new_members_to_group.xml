@@ -60,8 +60,8 @@
             android:clickable="true"
             android:gravity="center"
             android:onClick="onClick"
-            android:text="Add"
-            android:textSize="@dimen/main_text" />
+            android:text="@string/add"
+            />
 
         <ListView
             android:id="@+id/lv_friends"

@@ -30,10 +30,12 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -52,6 +54,14 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private String encodedImage, IDExpense;
     private FirebaseDatabase database;
     private Expense expense;
+
+    private String debtor;
+    private Double value;
+    private DatabaseReference debitsRef, expenseItemRef;
+    //private String[] parts;
+    private List<String> parts;
+    private Runnable r;
+    private int i;
 
 
     public CustomAdapterExpenses(Context context, ArrayList<Expense> expensesList) {
@@ -139,9 +149,104 @@ public class CustomAdapterExpenses extends BaseAdapter {
                             notifyDataSetChanged();
                             notifyDataSetInvalidated();
                             // remove value from group
-                            DatabaseReference myRef = database.getReference("groups/" + expense.getGroup() + "/items");
-                            myRef.child(expense.getID()).removeValue();
-                            DatabaseReference debits = database.getReference("groups/" + expense.getGroup() + "/debits");
+                            expenseItemRef = database.getReference("groups/" + expense.getGroup() + "/items/" + expense.getID());
+                            Toast.makeText(context,expense.getGroup(),Toast.LENGTH_SHORT).show();
+
+                            expenseItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    if (dataSnapshot.hasChild("Debits")){
+                                        String debits = dataSnapshot.child("Debits").getValue().toString();
+                                        Toast.makeText(context,debits,Toast.LENGTH_SHORT).show();
+                                        parts = new ArrayList<String>(Arrays.asList(debits.split(",")));
+                                        for (i=0; i<parts.size(); i++){
+
+                                            r = new Runnable() {
+                                                String key = parts.get(i).replace(",","");
+                                                @Override
+                                                public void run() {
+                                                    debitsRef = database.getReference("groups/" + expense.getGroup() + "/debits");
+
+                                                    debitsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                                            for (DataSnapshot data : dataSnapshot.getChildren()){
+                                                                debtor = data.child("Sender").getValue().toString();
+                                                                value = Double.valueOf(data.child("Money").getValue().toString());
+                                                                database.getReference("users/" + debtor + "/debits/" + data.getKey()).removeValue();
+                                                                database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Debit").
+                                                                        addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                                                                                Double newValue=oldValue-value;
+                                                                                if (newValue >=0){
+                                                                                    dataSnapshot.getRef().setValue(newValue);
+                                                                                } else {
+                                                                                    dataSnapshot.getRef().setValue("0");
+                                                                                    database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Credit").
+                                                                                            setValue(-1*newValue);
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                                            }
+                                                                        });
+                                                                database.getReference("users/"+expense.getAuthor()+"/groups/"+expense.getGroup()+"/Credit").
+                                                                        addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                                                                                Double newValue=oldValue-value;
+                                                                                if (newValue >=0){
+                                                                                    dataSnapshot.getRef().setValue(newValue);
+                                                                                } else {
+                                                                                    dataSnapshot.getRef().setValue("0");
+                                                                                    database.getReference("users/" + expense.getAuthor() + "/groups/" + expense.getGroup() + "/Debit").
+                                                                                            setValue(-1*newValue);
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(DatabaseError databaseError) {
+
+                                                                            }
+                                                                        });
+
+                                                                debitsRef.child(key).removeValue();
+                                                                DatabaseReference ref2 = database.getReference("users/" + expense.getAuthor() + "/credit");
+                                                                ref2.child(key).removeValue();
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(DatabaseError databaseError) {
+
+                                                        }
+                                                    });
+
+                                                }
+                                            };
+
+                                            Thread t = new Thread(r);
+                                            t.start();
+
+
+                                        }
+                                        //expenseItemRef.removeValue();
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+
+
+                         /*   DatabaseReference debits = database.getReference("groups/" + expense.getGroup() + "/debits");
                             debits.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -161,7 +266,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
                                 public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            });
+                            });*/
 
                             Toast.makeText(context, context.getString(R.string.deleting_expense), Toast.LENGTH_SHORT).show();
                             //METTI AGGIORNAMENTO NOT
