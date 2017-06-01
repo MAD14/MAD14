@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -268,6 +269,9 @@ public class MainActivity extends AppCompatActivity {
         private int indexSummary=0;
         private boolean credit;
         private double USDtoEUR, EURtoUSD;
+        private SwipeRefreshLayout swipeContainer;
+        private CustomAdapter summaryAdapter;
+
 
         public PlaceholderFragment() {
         }
@@ -297,79 +301,23 @@ public class MainActivity extends AppCompatActivity {
                 list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
                 noGroup_textView = (TextView) rootView.findViewById(R.id.noGroup_tv);
 
-                myRef = database.getReference("users/"+UserID+"/groups/");
-                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer2);
+
+                updateListOfGroups();
+
+                summaryAdapter = new CustomAdapter(getContext(),groupsList);
+                list.setAdapter(summaryAdapter);
+
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        groupsList = new ArrayList<>();
-                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                try {
-                                    String id = data.getKey();
-                                    String nm = data.child("Name").getValue().toString();
-                                    String own = data.child("Author").getValue().toString();
-                                    String dat = data.child("Date").getValue().toString();
-                                    String news = data.child("News").getValue().toString();
-                                    String lastChange = data.child("LastChange").getValue().toString();
-                                    String credit = "0";
-                                    if (data.hasChild("Credit")) {
-                                        credit = data.child("Credit").getValue().toString();
-                                    }
-                                    String debit = "0";
-                                    if (data.hasChild("Debit")) {
-                                        debit = data.child("Debit").getValue().toString();
-                                    }
-                                    String image = data.child("Image").getValue().toString();
-                                    String currency = data.child("Currency").getValue().toString();
-                                    indexGroup = groupsList.size();
-                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news, lastChange));
-                                }
-                                    catch(Error e){
-                                        Toast.makeText(getContext(), e.getMessage(),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                        }
+                    public void onRefresh() {
+                        updateListOfGroups();
+                        swipeContainer.setRefreshing(false);
+                        return;
 
-                        Collections.sort(groupsList,new Comparator<Group>(){
-                            @Override
-                            public int compare(Group group1, Group group2) {
-                                try{
-                                    SimpleDateFormat formatter =  new SimpleDateFormat("dd/MM/yyy HH:mm");
-                                    Date d1 = formatter.parse(group1.getLastChange());
-                                    long timestamp1 = d1.getTime();
-                                    Date d2 = formatter.parse(group2.getLastChange());
-                                    long timestamp2 = d2.getTime();
-                                    if (timestamp1 <= timestamp2) {
-                                        return 1;
-                                    } else {
-                                        return -1;
-                                    }
-                                } catch(ParseException e){
-                                    Log.e("error parsing",e.getMessage());
-                                }
-                                return 0;                            }
-                        });
-
-
-                        ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
-                        if (list.getAdapter().getCount() == 0){
-                            noGroup_textView.setVisibility(View.VISIBLE);
-                        }
-                        list.invalidate();
-                        list.requestLayout();
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError error) {
-                        Log.w("Failed to read value.", error.toException());
                     }
                 });
-
-                CustomAdapter adapter = new CustomAdapter(getContext(),groupsList);
-                list.setAdapter(adapter);
-
-
-
-                    return rootView;
+                return rootView;
 
             }
             else if (getArguments().getInt(ARG_SECTION_NUMBER) == 2) {
@@ -377,158 +325,20 @@ public class MainActivity extends AppCompatActivity {
                 rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
                 noSummary_textView = (TextView) rootView.findViewById(R.id.noSummary_tv);
+                swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
-                DatabaseReference currencyRef = database.getReference("currencies");
-                currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                updateListOfSummary();
+
+                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-
-                        USDtoEUR = Double.parseDouble(dataSnapshot.child("USDtoEUR").getValue().toString());
-                        EURtoUSD = Double.parseDouble(dataSnapshot.child("EURtoUSD").getValue().toString());
-
-                        String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
-                        myRef_summary_debits = database.getReference("users/" + userID + "/debits");
-                        myRef_summary_credits = database.getReference("users/" + userID + "/credits");
-
-                        CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList,selectedCurrency);
-                        list_summary.setAdapter(adapter);
-
-                        myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                    credit = false; // debits section --> it's a debit
-                                    Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
-                                            data.child("Money").getValue().toString(),data.child("Paying").getValue().toString(),
-                                            data.child("Currency").getValue().toString(),
-                                            credit);
-                                    indexSummary = debitsList.size();
-                                    debitsList.add(indexSummary, tmp);
-                                }
-                                //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-
-                                //debitsList.addAll(tmpList);
-
-                                Iterator<Summary> itDeb = debitsList.iterator();
-                                while (itDeb.hasNext()) {
-                                    Summary sum = itDeb.next();
-                                    if (tot.containsKey(sum.getName())) {
-                                        Double newtot;
-                                        if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
-                                            Double money = Double.valueOf(sum.getValue())*EURtoUSD;
-                                            Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                            newtot = Math.round((past - money) * 100.0) / 100.0;
-                                        } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")){
-                                            Double money = Double.valueOf(sum.getValue())*USDtoEUR;
-                                            Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                            newtot = Math.round((past - money) * 100.0) / 100.0;
-                                        } else {
-                                            Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                            newtot = Math.round((past - Float.valueOf(sum.getValue())) * 100.0) / 100.0;
-                                            //Toast.makeText(getContext(),"newtot: "+newtot.toString(),Toast.LENGTH_SHORT).show();
-                                        }
-                                        boolean flag = true;
-                                        if (newtot < 0)
-                                            flag = false;
-                                        tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), sum.getEmail(),selectedCurrency,flag));
-
-
-                                    } else {
-                                        if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
-                                            Double money = -1*Math.round(Double.valueOf(sum.getValue())*EURtoUSD * 100.0)/100.0;
-                                            sum.setValue(String.valueOf(money));
-                                        }else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")){
-                                            Double money = -1*Math.round(Double.valueOf(sum.getValue())*USDtoEUR * 100.0)/100.0;
-                                            sum.setValue(String.valueOf(money));
-                                        }else{
-                                            Double money = -1*Double.valueOf(sum.getValue());
-                                            sum.setValue(String.valueOf(money));
-                                        }
-                                        tot.put(sum.getName(), sum);
-                                    }
-
-                                }
-
-
-                                myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
-                                    @Override
-                                    public void onDataChange(DataSnapshot dataSnapshot) {
-                                        for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                            credit = true; // credits section --> it's a credit
-                                            Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",","."),
-                                                    data.child("Money").getValue().toString(),
-                                                    data.child("Debitor").getValue().toString(),
-                                                    data.child("Currency").getValue().toString(),
-                                                    credit);
-                                            indexSummary = creditsList.size();
-                                            creditsList.add(indexSummary, tmp);
-                                        }
-
-                                        //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                                        //creditsList.addAll(tmpList);
-                                        Iterator<Summary> itCred=creditsList.iterator();
-                                        while(itCred.hasNext()){
-                                            Summary sum = itCred.next();
-                                            if(tot.containsKey(sum.getName())){
-                                                Double newtot;
-                                                if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
-                                                    Double money = Double.valueOf(sum.getValue())*EURtoUSD;
-                                                    Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                                    newtot = Math.round((past + money) * 100.0) / 100.0;
-                                                } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")){
-                                                    Double money = Double.valueOf(sum.getValue())*USDtoEUR;
-                                                    Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                                    newtot = Math.round((past + money) * 100.0) / 100.0;
-                                                } else {
-                                                    Float past = Float.valueOf(tot.get(sum.getName()).getValue());
-                                                    newtot = Math.round((past + Float.valueOf(sum.getValue())) * 100.0) / 100.0;
-                                                }
-
-                                                tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),sum.getEmail(),
-                                                        selectedCurrency, true));
-
-                                            }else{
-                                                if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
-                                                    Double money = Math.round(Double.valueOf(sum.getValue())*EURtoUSD * 100.0)/100.0;
-                                                    sum.setValue(String.valueOf(money));
-                                                }else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")){
-                                                    Double money = Math.round(Double.valueOf(sum.getValue())*USDtoEUR * 100.0)/100.0;
-                                                    sum.setValue(String.valueOf(money));
-                                                }
-                                                tot.put(sum.getName(),sum);
-                                            }
-
-                                        }
-                                        summaryList = new ArrayList<>(tot.values());
-                                        list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
-
-                                        if (list_summary.getAdapter().getCount() == 0){
-                                            noSummary_textView.setVisibility(View.VISIBLE);
-                                        }
-                                    }
-                                    @Override
-                                    public void onCancelled(DatabaseError error) {
-                                        Log.w("Failed to read value.", error.toException());
-                                    }
-                                });
-
-                                summaryList = new ArrayList<>(tot.values());
-                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
-
-                            }
-                            @Override
-                            public void onCancelled(DatabaseError error){
-                                Log.w("Failed to read value.", error.toException());
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
+                    public void onRefresh() {
+                        updateListOfSummary();
+                        swipeContainer.setRefreshing(false);
+                        return;
 
                     }
                 });
+
                 return rootView;
 
             } else {
@@ -592,7 +402,236 @@ public class MainActivity extends AppCompatActivity {
                 return rootView;
             }
         }
+
+
+        private void updateListOfGroups() {
+            myRef = database.getReference("users/" + UserID + "/groups/");
+
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    groupsList = new ArrayList<>();
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        try {
+                            String id = data.getKey();
+                            String nm = data.child("Name").getValue().toString();
+                            String own = data.child("Author").getValue().toString();
+                            String dat = data.child("Date").getValue().toString();
+                            String news = data.child("News").getValue().toString();
+                            String lastChange = data.child("LastChange").getValue().toString();
+                            String credit = "0";
+                            if (data.hasChild("Credit")) {
+                                credit = data.child("Credit").getValue().toString();
+                            }
+                            String debit = "0";
+                            if (data.hasChild("Debit")) {
+                                debit = data.child("Debit").getValue().toString();
+                            }
+                            String image = data.child("Image").getValue().toString();
+                            String currency = data.child("Currency").getValue().toString();
+                            indexGroup = groupsList.size();
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency, news, lastChange));
+                        } catch (Error e) {
+                            Toast.makeText(getContext(), e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    Collections.sort(groupsList, new Comparator<Group>() {
+                        @Override
+                        public int compare(Group group1, Group group2) {
+                            try {
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyy HH:mm");
+                                Date d1 = formatter.parse(group1.getLastChange());
+                                long timestamp1 = d1.getTime();
+                                Date d2 = formatter.parse(group2.getLastChange());
+                                long timestamp2 = d2.getTime();
+                                if (timestamp1 <= timestamp2) {
+                                    return 1;
+                                } else {
+                                    return -1;
+                                }
+                            } catch (ParseException e) {
+                                Log.e("error parsing", e.getMessage());
+                            }
+                            return 0;
+                        }
+                    });
+
+
+                    ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
+                    if (list.getAdapter().getCount() == 0) {
+                        noGroup_textView.setVisibility(View.VISIBLE);
+                    }
+                    list.invalidate();
+                    list.requestLayout();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.w("Failed to read value.", error.toException());
+                }
+            });
+        }
+
+        private void updateListOfSummary() {
+
+            DatabaseReference currencyRef = database.getReference("currencies");
+            currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+
+                    USDtoEUR = Double.parseDouble(dataSnapshot.child("USDtoEUR").getValue().toString());
+                    EURtoUSD = Double.parseDouble(dataSnapshot.child("EURtoUSD").getValue().toString());
+
+                    String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+                    myRef_summary_debits = database.getReference("users/" + userID + "/debits");
+                    myRef_summary_credits = database.getReference("users/" + userID + "/credits");
+
+                    CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(), summaryList, selectedCurrency);
+                    list_summary.setAdapter(adapter);
+
+                    myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                credit = false; // debits section --> it's a debit
+                                Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
+                                        data.child("Money").getValue().toString(), data.child("Paying").getValue().toString(),
+                                        data.child("Currency").getValue().toString(),
+                                        credit);
+                                indexSummary = debitsList.size();
+                                debitsList.add(indexSummary, tmp);
+                            }
+                            //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+
+                            //debitsList.addAll(tmpList);
+
+                            Iterator<Summary> itDeb = debitsList.iterator();
+                            while (itDeb.hasNext()) {
+                                Summary sum = itDeb.next();
+                                if (tot.containsKey(sum.getName())) {
+                                    Double newtot;
+                                    if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
+                                        Double money = Double.valueOf(sum.getValue()) * EURtoUSD;
+                                        Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                        newtot = Math.round((past - money) * 100.0) / 100.0;
+                                    } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")) {
+                                        Double money = Double.valueOf(sum.getValue()) * USDtoEUR;
+                                        Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                        newtot = Math.round((past - money) * 100.0) / 100.0;
+                                    } else {
+                                        Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                        newtot = Math.round((past - Float.valueOf(sum.getValue())) * 100.0) / 100.0;
+                                        //Toast.makeText(getContext(),"newtot: "+newtot.toString(),Toast.LENGTH_SHORT).show();
+                                    }
+                                    boolean flag = true;
+                                    if (newtot < 0)
+                                        flag = false;
+                                    tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), sum.getEmail(), selectedCurrency, flag));
+
+
+                                } else {
+                                    if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
+                                        Double money = -1 * Math.round(Double.valueOf(sum.getValue()) * EURtoUSD * 100.0) / 100.0;
+                                        sum.setValue(String.valueOf(money));
+                                    } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")) {
+                                        Double money = -1 * Math.round(Double.valueOf(sum.getValue()) * USDtoEUR * 100.0) / 100.0;
+                                        sum.setValue(String.valueOf(money));
+                                    } else {
+                                        Double money = -1 * Double.valueOf(sum.getValue());
+                                        sum.setValue(String.valueOf(money));
+                                    }
+                                    tot.put(sum.getName(), sum);
+                                }
+
+                            }
+
+
+                            myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                        credit = true; // credits section --> it's a credit
+                                        Summary tmp = new Summary(data.child("DisplayName").getValue().toString().replace(",", "."),
+                                                data.child("Money").getValue().toString(),
+                                                data.child("Debitor").getValue().toString(),
+                                                data.child("Currency").getValue().toString(),
+                                                credit);
+                                        indexSummary = creditsList.size();
+                                        creditsList.add(indexSummary, tmp);
+                                    }
+
+                                    //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                                    //creditsList.addAll(tmpList);
+                                    Iterator<Summary> itCred = creditsList.iterator();
+                                    while (itCred.hasNext()) {
+                                        Summary sum = itCred.next();
+                                        if (tot.containsKey(sum.getName())) {
+                                            Double newtot;
+                                            if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
+                                                Double money = Double.valueOf(sum.getValue()) * EURtoUSD;
+                                                Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                                newtot = Math.round((past + money) * 100.0) / 100.0;
+                                            } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")) {
+                                                Double money = Double.valueOf(sum.getValue()) * USDtoEUR;
+                                                Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                                newtot = Math.round((past + money) * 100.0) / 100.0;
+                                            } else {
+                                                Float past = Float.valueOf(tot.get(sum.getName()).getValue());
+                                                newtot = Math.round((past + Float.valueOf(sum.getValue())) * 100.0) / 100.0;
+                                            }
+
+                                            tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), sum.getEmail(),
+                                                    selectedCurrency, true));
+
+                                        } else {
+                                            if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
+                                                Double money = Math.round(Double.valueOf(sum.getValue()) * EURtoUSD * 100.0) / 100.0;
+                                                sum.setValue(String.valueOf(money));
+                                            } else if (sum.getCurrency().equals("$") && selectedCurrency.equals("€")) {
+                                                Double money = Math.round(Double.valueOf(sum.getValue()) * USDtoEUR * 100.0) / 100.0;
+                                                sum.setValue(String.valueOf(money));
+                                            }
+                                            tot.put(sum.getName(), sum);
+                                        }
+
+                                    }
+                                    summaryList = new ArrayList<>(tot.values());
+                                    list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+
+                                    if (list_summary.getAdapter().getCount() == 0) {
+                                        noSummary_textView.setVisibility(View.VISIBLE);
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError error) {
+                                    Log.w("Failed to read value.", error.toException());
+                                }
+                            });
+
+                            summaryList = new ArrayList<>(tot.values());
+                            list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError error) {
+                            Log.w("Failed to read value.", error.toException());
+                        }
+                    });
+
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+        }
     }
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
