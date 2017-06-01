@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                                     String own = data.child("Author").getValue().toString();
                                     String dat = data.child("Date").getValue().toString();
                                     String news = data.child("News").getValue().toString();
+                                    String lastChange = data.child("LastChange").getValue().toString();
                                     String credit = "0";
                                     if (data.hasChild("Credit")) {
                                         credit = data.child("Credit").getValue().toString();
@@ -320,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                                     String image = data.child("Image").getValue().toString();
                                     String currency = data.child("Currency").getValue().toString();
                                     indexGroup = groupsList.size();
-                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news));
+                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news, lastChange));
                                 }
                                     catch(Error e){
                                         Toast.makeText(getContext(), e.getMessage(),
@@ -331,17 +332,16 @@ public class MainActivity extends AppCompatActivity {
                         Collections.sort(groupsList,new Comparator<Group>(){
                             @Override
                             public int compare(Group group1, Group group2) {
-                                //TODO: bisognerà aggiungere il controllo sul campo "LastChange" per far si che non dipenda dalla data di creazione, ma dall'ultima modifica!
                                 try{
                                     SimpleDateFormat formatter =  new SimpleDateFormat("dd/MM/yyy HH:mm");
-                                    Date d1 = formatter.parse(group1.getDate());
+                                    Date d1 = formatter.parse(group1.getLastChange());
                                     long timestamp1 = d1.getTime();
-                                    Date d2 = formatter.parse(group2.getDate());
+                                    Date d2 = formatter.parse(group2.getLastChange());
                                     long timestamp2 = d2.getTime();
                                     if (timestamp1 <= timestamp2) {
-                                        return -1;
-                                    } else {
                                         return 1;
+                                    } else {
+                                        return -1;
                                     }
                                 } catch(ParseException e){
                                     Log.e("error parsing",e.getMessage());
@@ -678,7 +678,8 @@ public class MainActivity extends AppCompatActivity {
                         "0",
                         "no_image",
                         getIntent().getStringExtra("Currency"),
-                        "False");
+                        "False",
+                        getIntent().getStringExtra("Date"));
                 ((CustomAdapter) list.getAdapter()).getGroupList().add(tmp);
 
 //                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));

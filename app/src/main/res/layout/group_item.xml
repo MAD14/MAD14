@@ -71,7 +71,7 @@
         android:layout_marginTop="5dp"
         />
 
-    <TextView
+    <ImageView
         android:id="@+id/group_notification"
         android:layout_width="@dimen/icon_dimension"
         android:layout_height="@dimen/icon_dimension"

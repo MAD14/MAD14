@@ -224,6 +224,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     groupMap.put("News","False");
                     groupMap.put("Credit","0");
                     groupMap.put("Debit","0");
+                    groupMap.put("LastChange",groupDate);
                     myRefUser.child(newUser).child("groups").child(IDGroup).updateChildren(groupMap);
 
                   

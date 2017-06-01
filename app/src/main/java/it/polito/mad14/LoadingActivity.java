@@ -93,6 +93,7 @@ public class LoadingActivity extends AppCompatActivity {
                             String own = data.child("Author").getValue().toString();
                             String dat = data.child("Date").getValue().toString();
                             String news = data.child("News").getValue().toString();
+                            String lastChange =  data.child("LastChange").getValue().toString();
                             String credit = "0";
                             if (data.hasChild("Credit")) {
                                 credit = data.child("Credit").getValue().toString();
@@ -108,7 +109,7 @@ public class LoadingActivity extends AppCompatActivity {
                                 image = data.child("Image").getValue().toString();
                             }
                             String currency = data.child("Currency").toString();
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news));
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news, lastChange));
                             indexGroup++;
                         } catch (Error e) {
                             Toast.makeText(LoadingActivity.this, e.getMessage(),

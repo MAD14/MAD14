@@ -107,6 +107,13 @@ public class CustomAdapter extends BaseAdapter{
             imgbt.setImageDrawable(bDrawable);
         }
 
+        ImageView imageBell = (ImageView) convertView.findViewById(R.id.group_notification);
+        if (groupList.get(position).getNews().equals("True")){
+            imageBell.setVisibility(View.VISIBLE);
+        } else {
+            imageBell.setVisibility(View.INVISIBLE);
+        }
+
 
         convertView.setOnClickListener(new View.OnClickListener(){
             @Override
