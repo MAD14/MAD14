@@ -164,7 +164,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 nMembers=dataSnapshot.getChildrenCount();
                 // collecting into a set the names of the members
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
-                    contacts.add(data.getKey());
+                    if (!data.getKey().equals(et_author))
+                        contacts.add(data.getKey());
                 }
             }
             @Override
@@ -247,7 +248,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             refDebits = database.getReference("groups/"+IDGroup+"/debits");
 
-            Iterator<String> it=contacts.iterator();
+            Iterator<String> it = contacts.iterator();
             while(it.hasNext()) {
                 name = it.next();
                 if (!name.equals(et_author)) {
