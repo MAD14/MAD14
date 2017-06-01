@@ -244,7 +244,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             // Updating debits branch of the group
             DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
             Map<String, Object> updates1 = new HashMap<>();
-            updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail());
+            updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail()+"-"+et_name.getText().toString());
             updates1.put("Value",Math.random());
 
             Iterator<String> it=contacts.iterator();

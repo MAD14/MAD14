@@ -1,6 +1,5 @@
 package it.polito.mad14.myListView;
 
-import android.app.ActivityManager;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -9,31 +8,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.IBinder;
-import android.service.notification.StatusBarNotification;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
-import android.util.Log;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
 import com.google.firebase.database.ChildEventListener;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
-
 import it.polito.mad14.GroupActivity;
-import it.polito.mad14.MainActivity;
 import it.polito.mad14.R;
 
 public class FirebaseBackgroundService extends Service {
@@ -41,9 +27,9 @@ public class FirebaseBackgroundService extends Service {
 
     private DatabaseReference myRefNumber,myRefMembers,myRefExpenses,dindon;
     private FirebaseUser user;
-    private boolean notifyMember,notifyExpense;
     private int numberGroups = 0,readMembers = 0;
-
+    private String userMail,groupID,groupName;
+    private String [] info;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -56,6 +42,7 @@ public class FirebaseBackgroundService extends Service {
         super.onCreate();
         System.out.println("SONO NEL SERVICE");
         user = FirebaseAuth.getInstance().getCurrentUser();
+        userMail = user.getEmail();
         myRefNumber = database.getReference("users/"+user.getEmail().replace(".",","));
         myRefNumber.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -65,36 +52,48 @@ public class FirebaseBackgroundService extends Service {
                 } else {
                     numberGroups = 0;
                 }
-                System.out.println("EXT : #groups : "+numberGroups);
                 myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Not");
-                notifyMember = false;
 
                 myRefMembers.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                        System.out.println("onChildAdded : "+readMembers);
                         if(readMembers >= numberGroups){
-                            //manda notifica per nuovo gruppo: You have been added to a new group!
-                            sendNotification(dataSnapshot.child("Name").getValue().toString(),dataSnapshot.child("Action").getValue().toString(),dataSnapshot.getKey().toString());
-                            //String date = dataSnapshot.child("Date").getValue().toString();
-                            String name = dataSnapshot.child("Name").getValue().toString();
-                            //String name = dataSnapshot.getKey().toString();
-                            System.out.println("INT : new group added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                            String actionman = dataSnapshot.child("Action").getValue().toString().split("-")[2];
+                            if (!actionman.equals(userMail)){
+                                groupName = dataSnapshot.child("Name").getValue().toString();
+                                groupID = dataSnapshot.getKey().toString();
+                                String msg = "You are now in "+groupName;
+                                sendNotification(msg,groupName,groupID);
+                            }
                         }
                         else{
                             readMembers++;
-                            System.out.println("sono i primi");//check
                         }
-
                     }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //manda notifica novità rispetto agli user
-                        //String date = dataSnapshot.child("Date").getValue().toString();
-                        String name = dataSnapshot.child("Name").getValue().toString();
-                        //String name = dataSnapshot.getKey().toString();
-                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                        String action = dataSnapshot.child("Action").getValue().toString();
+                        info = action.split("-");
+                        if (!info[2].equals(userMail)){
+                            groupID = dataSnapshot.getKey().toString();
+                            groupName = dataSnapshot.child("Name").getValue().toString();
+                            DatabaseReference dr = database.getReference("users/"+info[2].replace(".",","));
+                            dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    String nameUser = dataSnapshot.child("Name").getValue().toString();
+                                    String surenameUser = dataSnapshot.child("Surname").getValue().toString();
+                                    String msg = messageCreation(info,nameUser,surenameUser);
+                                    sendNotification(msg,groupName,groupID);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+
+                                }
+                            });
+                        }
                     }
 
                     @Override
@@ -122,15 +121,8 @@ public class FirebaseBackgroundService extends Service {
         return Service.START_STICKY;
     }
 
-    private void sendNotification(String groupName, String action, String groupID) {
-        int sdk = Build.VERSION.SDK_INT;
-        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (sdk < Build.VERSION_CODES.JELLY_BEAN){
-            //mNotificationManager.getActiveNotifications();
-        }
-        else{
+    private void sendNotification(String msg, String groupName, String groupID) {
 
-        }
         int NOTIFICATION_ID = 1;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent resultIntent = new Intent(this, GroupActivity.class);
@@ -143,13 +135,13 @@ public class FirebaseBackgroundService extends Service {
         PendingIntent resultPendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
                 .setSmallIcon(R.mipmap.ic_mani_box)
-                .setContentTitle("Shared Pocket")
-                .setContentText(messageCreation(groupName,action))
+                .setContentTitle(groupName)
+                .setContentText(msg)
                 .setAutoCancel(true) //si elimina quando ci pigi
                 .setDefaults(Notification.DEFAULT_ALL) //vibrazione e suoni delle impostazioni del device
                 .setSound(alarmSound);
         builder.setContentIntent(resultPendingIntent);
-        mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //System.out.println(mNotificationManager.getActiveNotifications().length);
         dindon = database.getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+groupID+"/News");
         dindon.setValue("True");
@@ -158,32 +150,30 @@ public class FirebaseBackgroundService extends Service {
 
     }
 
-    private String messageCreation(String groupName, String action) {
-        return "lalala";
-    }
+    private String messageCreation(String[] info, String nameUser, String surenameUser) {
+        switch (info[0]){
+            case "ADD":
+                if (info[1].equals("M")){
+                    return "New member"+info[3]+"added";
+                }
+                else{
+                    return  info[3]+" has been bought";
+                }
+            case "DEL":
+                if (info[1].equals("M")){
+                    return nameUser+" "+surenameUser+" is out";
+                }
+                else{
+                    return "Vino is ";
+                }
+            case "MOD":
+                if (info[1].equals("M")){
 
-    private boolean checkIfAppIsRunningInForeground() {
-        ActivityManager activityManager = (ActivityManager)getSystemService(Context.ACTIVITY_SERVICE);
-        for(ActivityManager.RunningAppProcessInfo appProcessInfo : activityManager.getRunningAppProcesses()) {
-            if(appProcessInfo.processName.contains(this.getPackageName())) {
-                return checkIfAppIsRunningInForegroundByAppImportance(appProcessInfo.importance);
-            }
+                }
+                else{
+                    return "Vino is bought";
+                }
         }
-        return false;
-    }
-    private boolean checkIfAppIsRunningInForegroundByAppImportance(int appImportance) {
-        switch (appImportance) {
-            //user is aware of app
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND:
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_VISIBLE:
-                return true;
-            //user is not aware of app
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_BACKGROUND:
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_EMPTY:
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_PERCEPTIBLE:
-            case ActivityManager.RunningAppProcessInfo.IMPORTANCE_SERVICE:
-            default:
-                return false;
-        }
+        return "lalala";
     }
 }

@@ -257,7 +257,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
                         @Override
                         public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                            System.out.println("Transaction completed");
                         }
                     });
                 }

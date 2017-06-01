@@ -195,7 +195,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     Toast.makeText(AddNewMembersToGroup.this,getString(R.string.member_already_in_the_group),Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    System.out.println("non trovato");
                     Toast.makeText(AddNewMembersToGroup.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
                 }
             }
@@ -253,7 +252,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
 
                 @Override
                 public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                    System.out.println("Transaction completed");
                 }
             });
         }
@@ -272,7 +270,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> updates1 = new HashMap<>();
-                updates1.put("Action","ADD-M-"+userF.getEmail());
+                if (friends_added.size() > 1){updates1.put("Action","ADD-M-"+userF.getEmail()+"-s ");}
+                else{updates1.put("Action","ADD-M-"+userF.getEmail()+"- ");}
                 updates1.put("Value",Math.random());
                 updates1.put("Name",groupName);
                 for (DataSnapshot data : dataSnapshot.getChildren()) {

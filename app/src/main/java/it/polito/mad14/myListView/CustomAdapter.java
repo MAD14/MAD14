@@ -183,7 +183,6 @@ public class CustomAdapter extends BaseAdapter{
 
                                                 @Override
                                                 public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                                                    System.out.println("Transaction completed");
                                                 }
                                             });
                                         }
