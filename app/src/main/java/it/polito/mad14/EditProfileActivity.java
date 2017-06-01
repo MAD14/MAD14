@@ -83,29 +83,6 @@ public class EditProfileActivity extends AppCompatActivity {
         bio = getIntent().getStringExtra("bio");
         name = getIntent().getStringExtra("Name");
 
-        TextView tv = (TextView) findViewById(R.id.user_profile_name);
-        tv.setText(name);
-        tv = (TextView) findViewById(R.id.info2);
-        tv.setText(email);
-        editBio = (TextView) findViewById(R.id.user_profile_short_bio);
-        editBio.setText(bio);
-        editBio.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickChangeBio(view);
-            }
-        });
-
-        editUsername = (TextView) findViewById(R.id.info1);
-        editUsername.setText(username);
-        editUsername.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClickChangeUsername(view);
-            }
-        });
-
-
         photo = (ImageView)findViewById(R.id.user_profile_photo);
         photo.bringToFront();
         photo.setOnClickListener(new View.OnClickListener() {
@@ -136,6 +113,27 @@ public class EditProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError error) { }
+        });
+        TextView tv = (TextView) findViewById(R.id.user_profile_name);
+        tv.setText(name);
+        tv = (TextView) findViewById(R.id.info2);
+        tv.setText(email);
+        editBio = (TextView) findViewById(R.id.user_profile_short_bio);
+        editBio.setText(bio);
+        editBio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickChangeBio(view);
+            }
+        });
+
+        editUsername = (TextView) findViewById(R.id.info1);
+        editUsername.setText(username);
+        editUsername.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClickChangeUsername(view);
+            }
         });
 
     }
