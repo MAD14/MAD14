@@ -1,5 +1,4 @@
 package it.polito.mad14.myListView;
-
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -24,12 +23,12 @@ import it.polito.mad14.R;
 
 public class FirebaseBackgroundService extends Service {
     private static FirebaseDatabase database = FirebaseDatabase.getInstance();
-
     private DatabaseReference myRefNumber,myRefMembers,myRefExpenses,dindon;
     private FirebaseUser user;
     private int numberGroups = 0,readMembers = 0;
-    private String userMail,groupID,groupName;
+    private String userMail,groupID,groupName,notificationSound;
     private String [] info;
+    int NOTIFICATION_ID = 0;
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -69,7 +68,7 @@ public class FirebaseBackgroundService extends Service {
                         else{
                             readMembers++;
                         }
-                    } 
+                    }
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
@@ -78,21 +77,29 @@ public class FirebaseBackgroundService extends Service {
                         if (!info[2].equals(userMail)){
                             groupID = dataSnapshot.getKey().toString();
                             groupName = dataSnapshot.child("Name").getValue().toString();
-                            DatabaseReference dr = database.getReference("users/"+info[2].replace(".",","));
-                            dr.addListenerForSingleValueEvent(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(DataSnapshot dataSnapshot) {
-                                    String nameUser = dataSnapshot.child("Name").getValue().toString();
-                                    String surenameUser = dataSnapshot.child("Surname").getValue().toString();
-                                    String msg = messageCreation(info,nameUser,surenameUser);
-                                    sendNotification(msg,groupName,groupID);
-                                }
+                            notificationSound = dataSnapshot.child("Sound").getValue().toString();
+                            if (info[1].equals("M") && (info[0].equals("ADD") || info[0].equals("DEL")) && info.length == 4){
+                                DatabaseReference dr;
+                                if(info[0].equals("ADD")){dr = database.getReference("users/"+info[3].replace(".",","));}
+                                else{dr = database.getReference("users/"+info[2].replace(".",","));}
+                                dr.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String nameUser = dataSnapshot.child("Name").getValue().toString();
+                                        String surnameUser = dataSnapshot.child("Surname").getValue().toString();
+                                        String msg = messageCreation(info,nameUser,surnameUser);
+                                        sendNotification(msg,groupName,groupID);
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
 
-                                @Override
-                                public void onCancelled(DatabaseError databaseError) {
-
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            else if (!info[0].equals("SIL")){
+                                String msg = messageCreation(info,"nameUser","surnameUser");
+                                sendNotification(msg,groupName,groupID);
+                            }
                         }
                     }
 
@@ -100,17 +107,14 @@ public class FirebaseBackgroundService extends Service {
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
                        //non faccio nulla perchè sono stata io ad eliminarlo!
                     }
-
                     @Override
                     public void onChildMoved(DataSnapshot dataSnapshot, String s) {
                     }
-
                     @Override
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
             }
-
             @Override
             public void onCancelled(DatabaseError databaseError) {
             }
@@ -122,8 +126,7 @@ public class FirebaseBackgroundService extends Service {
     }
 
     private void sendNotification(String msg, String groupName, String groupID) {
-
-        int NOTIFICATION_ID = 1;
+        NOTIFICATION_ID = (NOTIFICATION_ID+1)%10;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent resultIntent = new Intent(this, GroupActivity.class);
         resultIntent.putExtra("IDGroup",groupID);
@@ -138,8 +141,8 @@ public class FirebaseBackgroundService extends Service {
                 .setContentTitle(groupName)
                 .setContentText(msg)
                 .setAutoCancel(true) //si elimina quando ci pigi
-                .setDefaults(Notification.DEFAULT_ALL) //vibrazione e suoni delle impostazioni del device
                 .setSound(alarmSound);
+        if (notificationSound.equals("True")){builder.setDefaults(Notification.DEFAULT_ALL);} //vibrazione e suoni delle impostazioni del device}
         builder.setContentIntent(resultPendingIntent);
         NotificationManager mNotificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         //System.out.println(mNotificationManager.getActiveNotifications().length);
@@ -154,7 +157,8 @@ public class FirebaseBackgroundService extends Service {
         switch (info[0]){
             case "ADD":
                 if (info[1].equals("M")){
-                    return "New member"+info[3]+"added";
+                    if (!info[3].equals("MANY")){return nameUser+" "+surenameUser+" is added";}
+                    else{return "New members added";}
                 }
                 else{
                     return  info[3]+" has been bought";
@@ -164,16 +168,16 @@ public class FirebaseBackgroundService extends Service {
                     return nameUser+" "+surenameUser+" is out";
                 }
                 else{
-                    return "Vino is ";
+                    return info[3]+" is removed";
                 }
             case "MOD":
                 if (info[1].equals("M")){
-
+                    return "Information has been modified";
                 }
                 else{
-                    return "Vino is bought";
+                    return info[3]+"has been modified";
                 }
         }
-        return "lalala";
+        return "";
     }
 }

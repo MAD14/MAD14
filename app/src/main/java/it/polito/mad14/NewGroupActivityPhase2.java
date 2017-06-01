@@ -212,6 +212,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 updates.put("Action","ADD-M-"+groupAuthor);
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
+                updates.put("Sound","True");
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");

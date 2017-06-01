@@ -194,7 +194,7 @@ public class EditGroupActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("Action","MOD-G-"+currentUser);
+                updates.put("Action","MOD-M-"+currentUser);
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
                 for (String user : membersList){

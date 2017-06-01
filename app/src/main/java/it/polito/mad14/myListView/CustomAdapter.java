@@ -147,7 +147,7 @@ public class CustomAdapter extends BaseAdapter{
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             int i = 0;
                                             Map<String, Object> updates = new HashMap<>();
-                                            updates.put("Action","DEL-M-"+currentUser.replace(",","."));
+                                            updates.put("Action","DEL-M-"+currentUser.replace(",",".")+"-DUMMY");
                                             updates.put("Value",Math.random());
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                 if (data.getKey().equals(currentUser)){//se sono sul user che sta eliminando, cancello tutto

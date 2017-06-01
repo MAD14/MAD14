@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
@@ -49,6 +52,7 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
     private static final int RESULT_BACK = 12;
     private DatabaseReference myReference;
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
     private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator,currency;
     private FirebaseDatabase database;
 
@@ -129,6 +133,12 @@ public class GroupActivity extends AppCompatActivity {
         switch (id){
             case R.id.silenzioso:
                 //TODO: disattivare le notifiche push
+                DatabaseReference tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("Action","SIL-M-"+user.getEmail().replace(".",","));
+                updates.put("Value",Math.random());
+                updates.put("Sound","False");
+                tmp.updateChildren(updates);
                 Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
                 break;
             case R.id.add_members:
