@@ -69,7 +69,7 @@ public class FirebaseBackgroundService extends Service {
                         else{
                             readMembers++;
                         }
-                    }
+                    } 
 
                     @Override
                     public void onChildChanged(DataSnapshot dataSnapshot, String s) {
