@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,13 +49,18 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private String val;
     private DatabaseReference dataref;
     private Button button;
-    private String value;
+    private String value, receiver, sender;
+    private Double debitValue;
+    private int buttonPosition;
 
     public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup, String groupCurrency) {
         this.context = context;
         this.summaryList = summaryList;
         this.IDGroup = IDGroup;
         this.groupCurrency = groupCurrency;
+    }
+    private class ViewHolder{
+        Button button;
     }
 
     @Override
@@ -74,10 +80,19 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
         if (inflater == null)
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
+        if (convertView == null) {
             convertView = inflater.inflate(R.layout.personal_summary_item, parent, false);
+            holder = new ViewHolder();
+            holder.button = (Button) convertView.findViewById(R.id.button_payment);
+            holder.button.setTag(position);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
         tv.setText(summaryList.get(position).getName());
@@ -93,7 +108,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
         val = summ.getValue();
         cd = summ.getCredit();
 
-        button = (Button) convertView.findViewById(R.id.button_payment);
+        //button = (Button) convertView.findViewById(R.id.button_payment);
 
         value = summaryList.get(position).getValue();
         Matcher matcher = Pattern.compile("^[\\-0-9]+\\.[0-9]{1}$").matcher(value);
@@ -114,9 +129,9 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             String credit = "+" + value;
             tv.setText(credit);
 
-            button.setText(R.string.confirm);
-            button.setTextColor(context.getResources().getColor(R.color.darkgreen));
-            button.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
+            holder.button.setText(R.string.confirm);
+            holder.button.setTextColor(context.getResources().getColor(R.color.darkgreen));
+            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
 
             // check if it's a pending transaction
             DatabaseReference ref= database.getReference("groups/" + IDGroup + "PendingPayment");
@@ -149,12 +164,12 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             }
             tv.setText(debit);
 
-            button.setText(R.string.pay);
-            button.setTextColor(context.getResources().getColor(R.color.darkred));
-            button.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+            holder.button.setText(R.string.pay);
+            holder.button.setTextColor(context.getResources().getColor(R.color.darkred));
+            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightred));
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
@@ -166,8 +181,9 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                         // check su debitor and creditor: if me=creditor no ACK if me = debitor waiting ACK
 
                         if (cd) {
+                            Toast.makeText(context,summaryList.get(position).getEmail(),Toast.LENGTH_SHORT).show();
                             // controllare anche nei pending nel caso ci sia da eliminare
-                            DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/debits");
+                            /*DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/debits");
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -176,10 +192,11 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                                 data.child("Receiver").getValue().toString().equals(user)) ||
                                                 (data.child("Sender").getValue().toString().equals(user) &&
                                                         data.child("Receiver").getValue().toString().equals(name))) {
-
+                                            debitValue = Double.valueOf(data.child("Money").getValue().toString());
                                             // remove data from debitor and creditor
-                                            DatabaseReference creditor = database.getReference("users/" + data.child("Receiver").getValue().toString() + "/credits");
+                                            DatabaseReference creditor = database.getReference("users/" + data.child("Receiver").getValue().toString() + "/credit");
                                             creditor.child(data.getKey()).removeValue();
+                                            Toast.makeText(context,data.getKey(),Toast.LENGTH_LONG).show();
                                             DatabaseReference debitor = database.getReference("users/" + data.child("Sender").getValue().toString() + "/debits");
                                             debitor.child(data.getKey()).removeValue();
                                             // remove data from Group branch
@@ -203,6 +220,50 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
                                                 }
                                             });
+                                            receiver = data.child("Receiver").getValue().toString();
+                                            DatabaseReference receiverRef = database.getReference("users/"
+                                                    + receiver + "/groups/" + IDGroup + "/Credit");
+                                            receiverRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Double oldValue = Double.valueOf(dataSnapshot.getValue().toString());
+                                                    Double newValue = oldValue-debitValue;
+                                                    if (newValue>=0){
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newValue));
+                                                    } else {
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newValue));
+                                                        database.getReference("users/" + receiver + "/groups/" + IDGroup + "/Debit")
+                                                                .setValue(String.valueOf(-1*newValue));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                            sender = data.child("Sender").getValue().toString();
+                                            DatabaseReference senderRef = database.getReference("users/"
+                                                    + receiver + "/groups/" + IDGroup + "/Debit");
+                                            receiverRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Double oldValue = Double.valueOf(dataSnapshot.getValue().toString());
+                                                    Double newValue = oldValue-debitValue;
+                                                    if (newValue>=0){
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newValue));
+                                                    } else {
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newValue));
+                                                        database.getReference("users/" + receiver + "/groups/" + IDGroup + "/Credit")
+                                                                .setValue(String.valueOf(-1*newValue));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
                                         }
                                     }
 
@@ -217,7 +278,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                 public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            });
+                            });*/
                         }else{
 
                             dataref=database.getReference("groups/"+IDGroup+"/PendingPayment");
