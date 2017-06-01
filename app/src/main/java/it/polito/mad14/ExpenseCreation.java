@@ -262,7 +262,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                         String currentName = name;
                         @Override
                         public void run() {
-                            userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                            userRef.child(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     newRef = refDebits.push();
@@ -313,6 +313,24 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                     creditorMap.put("Currency", groupCurrency);
                                     Log.e("currentName", currentName);
                                     refCred.child(key).updateChildren(creditorMap);
+
+                                    // questa scrittura bisogna valutare se metterla con le hash map o no
+                                    // TODO: MARCO E' QUESTO!
+                                    refUserDebit = userRef.child(currentName).child("groups").child(IDGroup).child("Debit");
+                                    refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            oldDebit = Double.valueOf(dataSnapshot.getValue().toString());
+                                            // Updating each summary field for the general GroupView
+                                            dataSnapshot.getRef().setValue(oldDebit + priceEach);
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+
+                                    });
                                 }
 
                                 @Override
@@ -325,24 +343,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     };
                     Thread t = new Thread(r);
                     t.start();
-
-                    // questa scrittura bisogna valutare se metterla con le hash map o no
-                    // TODO: MARCO E' QUESTO!
-                    refUserDebit = userRef.child(name).child("groups").child(IDGroup).child("Debit");
-                    refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            oldDebit = Double.valueOf(dataSnapshot.getValue().toString());
-                            // Updating each summary field for the general GroupView
-                            dataSnapshot.getRef().setValue(oldDebit + priceEach);
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-
-                    });
                 }
 
             }

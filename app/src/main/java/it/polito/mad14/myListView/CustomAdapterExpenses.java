@@ -56,7 +56,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private Expense expense;
 
     private String debtor;
-    private Double value;
+    private Double value, totValue;
     private DatabaseReference debitsRef, expenseItemRef;
     //private String[] parts;
     private List<String> parts;
@@ -150,14 +150,12 @@ public class CustomAdapterExpenses extends BaseAdapter {
                             notifyDataSetInvalidated();
                             // remove value from group
                             expenseItemRef = database.getReference("groups/" + expense.getGroup() + "/items/" + expense.getID());
-                            Toast.makeText(context,expense.getGroup(),Toast.LENGTH_SHORT).show();
 
                             expenseItemRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.hasChild("Debits")){
                                         String debits = dataSnapshot.child("Debits").getValue().toString();
-                                        Toast.makeText(context,debits,Toast.LENGTH_SHORT).show();
                                         parts = new ArrayList<String>(Arrays.asList(debits.split(",")));
                                         for (i=0; i<parts.size(); i++){
 
@@ -171,53 +169,57 @@ public class CustomAdapterExpenses extends BaseAdapter {
                                                         @Override
                                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                                             for (DataSnapshot data : dataSnapshot.getChildren()){
-                                                                debtor = data.child("Sender").getValue().toString();
-                                                                value = Double.valueOf(data.child("Money").getValue().toString());
-                                                                database.getReference("users/" + debtor + "/debits/" + data.getKey()).removeValue();
-                                                                database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Debit").
-                                                                        addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
-                                                                                Double newValue=oldValue-value;
-                                                                                if (newValue >=0){
-                                                                                    dataSnapshot.getRef().setValue(newValue);
-                                                                                } else {
-                                                                                    dataSnapshot.getRef().setValue("0");
-                                                                                    database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Credit").
-                                                                                            setValue(-1*newValue);
+                                                                if (data.getKey().equals(key)){
+                                                                    debtor = data.child("Sender").getValue().toString();
+                                                                    value = Double.valueOf(data.child("Money").getValue().toString());
+                                                                    database.getReference("users/" + debtor + "/debits/" + data.getKey()).removeValue();
+                                                                    database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Debit").
+                                                                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                @Override
+                                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                    Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                                                                                    Double newValue=oldValue-value;
+                                                                                    if (newValue >=0){
+                                                                                        dataSnapshot.getRef().setValue(newValue);
+                                                                                    } else {
+                                                                                        dataSnapshot.getRef().setValue("0");
+                                                                                        database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Credit").
+                                                                                                setValue(String.valueOf(-1*newValue));
+                                                                                    }
+
                                                                                 }
-                                                                            }
 
-                                                                            @Override
-                                                                            public void onCancelled(DatabaseError databaseError) {
+                                                                                @Override
+                                                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                                            }
-                                                                        });
-                                                                database.getReference("users/"+expense.getAuthor()+"/groups/"+expense.getGroup()+"/Credit").
-                                                                        addListenerForSingleValueEvent(new ValueEventListener() {
-                                                                            @Override
-                                                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
-                                                                                Double newValue=oldValue-value;
-                                                                                if (newValue >=0){
-                                                                                    dataSnapshot.getRef().setValue(newValue);
-                                                                                } else {
-                                                                                    dataSnapshot.getRef().setValue("0");
-                                                                                    database.getReference("users/" + expense.getAuthor() + "/groups/" + expense.getGroup() + "/Debit").
-                                                                                            setValue(-1*newValue);
                                                                                 }
-                                                                            }
+                                                                            });
+                                                                    totValue = value * parts.size();
+                                                                    database.getReference("users/"+expense.getAuthor()+"/groups/"+expense.getGroup()+"/Credit").
+                                                                            addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                @Override
+                                                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                                                    Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                                                                                    Double newValue=oldValue-totValue;
+                                                                                    if (newValue >=0){
+                                                                                        dataSnapshot.getRef().setValue(newValue);
+                                                                                    } else {
+                                                                                        dataSnapshot.getRef().setValue("0");
+                                                                                        database.getReference("users/" + expense.getAuthor() + "/groups/" + expense.getGroup() + "/Debit").
+                                                                                                setValue(String.valueOf(-1*newValue));
+                                                                                    }
+                                                                                }
 
-                                                                            @Override
-                                                                            public void onCancelled(DatabaseError databaseError) {
+                                                                                @Override
+                                                                                public void onCancelled(DatabaseError databaseError) {
 
-                                                                            }
-                                                                        });
+                                                                                }
+                                                                            });
 
-                                                                debitsRef.child(key).removeValue();
-                                                                DatabaseReference ref2 = database.getReference("users/" + expense.getAuthor() + "/credit");
-                                                                ref2.child(key).removeValue();
+                                                                    debitsRef.child(key).removeValue();
+                                                                    DatabaseReference ref2 = database.getReference("users/" + expense.getAuthor() + "/credit");
+                                                                    ref2.child(key).removeValue();
+                                                                }
                                                             }
                                                         }
 
@@ -235,7 +237,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
 
                                         }
-                                        //expenseItemRef.removeValue();
+                                        expenseItemRef.removeValue();
                                     }
                                 }
 
