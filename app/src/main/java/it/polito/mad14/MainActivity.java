@@ -484,8 +484,11 @@ public class MainActivity extends AppCompatActivity {
                                                     newtot = Math.round((past + Float.valueOf(sum.getValue())) * 100.0) / 100.0;
                                                 }
 
+                                                boolean flag = true;
+                                                if (newtot < 0)
+                                                    flag = false;
                                                 tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),sum.getEmail(),
-                                                        selectedCurrency, true));
+                                                        selectedCurrency, flag));
 
                                             }else{
                                                 if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")){
@@ -512,8 +515,8 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                 });
 
-                                summaryList = new ArrayList<>(tot.values());
-                                list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
+                                //summaryList = new ArrayList<>(tot.values());
+                                //list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList,selectedCurrency));
 
                             }
                             @Override

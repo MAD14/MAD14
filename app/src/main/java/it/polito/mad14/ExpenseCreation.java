@@ -91,6 +91,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private String key;
 
     private double EURtoUSD, USDtoEUR;
+    private String debits;
+    private DatabaseReference refExp;
 
 
 
@@ -203,7 +205,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                 price = et_import.getText().toString();
             }
 
-            DatabaseReference refExp = database.getReference("groups/"+IDGroup+"/items").push();
+            refExp = database.getReference("groups/"+IDGroup+"/items").push();
             userRef = database.getReference("users");
             IDExpense = refExp.getKey();
 
@@ -248,6 +250,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             refDebits = database.getReference("groups/"+IDGroup+"/debits");
 
             Iterator<String> it=contacts.iterator();
+            debits = "";
             while(it.hasNext()) {
                 name = it.next();
                 if (!name.equals(et_author)) {
@@ -263,6 +266,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                     newRef = refDebits.push();
                                     // Unique key that identify the transaction
                                     key = newRef.getKey();
+                                    debits = debits + key + ",";
+                                    refExp.child("Debits").setValue(debits.substring(0,debits.length()-1));
 
                 //                            Log.e("key expense pre", key);
                                     Map<String, Object> expenseMap = new HashMap<>();
@@ -354,9 +359,8 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("description",finalDescription);
                     intent.putExtra("date",date);
                     intent.putExtra("IDGroup",IDGroup);
-                    intent.putExtra("Currency",groupCurrency);
+                    intent.putExtra("GroupCurrency",groupCurrency);
                     intent.putExtra("GroupName",groupName);
-                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);

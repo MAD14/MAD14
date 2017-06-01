@@ -72,7 +72,9 @@ public class CustomAdapterSummary extends BaseAdapter {
 
         button = (Button) convertView.findViewById(R.id.button_payment);
 
-        value = summaryList.get(position).getValue();
+        value = summaryList.get(position).getValue().replace("+","");
+        value = value.replace("-","");
+
         Matcher matcher = Pattern.compile("^[0-9]+\\.[0-9]{1}$").matcher(value);
         if (matcher.find()) {
             value = value + "0";
@@ -88,7 +90,7 @@ public class CustomAdapterSummary extends BaseAdapter {
             // se è true verde
             tv.setTextColor(ContextCompat.getColor(context,R.color.green));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.green));
-            value = summaryList.get(position).getValue().replace("+","");
+            //value = summaryList.get(position).getValue().replace("+","");
             String newValue = "+" + value;
             tv.setText(newValue);
             button.setBackgroundResource(R.mipmap.expense_icon_green);
@@ -99,7 +101,7 @@ public class CustomAdapterSummary extends BaseAdapter {
             // se è false rosso
             tv.setTextColor(ContextCompat.getColor(context,R.color.red));
             tvCurrency.setTextColor(ContextCompat.getColor(context,R.color.red));
-            value = summaryList.get(position).getValue().replace("-","");
+            //value = summaryList.get(position).getValue().replace("-","");
             String newValue = "-" + value;
             tv.setText(newValue);
             button.setBackgroundResource(R.mipmap.expense_icon_red);
