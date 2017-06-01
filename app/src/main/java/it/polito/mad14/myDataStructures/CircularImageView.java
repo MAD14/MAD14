@@ -19,6 +19,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.widget.ImageView;
 
+import it.polito.mad14.R;
+
 /**
  * Created by Utente on 19/05/2017.
  */
