@@ -3,6 +3,8 @@ package it.polito.mad14;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -46,6 +48,7 @@ public class LoadingActivity extends AppCompatActivity {
     private int indexGroup = 0;
     private String noImage = "no_image";
     private ImageView img;
+    private Animation translateAnim;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,7 +61,16 @@ public class LoadingActivity extends AppCompatActivity {
 
 //        // Start animating the image
         img = (ImageView) findViewById(R.id.splash);
-        final Animation translateAnim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translation_to_middle_screen);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inScaled = false;
+        Bitmap bMap = BitmapFactory.decodeResource(getResources(),R.drawable.mani_box, options);
+        int h = 300; // height in pixels
+        int w = 300; // width in pixels
+
+        Bitmap photoBitMap = Bitmap.createScaledBitmap(bMap,h, w, true);
+        img.setImageBitmap(photoBitMap);
+//        img.setImageBitmap(bMap);
+        translateAnim= AnimationUtils.loadAnimation(getApplicationContext(),R.anim.translation_to_middle_screen);
         img.startAnimation(translateAnim);
 
         myRef = database.getReference("users/" + UserID + "/groups/");

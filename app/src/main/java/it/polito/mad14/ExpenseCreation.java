@@ -74,6 +74,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private double oldDebit;
     private DatabaseReference refUserDebit;
     private DatabaseReference creditBranch;
+    private DatabaseReference refDebits;
     private Double priceEach;
     private Double totCredit;
     private String authorDisplayName, et_author, name;
@@ -87,6 +88,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private ArrayAdapter<String> spinnerAdapter;
     private String price;
     private String IDExpense;
+    private String key;
 
     private double EURtoUSD, USDtoEUR;
 
@@ -242,65 +244,90 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             });
 
             // Updating debits branch of the group
-            DatabaseReference refDebits=database.getReference("groups/"+IDGroup+"/debits");
-            Map<String, Object> updates1 = new HashMap<>();
-            updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail());
-            updates1.put("Value",Math.random());
+
+            refDebits = database.getReference("groups/"+IDGroup+"/debits");
 
             Iterator<String> it=contacts.iterator();
-            while(it.hasNext()){
-                name=it.next();
-                userRef.child(name).child("Not").child(IDGroup).updateChildren(updates1);
+            while(it.hasNext()) {
+                name = it.next();
+                if (!name.equals(et_author)) {
+                    Log.e("name", name);
 
-                if(!name.equals(et_author)) {
-                    //updating of the group's info
-                    newRef = refDebits.push();
-
-                    // Unique key that identify the transaction
-                    String key = newRef.getKey();
-                    newRef.child("Product").setValue(et_name.getText().toString());
-                    newRef.child("Receiver").setValue(et_author);
-                    newRef.child("Sender").setValue(name);
-                    newRef.child("Money").setValue(priceEach);
-                    newRef.child("DisplayNameReceiver").setValue(authorDisplayName);
-                    newRef.child("Currency").setValue(groupCurrency);
-
-                    Log.e("authorDisplayName",authorDisplayName);
-
-                    //updating debitors list inside the author
-                    refDeb = userRef.child(et_author).child("credits").child(key);
-                    refDeb.child("Group").setValue(IDGroup);
-                    refDeb.child("Debitor").setValue(name);
-                    refDeb.child("Money").setValue(priceEach);
-                    refDeb.child("Currency").setValue(groupCurrency);
-
-                    userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                    Runnable r = new Runnable() {
+                        String currentName = name;
                         @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
-                            newRef.child("DisplayNameSender").setValue(debitorDisplayName);
-                            Log.e("debitor","debitor " +debitorDisplayName);
-                            refDeb.child("DisplayName").setValue(debitorDisplayName);
-                        }
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-                        }
-                    });
+                        public void run() {
+                            userRef.child(name).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    newRef = refDebits.push();
+                                    // Unique key that identify the transaction
+                                    key = newRef.getKey();
 
-                    //updating each creditor
-                    DatabaseReference refCred = userRef.child(name).child("debits").child(key);
-                    refCred.child("Group").setValue(IDGroup);
-                    refCred.child("Paying").setValue(et_author);
-                    refCred.child("DisplayName").setValue(authorDisplayName);
-                    refCred.child("Money").setValue(priceEach);
-                    refCred.child("Currency").setValue(groupCurrency);
+                //                            Log.e("key expense pre", key);
+                                    Map<String, Object> expenseMap = new HashMap<>();
+                                    expenseMap.put("Product", et_name.getText().toString());
+                                    expenseMap.put("Receiver", et_author);
+                                    expenseMap.put("Sender", dataSnapshot.getKey());
+                                    expenseMap.put("Money", priceEach);
+                                    expenseMap.put("DisplayNameReceiver", authorDisplayName);
+                                    expenseMap.put("Currency", groupCurrency);
+                                    // riga 10 implica che tutto questo sia in un listener!
+                                    debitorDisplayName = dataSnapshot.child("Name").getValue().toString() + " " + dataSnapshot.child("Surname").getValue().toString();
+                                    expenseMap.put("DisplayNameSender", debitorDisplayName);
+
+                //                            Log.e("key expense during", key);
+                                    newRef.updateChildren(expenseMap);
+
+                //                            Log.e("authorDisplayName",authorDisplayName);
+
+                                    Map<String, Object> debitorMap = new HashMap<>();
+                                    //updating debitors list inside the author
+                                    debitorMap.put("Group", IDGroup);
+                                    debitorMap.put("Debitor", currentName);
+                                    debitorMap.put("Money", priceEach);
+                                    debitorMap.put("Currency", groupCurrency);
+                                    debitorMap.put("DisplayName", debitorDisplayName);
+                                    userRef.child(et_author).child("credit").child(key).updateChildren(debitorMap);
+
+                                    Map<String, Object> updates1 = new HashMap<>();
+                                    updates1.put("Action", "A-" + auth.getCurrentUser().getEmail());
+                                    updates1.put("Value", Math.random());
+                                    userRef.child(currentName).child("Expenses").child(IDGroup).updateChildren(updates1);
+
+                                    Map<String, Object> creditorMap = new HashMap<>();
+
+                                    //updating each creditor
+                                    DatabaseReference refCred = userRef.child(currentName).child("debits");
+                                    creditorMap.put("Group", IDGroup);
+                                    creditorMap.put("Paying", et_author);
+                                    creditorMap.put("DisplayName", authorDisplayName);
+                                    creditorMap.put("Money", priceEach);
+                                    creditorMap.put("Currency", groupCurrency);
+                                    Log.e("currentName", currentName);
+                                    refCred.child(key).updateChildren(creditorMap);
+                                }
+
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
+                                }
+                            });
+
+
+                        }
+                    };
+                    Thread t = new Thread(r);
+                    t.start();
+
+                    // questa scrittura bisogna valutare se metterla con le hash map o no
+                    // TODO: MARCO E' QUESTO!
                     refUserDebit = userRef.child(name).child("groups").child(IDGroup).child("Debit");
                     refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
-                            oldDebit=Double.valueOf(dataSnapshot.getValue().toString());
+                            oldDebit = Double.valueOf(dataSnapshot.getValue().toString());
                             // Updating each summary field for the general GroupView
-                            dataSnapshot.getRef().setValue(oldDebit+priceEach);
+                            dataSnapshot.getRef().setValue(oldDebit + priceEach);
                         }
 
                         @Override
@@ -310,6 +337,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
                     });
                 }
+
             }
 
             progressBar = (ProgressBar) findViewById(R.id.progressBar_expense);
