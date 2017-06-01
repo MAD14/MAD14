@@ -181,11 +181,13 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
                     targetImageBitmap.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                     byte[] byteArrayImage = baos.toByteArray();
                     encodedImage = Base64.encodeToString(byteArrayImage, Base64.DEFAULT);
+
                 }catch (FileNotFoundException e){
                     e.printStackTrace();
                 }
             } else if (resultCode == CropImage.CROP_IMAGE_ACTIVITY_RESULT_ERROR_CODE) {
                 Exception error = result.getError();
+                Log.e("CropImageError",error.getMessage());
             }
 
         }

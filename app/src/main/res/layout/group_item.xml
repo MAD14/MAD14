@@ -33,6 +33,7 @@
         android:layout_height="wrap_content"
         android:textSize="@dimen/main_text"
         android:textColor="@color/writing"
+        android:textStyle="bold"
         android:elegantTextHeight="true"
         android:layout_toRightOf="@+id/group_icon"
         android:layout_toEndOf="@id/group_icon"
@@ -73,9 +74,9 @@
 
     <ImageView
         android:id="@+id/group_notification"
-        android:layout_width="@dimen/icon_dimension"
-        android:layout_height="@dimen/icon_dimension"
-        android:background="@mipmap/notification_icon"
+        android:layout_width="@dimen/icon_small"
+        android:layout_height="@dimen/icon_small"
+        android:src="@drawable/circle_notification"
         android:layout_marginRight="@dimen/margin"
         android:layout_marginEnd="@dimen/margin"
         android:layout_alignTop="@+id/group_name"
