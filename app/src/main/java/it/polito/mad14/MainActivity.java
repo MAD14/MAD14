@@ -269,7 +269,7 @@ public class MainActivity extends AppCompatActivity {
         private int indexSummary=0;
         private boolean credit;
         private double USDtoEUR, EURtoUSD;
-        private SwipeRefreshLayout swipeContainer;
+        private SwipeRefreshLayout swipeContainer,swipeContainer2,swipeContainer3;
         private CustomAdapter summaryAdapter;
 
 
@@ -325,15 +325,15 @@ public class MainActivity extends AppCompatActivity {
                 rootView = inflater.inflate(R.layout.personal_section_page, container, false);
                 list_summary = (ListView) rootView.findViewById(R.id.lv_personal_section);
                 noSummary_textView = (TextView) rootView.findViewById(R.id.noSummary_tv);
-                swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
+                swipeContainer2 = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer);
 
                 updateListOfSummary();
 
-                swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                swipeContainer2.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
                         updateListOfSummary();
-                        swipeContainer.setRefreshing(false);
+                        swipeContainer2.setRefreshing(false);
                         return;
 
                     }
@@ -345,60 +345,19 @@ public class MainActivity extends AppCompatActivity {
                 rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
                 noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
+                swipeContainer3 = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer3);
 
-                //TODO: prendere i dati degli amici e visualizzarli qui
-                //con il formato contact_item
-                myRef = database.getReference("users/"+UserID+"/contacts/");
-                if (myRef!=null) {
-                    myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
-                            for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                Iterator<Contact> it = contactsList.iterator();
-                                boolean flag = false;
-                                while (it.hasNext()) {
-                                    if (it.next().getEmail().equals(data.getKey().replace(",","."))){
-                                        flag = true;
-                                    }
-                                }
-                                if (!flag){
-                                    try {
-                                        String name = data.child("Name").getValue().toString();
-                                        String surname =  data.child("Surname").getValue().toString();
-                                        String username = data.child("Username").getValue().toString();
-                                        String email = data.child("Email").getValue().toString();
-                                        if (data.hasChild("Image")) {
-                                            contactsList.add(indexContact,new Contact(name,surname,username,email,data.child("Image").getValue().toString()));
+                updateListContacts();
 
-                                        }else {
-                                            contactsList.add(indexContact,new Contact(name,surname,username,email,"no_image"));                                        }
+                swipeContainer3.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                    @Override
+                    public void onRefresh() {
+                        updateListContacts();
+                        swipeContainer3.setRefreshing(false);
+                        return;
 
-                                        indexContact++;
-
-                                    }catch(Error e){
-                                        Toast.makeText(getContext(), e.getMessage(),
-                                                Toast.LENGTH_SHORT).show();
-                                    }
-                                }
-                            }
-
-                            if (list.getAdapter().getCount() == 0){
-                                noContact_textView.setVisibility(View.VISIBLE);
-                            }
-
-                            list.invalidate();
-                            list.requestLayout();
-                        }
-
-                        @Override
-                        public void onCancelled(DatabaseError error) {
-                            Log.w("Failed to read value.", error.toException());
-                        }
-                    });
-                }
-
-                CustomAdapterContacts adapter = new CustomAdapterContacts(getContext(),contactsList);
-                list.setAdapter(adapter);
+                    }
+                });
                 return rootView;
             }
         }
@@ -597,8 +556,8 @@ public class MainActivity extends AppCompatActivity {
                                         }
 
                                     }
-                                    summaryList = new ArrayList<>(tot.values());
-                                    list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+                                    //summaryList = new ArrayList<>(tot.values());
+                                    //list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
 
                                     if (list_summary.getAdapter().getCount() == 0) {
                                         noSummary_textView.setVisibility(View.VISIBLE);
@@ -610,9 +569,6 @@ public class MainActivity extends AppCompatActivity {
                                     Log.w("Failed to read value.", error.toException());
                                 }
                             });
-
-                            summaryList = new ArrayList<>(tot.values());
-                            list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
 
                         }
 
@@ -629,6 +585,66 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
+            //summaryList = new ArrayList<>(tot.values());
+            //list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+
+        }
+
+        private void updateListContacts() {
+
+            myRef = database.getReference("users/" + UserID + "/contacts/");
+            if (myRef != null) {
+                myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot data : dataSnapshot.getChildren()) {
+                            Iterator<Contact> it = contactsList.iterator();
+                            boolean flag = false;
+                            while (it.hasNext()) {
+                                if (it.next().getEmail().equals(data.getKey().replace(",", "."))) {
+                                    flag = true;
+                                }
+                            }
+                            if (!flag) {
+                                try {
+                                    String name = data.child("Name").getValue().toString();
+                                    String surname = data.child("Surname").getValue().toString();
+                                    String username = data.child("Username").getValue().toString();
+                                    String email = data.child("Email").getValue().toString();
+                                    if (data.hasChild("Image")) {
+                                        contactsList.add(indexContact, new Contact(name, surname, username, email, data.child("Image").getValue().toString()));
+
+                                    } else {
+                                        contactsList.add(indexContact, new Contact(name, surname, username, email, "no_image"));
+                                    }
+
+                                    indexContact++;
+
+                                } catch (Error e) {
+                                    Toast.makeText(getContext(), e.getMessage(),
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }
+
+                        if (list.getAdapter().getCount() == 0) {
+                            noContact_textView.setVisibility(View.VISIBLE);
+                        }
+
+                        list.invalidate();
+                        list.requestLayout();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError error) {
+                        Log.w("Failed to read value.", error.toException());
+                    }
+                });
+            }
+
+            CustomAdapterContacts adapter = new CustomAdapterContacts(getContext(), contactsList);
+            list.setAdapter(adapter);
+
         }
     }
 

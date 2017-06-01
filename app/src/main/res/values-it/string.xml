@@ -178,5 +178,6 @@
 
 
     <string name="notification_disabled">Notifiche disabilitate</string>
+    <string name="delete_contact_request">Vuoi eliminare questo utente dai tuoi contatti?</string>
 
 </resources>

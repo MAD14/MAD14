@@ -106,7 +106,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
         friends=new ArrayList<>();
 
-        FirebaseDatabase database=FirebaseDatabase.getInstance();
+        database=FirebaseDatabase.getInstance();
         DatabaseReference myRef=database.getReference("users/"+
                 FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",")
                 +"/contacts");
@@ -190,6 +190,11 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 Toast.makeText(NewGroupActivityPhase2.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
             }
         }
+    }
+
+    public void onBackPressed(){
+        database.getReference("groups/"+IDGroup).removeValue();
+        finish();
     }
 
     public void onClickCompletedAction(View view) {

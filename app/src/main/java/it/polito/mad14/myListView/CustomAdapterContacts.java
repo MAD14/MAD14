@@ -1,12 +1,14 @@
 package it.polito.mad14.myListView;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +17,10 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 
@@ -31,6 +37,8 @@ public class CustomAdapterContacts extends BaseAdapter {
     ArrayList<Contact> contactsList;
     LayoutInflater inflater;
     private String encodedImage;
+    private FirebaseDatabase database;
+    private Contact contact;
 
     public CustomAdapterContacts(Context context, ArrayList<Contact> contactsList) {
         this.context = context;
@@ -90,6 +98,39 @@ public class CustomAdapterContacts extends BaseAdapter {
                 context.startActivity(intent);
             }
         });
+
+        database=FirebaseDatabase.getInstance();
+
+        convertView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
+                dialogAlert.setTitle("");
+                dialogAlert.setMessage(context.getString(R.string.delete_contact_request));
+                dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        database = FirebaseDatabase.getInstance();
+                        contact = contactsList.get(position);
+
+                        // deleting from adapter
+                        contactsList.remove(position);
+                        notifyDataSetChanged();
+                        notifyDataSetInvalidated();
+
+                        // deleting from DB
+                        DatabaseReference db=database.getReference("users/"+
+                                FirebaseAuth.getInstance().getCurrentUser().getEmail().toString().replace(".",",")+"/contacts");
+                        db.child(contact.getEmail().replace(".",",")).removeValue();
+                    }
+                });
+                AlertDialog alert=dialogAlert.create();
+                alert.show();
+
+                return true;
+            }
+        });
+
        return convertView;
     }
 
