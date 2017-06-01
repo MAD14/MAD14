@@ -32,7 +32,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import it.polito.mad14.InfoExpenseActivity;
@@ -162,6 +164,35 @@ public class CustomAdapterExpenses extends BaseAdapter {
                             });
 
                             Toast.makeText(context, context.getString(R.string.deleting_expense), Toast.LENGTH_SHORT).show();
+                            //METTI AGGIORNAMENTO NOT
+                            Runnable r = new Runnable() {
+                                @Override
+                                public void run() {
+                                    DatabaseReference membersRef = database.getReference("groups/" + expense.getGroup() + "/members");
+                                    membersRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(DataSnapshot dataSnapshot) {
+                                            DatabaseReference users = database.getReference("users");
+                                            Map<String, Object> updates = new HashMap<>();
+                                            updates.put("Action","DEL-E-"+expense.getName());
+                                            updates.put("Value",Math.random());
+                                            for (DataSnapshot data : dataSnapshot.getChildren()) {
+                                                users.child(data.getKey()).child("Not").child(expense.getGroup()).updateChildren(updates);
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(DatabaseError databaseError) {
+
+                                        }
+                                    });
+
+                                }
+                            };
+                            Thread t = new Thread(r);
+                            t.start();
+
+
                         }else{
                             Toast.makeText(context, context.getString(R.string.impossible_del_exp), Toast.LENGTH_SHORT).show();
                         }

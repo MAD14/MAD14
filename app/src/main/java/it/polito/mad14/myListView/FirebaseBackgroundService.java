@@ -66,7 +66,7 @@ public class FirebaseBackgroundService extends Service {
                     numberGroups = 0;
                 }
                 System.out.println("EXT : #groups : "+numberGroups);
-                myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Members");
+                myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Not");
                 notifyMember = false;
 
                 myRefMembers.addChildEventListener(new ChildEventListener() {
@@ -94,14 +94,12 @@ public class FirebaseBackgroundService extends Service {
                         //String date = dataSnapshot.child("Date").getValue().toString();
                         String name = dataSnapshot.child("Name").getValue().toString();
                         //String name = dataSnapshot.getKey().toString();
-                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Date").getValue().toString());
+                        System.out.println("new members added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
                     }
 
                     @Override
                     public void onChildRemoved(DataSnapshot dataSnapshot) {
-                        //manda notifica pr rimozione gruppo
-                        String name = dataSnapshot.child("Name").getValue().toString();
-                        System.out.println("group removed : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
+                       //non faccio nulla perchè sono stata io ad eliminarlo!
                     }
 
                     @Override
@@ -112,35 +110,6 @@ public class FirebaseBackgroundService extends Service {
                     public void onCancelled(DatabaseError databaseError) {
                     }
                 });
-
-                myRefExpenses = database.getReference("users/"+user.getEmail().replace(".",",")+"/Expenses");
-                myRefExpenses.addChildEventListener(new ChildEventListener() {
-                    @Override
-                    public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                    }
-
-                    @Override
-                    public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                        //manda notifica novità rispetto agli user
-                        //String date = dataSnapshot.child("Date").getValue().toString();
-                        String name = dataSnapshot.child("Name").getValue().toString();
-                        //String name = dataSnapshot.getKey().toString();
-                        System.out.println("new expence added : "+name+" - "+dataSnapshot.child("Action").getValue().toString());
-                    }
-
-                    @Override
-                    public void onChildRemoved(DataSnapshot dataSnapshot) {
-                    }
-
-                    @Override
-                    public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                    }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-                    }
-                });
-
             }
 
             @Override

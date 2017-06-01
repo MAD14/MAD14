@@ -49,7 +49,7 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
     private static final int RESULT_BACK = 12;
     private DatabaseReference myReference;
-    private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator;
+    private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator,currency;
     private FirebaseDatabase database;
 
     /**
@@ -136,7 +136,6 @@ public class GroupActivity extends AppCompatActivity {
                 System.out.println("IDGroup : "+IDGroup);
                // myReference = database.getReference("groups/" + IDGroup );
                 myReference = database.getInstance().getReference("groups/" + IDGroup );
-                System.out.println("id groups : "+IDGroup+" proviamo");
                 myReference.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
@@ -145,6 +144,7 @@ public class GroupActivity extends AppCompatActivity {
                         groupDescription = dataSnapshot.child("Description").getValue().toString();
                         groupDate = dataSnapshot.child("Date").getValue().toString();
                         groupImage = dataSnapshot.child("Image").getValue().toString();
+                        currency = dataSnapshot.child("Currency").getValue().toString();
 
                         intent = new Intent(GroupActivity.this,AddNewMembersToGroup.class);
                         intent.putExtra("IDgroup",IDGroup);
@@ -153,6 +153,7 @@ public class GroupActivity extends AppCompatActivity {
                         intent.putExtra("Date",groupDate);
                         intent.putExtra("Description",groupDescription);
                         intent.putExtra("Image",groupImage);
+                        intent.putExtra("Currency",currency);
                         startActivity(intent);
                     }
                     @Override

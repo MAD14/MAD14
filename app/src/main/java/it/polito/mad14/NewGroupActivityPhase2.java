@@ -208,6 +208,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 // Insertion of the group in each user
                 Map<String, Object> updates = new HashMap<>();
                 Map<String, Object> groupMap = new HashMap<>();
+                updates.put("Action","ADD-M-"+groupAuthor);
+                updates.put("Name",groupName);
+                updates.put("Value",Math.random());
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");
@@ -222,9 +225,10 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     groupMap.put("Credit","0");
                     groupMap.put("Debit","0");
                     myRefUser.child(newUser).child("groups").child(IDGroup).updateChildren(groupMap);
+
                   
                     DatabaseReference ref=myRefUser.child(newUser).child("groups").child(IDGroup);
-                    ref.child("Name").setValue(groupName);
+                    /*ref.child("Name").setValue(groupName);
                     ref.child("Author").setValue(groupAuthor);
                     ref.child("Description").setValue(groupDescr);
                     ref.child("Date").setValue(groupDate);
@@ -232,13 +236,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     ref.child("Credit").setValue("0");
                     ref.child("Debit").setValue("0");
                     ref.child("Image").setValue(groupImage);
-                    ref.child("LastChange").setValue(groupDate);
+                    ref.child("LastChange").setValue(groupDate);*/
 
-                    updates.put("Action","A-"+groupAuthor);
-                    updates.put("Name",groupName);
-                    updates.put("Value",Math.random());
-                    myRefUser.child(newUser).child("Expenses").child(IDGroup).updateChildren(updates);
-                    myRefUser.child(newUser).child("Members").child(IDGroup).updateChildren(updates);
+                    myRefUser.child(newUser).child("Not").child(IDGroup).updateChildren(updates);
                     //aggiungi campo per tenere traccia dei gruppi
                     DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
                     groupCounter.runTransaction(new Transaction.Handler(){

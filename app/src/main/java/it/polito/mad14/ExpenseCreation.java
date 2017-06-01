@@ -244,6 +244,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             });
 
             // Updating debits branch of the group
+
             refDebits = database.getReference("groups/"+IDGroup+"/debits");
 
             Iterator<String> it=contacts.iterator();
@@ -311,6 +312,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                 public void onCancelled(DatabaseError databaseError) {
                                 }
                             });
+
 
                         }
                     };
