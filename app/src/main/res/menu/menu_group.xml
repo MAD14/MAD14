@@ -11,7 +11,13 @@
     <item
         android:id="@+id/silenzioso"
         android:orderInCategory="100"
-        android:title="@string/action_silence"
+        android:title="Silenzioso"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/RiattivaVolume"
+        android:orderInCategory="100"
+        android:title="Riattiva volume"
         app:showAsAction="never" />
 
     <item

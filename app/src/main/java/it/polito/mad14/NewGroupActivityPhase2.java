@@ -223,6 +223,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     groupMap.put("Date",groupDate);
                     groupMap.put("Image",groupImage);
                     groupMap.put("Currency",groupCurrency);
+                    groupMap.put("Sound","True");
                     groupMap.put("News","False");
                     groupMap.put("Credit","0");
                     groupMap.put("Debit","0");

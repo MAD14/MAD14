@@ -309,6 +309,7 @@ public class MainActivity extends AppCompatActivity {
                                     String own = data.child("Author").getValue().toString();
                                     String dat = data.child("Date").getValue().toString();
                                     String news = data.child("News").getValue().toString();
+                                    String sound = data.child("Sound").getValue().toString();
                                     String credit = "0";
                                     if (data.hasChild("Credit")) {
                                         credit = data.child("Credit").getValue().toString();
@@ -320,7 +321,7 @@ public class MainActivity extends AppCompatActivity {
                                     String image = data.child("Image").getValue().toString();
                                     String currency = data.child("Currency").getValue().toString();
                                     indexGroup = groupsList.size();
-                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news));
+                                    groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency,news,sound));
                                 }
                                     catch(Error e){
                                         Toast.makeText(getContext(), e.getMessage(),
@@ -678,7 +679,8 @@ public class MainActivity extends AppCompatActivity {
                         "0",
                         "no_image",
                         getIntent().getStringExtra("Currency"),
-                        "False");
+                        "False",
+                        "True");
                 ((CustomAdapter) list.getAdapter()).getGroupList().add(tmp);
 
 //                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));

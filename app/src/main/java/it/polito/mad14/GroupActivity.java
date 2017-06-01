@@ -70,13 +70,17 @@ public class GroupActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private String IDGroup;
+    private String IDGroup,sound;
     private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Intent myIntent = getIntent();
+        IDGroup = myIntent.getStringExtra("IDGroup");
+        groupName = myIntent.getStringExtra("GroupName");
+        sound = myIntent.getStringExtra("Sound");
         setContentView(R.layout.activity_group);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
@@ -96,9 +100,6 @@ public class GroupActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        Intent myIntent = getIntent();
-        IDGroup = myIntent.getStringExtra("IDGroup");
-        groupName = myIntent.getStringExtra("GroupName");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
@@ -108,6 +109,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
                 intent.putExtra("GroupName",groupName);
+                intent.putExtra("Sound",sound);
                 startActivityForResult(intent,EXPENSE_CREATION);
                 finish();
             }
@@ -123,6 +125,16 @@ public class GroupActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_group, menu);
         return true;
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if (sound.equals("False")){
+            menu.removeItem(R.id.silenzioso);}
+        else{
+            menu.removeItem(R.id.RiattivaVolume);
+        }
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -132,7 +144,7 @@ public class GroupActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.silenzioso:
-                //TODO: disattivare le notifiche push
+                //TODO: silenziare le notifiche push
                 DatabaseReference tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("Action","SIL-M-"+user.getEmail().replace(".",","));
@@ -140,6 +152,20 @@ public class GroupActivity extends AppCompatActivity {
                 updates.put("Sound","False");
                 tmp.updateChildren(updates);
                 Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
+                tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
+                tmp.child("Sound").setValue("False");
+                break;
+            case R.id.RiattivaVolume:
+                //TODO: riattivare volume delle notifiche push
+                DatabaseReference tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
+                Map<String, Object> updates1 = new HashMap<>();
+                updates1.put("Action","SIL-M-"+user.getEmail().replace(".",","));
+                updates1.put("Value",Math.random());
+                updates1.put("Sound","True");
+                tmp1.updateChildren(updates1);
+                Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
+                tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
+                tmp1.child("Sound").setValue("True");
                 break;
             case R.id.add_members:
 //

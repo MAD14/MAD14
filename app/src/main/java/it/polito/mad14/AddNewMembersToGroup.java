@@ -235,6 +235,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("News").setValue("False");
             ref.child("Credit").setValue("0");
             ref.child("Debit").setValue("0");
+            ref.child("Sound").setValue("True");
             //aggiorno campo
             DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
             groupCounter.runTransaction(new Transaction.Handler(){

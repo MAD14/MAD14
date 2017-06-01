@@ -115,6 +115,7 @@ public class CustomAdapter extends BaseAdapter{
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 intent.putExtra("GroupCurrency",groupList.get(position).getCurrency());
                 intent.putExtra("GroupName",groupList.get(position).getName());
+                intent.putExtra("Sound",groupList.get(position).getSound());
                 context.startActivity(intent);
             }
         });

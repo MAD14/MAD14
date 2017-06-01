@@ -10,9 +10,10 @@ public class Group {
     String image;
     String currency;
     String news;
+    String sound;
 
 
-    public Group(String ID,String name, String author, String date, String credit, String debit, String image, String currency, String news) {
+    public Group(String ID,String name, String author, String date, String credit, String debit, String image, String currency, String news,String sound) {
         this.ID=ID;
         this.name = name;
         this.author = author;
@@ -22,6 +23,7 @@ public class Group {
         this.image = image;
         this.currency = currency;
         this.news = news;
+        this.sound = sound;
     }
     public String getID() {
         return ID;
@@ -33,6 +35,14 @@ public class Group {
 
     public String getName() {
         return name;
+    }
+
+    public void setSound(String sound) {
+        this.sound = sound;
+    }
+
+    public String getSound() {
+        return sound;
     }
 
     public void setName(String name) {

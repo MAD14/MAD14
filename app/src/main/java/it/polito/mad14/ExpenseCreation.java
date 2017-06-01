@@ -60,7 +60,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Set<String> contacts;
     private FirebaseDatabase database;
     private float nMembers;
-    private String IDGroup;
+    private String IDGroup,sound;
 
     private ImageButton getExpenseImage;
     private Bitmap expenseImageBitmap;
@@ -117,6 +117,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         IDGroup= getIntent().getStringExtra("IDGroup");
         groupName = getIntent().getStringExtra("GroupName");
+        sound = getIntent().getStringExtra("Sound");
 
         contacts= new HashSet<>();
 
@@ -328,6 +329,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("Currency",groupCurrency);
                     intent.putExtra("GroupName",groupName);
+                    intent.putExtra("Sound",sound);
                     Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
@@ -437,6 +439,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         intent.putExtra("Name",groupName);
+        intent.putExtra("Sound",sound);
         startActivity(intent);
         finish();
     }
