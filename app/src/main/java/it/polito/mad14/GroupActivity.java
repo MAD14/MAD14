@@ -154,6 +154,8 @@ public class GroupActivity extends AppCompatActivity {
                 Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
                 tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
                 tmp.child("Sound").setValue("False");
+                invalidateOptionsMenu ();
+                sound = "False";
                 break;
             case R.id.RiattivaVolume:
                 //TODO: riattivare volume delle notifiche push
@@ -166,6 +168,8 @@ public class GroupActivity extends AppCompatActivity {
                 Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
                 tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
                 tmp1.child("Sound").setValue("True");
+                sound = "True";
+                invalidateOptionsMenu ();
                 break;
             case R.id.add_members:
 //
