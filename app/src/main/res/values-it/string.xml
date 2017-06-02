@@ -138,6 +138,7 @@
     <string name="delete_group_error">Non puoi cancellare questo gruppo.\n
         Devi ancora pagare dei debiti o riscuotere dei crediti.</string>
     <string name="friends_added">Amici aggiunti</string>
+    <string name="friends_already_added">Amici già aggiunti</string>
     <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
     <string name="deleting_expense">Cancellazione spesa...</string>
 

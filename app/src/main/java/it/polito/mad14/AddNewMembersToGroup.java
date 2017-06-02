@@ -44,7 +44,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private ListView list_friends;
     private int nFriends = 0;
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator,oldValue;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,sound;
     private FirebaseDatabase database;
     private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
@@ -70,6 +70,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         groupDate= getIntent().getStringExtra("Date");
         groupImage = getIntent().getStringExtra("Image");
         currency = getIntent().getStringExtra("Currency");
+        sound = getIntent().getStringExtra("Sound");
 
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
@@ -341,6 +342,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         Intent intent = new Intent(AddNewMembersToGroup.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         intent.putExtra("GroupName",groupName);
+        intent.putExtra("Sound",sound);
         startActivity(intent);
         finish();
     }

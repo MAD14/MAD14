@@ -52,7 +52,6 @@ import it.polito.mad14.myListView.CustomAdapter;
 import it.polito.mad14.myListView.CustomAdapterContacts;
 import it.polito.mad14.myListView.CustomAdapterSummary;
 import it.polito.mad14.myListView.FirebaseBackgroundService;
-import it.polito.mad14.myListView.FirebaseBackgroundService2;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -108,20 +107,6 @@ public class MainActivity extends AppCompatActivity {
         };
         Thread t = new Thread(r);
         t.start();
-
-        //////////////////////////
-       /*Runnable r1 = new Runnable() {
-
-            @Override
-            public void run() {
-                startService(new Intent(MainActivity.this,FirebaseBackgroundService2.class));
-                System.out.println("inizio!");
-            }
-        };
-        Thread t1 = new Thread(r1);
-
-        t1.start();*/
-        //////////////////////////
 
         ViewPager.OnPageChangeListener onPageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override

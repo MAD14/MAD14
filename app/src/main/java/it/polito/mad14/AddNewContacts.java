@@ -62,7 +62,6 @@ public class AddNewContacts extends AppCompatActivity {
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loading = (TextView) findViewById(R.id.loading_tv);
 
-
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 

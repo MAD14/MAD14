@@ -26,6 +26,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import it.polito.mad14.AddNewContacts;
@@ -41,9 +42,10 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
 
     Context context;
     ArrayList<Contact> partialNames;
+    private ArrayList<String> alreadyAdded = new ArrayList<>();
+    private int alreadyAddedIndex = 0;
     LayoutInflater inflater;
     private ListView list;
-    private String encodedImage;
     private DatabaseReference myRef;
     private String image;
     private ImageButton img;
@@ -56,7 +58,7 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
 
     @Override
     public int getCount() {
-       return partialNames.size();
+        return partialNames.size();
     }
 
     @Override
@@ -86,9 +88,19 @@ public class CustomAdapterContactSuggested extends BaseAdapter {
         img.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+               /* for (Iterator<String> it = alreadyAdded.iterator(); it.hasNext(); ){
+                    String tmp1 = it.next();
+                    System.out.println(tmp1);
+                }
+                if(alreadyAdded.contains(partialNames.get(position).getEmail().replace(".",","))){Toast.makeText(context,context.getString(R.string.friends_already_added),Toast.LENGTH_SHORT).show();}
+                else{
+                    Toast.makeText(context,context.getString(R.string.friends_added),Toast.LENGTH_SHORT).show();
+                    alreadyAdded.add(alreadyAddedIndex,partialNames.get(position).getEmail().replace(".",","));
+                    alreadyAddedIndex++;
+                }*/
                 Toast.makeText(context,context.getString(R.string.friends_added),Toast.LENGTH_SHORT).show();
-
                 img.setImageResource(R.mipmap.check_icon_green);
+
 
                 Runnable r = new Runnable() {
                     @Override

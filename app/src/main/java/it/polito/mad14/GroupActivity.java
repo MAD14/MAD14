@@ -144,7 +144,6 @@ public class GroupActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.silenzioso:
-                //TODO: silenziare le notifiche push
                 DatabaseReference tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
                 Map<String, Object> updates = new HashMap<>();
                 updates.put("Action","SIL-M-"+user.getEmail().replace(".",","));
@@ -158,7 +157,6 @@ public class GroupActivity extends AppCompatActivity {
                 sound = "False";
                 break;
             case R.id.RiattivaVolume:
-                //TODO: riattivare volume delle notifiche push
                 DatabaseReference tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
                 Map<String, Object> updates1 = new HashMap<>();
                 updates1.put("Action","SIL-M-"+user.getEmail().replace(".",","));
@@ -194,6 +192,7 @@ public class GroupActivity extends AppCompatActivity {
                         intent.putExtra("Description",groupDescription);
                         intent.putExtra("Image",groupImage);
                         intent.putExtra("Currency",currency);
+                        intent.putExtra("Sound",sound);
                         startActivity(intent);
                     }
                     @Override

@@ -62,7 +62,7 @@ public class FirebaseBackgroundService extends Service {
                                 groupName = dataSnapshot.child("Name").getValue().toString();
                                 groupID = dataSnapshot.getKey().toString();
                                 String msg = "You are now in "+groupName;
-                                sendNotification(msg,groupName,groupID);
+                                sendNotification(msg,groupName,groupID,"True");
                             }
                         }
                         else{
@@ -88,7 +88,7 @@ public class FirebaseBackgroundService extends Service {
                                         String nameUser = dataSnapshot.child("Name").getValue().toString();
                                         String surnameUser = dataSnapshot.child("Surname").getValue().toString();
                                         String msg = messageCreation(info,nameUser,surnameUser);
-                                        sendNotification(msg,groupName,groupID);
+                                        sendNotification(msg,groupName,groupID,notificationSound);
                                     }
                                     @Override
                                     public void onCancelled(DatabaseError databaseError) {
@@ -98,7 +98,7 @@ public class FirebaseBackgroundService extends Service {
                             }
                             else if (!info[0].equals("SIL")){
                                 String msg = messageCreation(info,"nameUser","surnameUser");
-                                sendNotification(msg,groupName,groupID);
+                                sendNotification(msg,groupName,groupID,notificationSound);
                             }
                         }
                     }
@@ -125,11 +125,13 @@ public class FirebaseBackgroundService extends Service {
         return Service.START_STICKY;
     }
 
-    private void sendNotification(String msg, String groupName, String groupID) {
+    private void sendNotification(String msg, String groupName, String groupID,String notificationSound) {
         NOTIFICATION_ID = (NOTIFICATION_ID+1)%10;
         Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
         Intent resultIntent = new Intent(this, GroupActivity.class);
         resultIntent.putExtra("IDGroup",groupID);
+        resultIntent.putExtra("GroupName",groupName);
+        resultIntent.putExtra("Sound",notificationSound);
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(this);
         // Adds the back stack
         stackBuilder.addParentStack(GroupActivity.class);
