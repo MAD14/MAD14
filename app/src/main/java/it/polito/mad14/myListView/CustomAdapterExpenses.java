@@ -173,19 +173,23 @@ public class CustomAdapterExpenses extends BaseAdapter {
                                                                     debtor = data.child("Sender").getValue().toString();
                                                                     value = Double.valueOf(data.child("Money").getValue().toString());
                                                                     database.getReference("users/" + debtor + "/debits/" + data.getKey()).removeValue();
-                                                                    database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Debit").
+                                                                    database.getReference("users/" + debtor + "/groups/" + expense.getGroup()).
                                                                             addListenerForSingleValueEvent(new ValueEventListener() {
                                                                                 @Override
                                                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                    Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
-                                                                                    Double newValue=oldValue-value;
-                                                                                    if (newValue >=0){
-                                                                                        dataSnapshot.getRef().setValue(newValue);
+                                                                                    Double oldDebit=Double.valueOf(dataSnapshot.child("Debit").getValue().toString());
+                                                                                    Double oldCredit = Double.valueOf(dataSnapshot.child("Credit").getValue().toString());
+                                                                                    Double diff = Math.round((value - oldDebit)*100.0)/100.0;
+                                                                                    Double newDebit,newCredit;
+                                                                                    if (diff>=0){
+                                                                                        newDebit = 0.0;
+                                                                                        newCredit = diff;
                                                                                     } else {
-                                                                                        dataSnapshot.getRef().setValue("0");
-                                                                                        database.getReference("users/" + debtor + "/groups/" + expense.getGroup() + "/Credit").
-                                                                                                setValue(String.valueOf(-1*newValue));
+                                                                                        newDebit = Math.round((oldDebit-value)*100.0)/100.0;
+                                                                                        newCredit = oldCredit;
                                                                                     }
+                                                                                    dataSnapshot.child("Debit").getRef().setValue(String.valueOf(newDebit));
+                                                                                    dataSnapshot.child("Credit").getRef().setValue(String.valueOf(newCredit));
 
                                                                                 }
 
@@ -195,19 +199,23 @@ public class CustomAdapterExpenses extends BaseAdapter {
                                                                                 }
                                                                             });
                                                                     totValue = value * parts.size();
-                                                                    database.getReference("users/"+expense.getAuthor()+"/groups/"+expense.getGroup()+"/Credit").
+                                                                    database.getReference("users/"+expense.getAuthor()+"/groups/"+expense.getGroup()).
                                                                             addListenerForSingleValueEvent(new ValueEventListener() {
                                                                                 @Override
                                                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                                                                    Double oldValue=Double.valueOf(dataSnapshot.getValue().toString());
-                                                                                    Double newValue=oldValue-totValue;
-                                                                                    if (newValue >=0){
-                                                                                        dataSnapshot.getRef().setValue(newValue);
+                                                                                    Double oldDebit=Double.valueOf(dataSnapshot.child("Debit").getValue().toString());
+                                                                                    Double oldCredit = Double.valueOf(dataSnapshot.child("Credit").getValue().toString());
+                                                                                    Double diff = Math.round((totValue - oldCredit)*100.0)/100.0;
+                                                                                    Double newDebit,newCredit;
+                                                                                    if (diff>=0){
+                                                                                        newCredit = 0.0;
+                                                                                        newDebit = diff;
                                                                                     } else {
-                                                                                        dataSnapshot.getRef().setValue("0");
-                                                                                        database.getReference("users/" + expense.getAuthor() + "/groups/" + expense.getGroup() + "/Debit").
-                                                                                                setValue(String.valueOf(-1*newValue));
+                                                                                        newCredit = Math.round((oldCredit-totValue)*100.0)/100.0;
+                                                                                        newDebit = oldDebit;
                                                                                     }
+                                                                                    dataSnapshot.child("Debit").getRef().setValue(String.valueOf(newDebit));
+                                                                                    dataSnapshot.child("Credit").getRef().setValue(String.valueOf(newCredit));
                                                                                 }
 
                                                                                 @Override

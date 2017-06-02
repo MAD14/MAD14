@@ -169,6 +169,6 @@
     <string name="title_reset_password">Reset your password</string>
     <string name="title_settings">Settings</string>
 
-    <string name="notification_disabled">Notification disabled</string>
+    <string name="notification_disabled">Notification muted</string>
     <string name="title_edit_group">Edit group</string>
 </resources>

@@ -49,6 +49,8 @@ import java.io.ByteArrayOutputStream;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import it.polito.mad14.myDataStructures.Expense;
+
 public class ExpenseCreation extends AppCompatActivity implements View.OnClickListener{
 
     private static final int RESULT_BACK = 12;
@@ -71,7 +73,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private String date;
 
     private double oldValue;
-    private double oldDebit;
     private DatabaseReference refUserDebit;
     private DatabaseReference creditBranch;
     private DatabaseReference refDebits;
@@ -230,14 +231,24 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             totCredit=priceEach*(nMembers-1);
 
             // Updating credit field into creditor's group branch
-            creditBranch=database.getReference("/users/"+et_author+"/groups/"+IDGroup+"/Credit/");
+            creditBranch=database.getReference("/users/"+et_author+"/groups/"+IDGroup);
             creditBranch.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    oldValue=Double.valueOf(dataSnapshot.getValue().toString());
+                    Double cOldDebit=Double.valueOf(dataSnapshot.child("Debit").getValue().toString());
+                    Double cOldCredit=Double.valueOf(dataSnapshot.child("Credit").getValue().toString());
+                    Double cDiff = totCredit - cOldDebit;
+                    Double cNewDebit, cNewCredit;
+                    if (cDiff>=0){
+                        cNewDebit = 0.0;
+                        cNewCredit = cOldCredit + cDiff;
+                    } else {
+                        cNewCredit = cOldCredit;
+                        cNewDebit = Math.round((cOldDebit - totCredit)*100.0)/100.0;
+                    }
                     // Update the value
-                    dataSnapshot.getRef().setValue(oldValue+totCredit);
-
+                    dataSnapshot.child("Debit").getRef().setValue(cNewDebit);
+                    dataSnapshot.child("Credit").getRef().setValue(cNewCredit);
                 }
 
                 @Override
@@ -316,13 +327,24 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
                                     // questa scrittura bisogna valutare se metterla con le hash map o no
                                     // TODO: MARCO E' QUESTO!
-                                    refUserDebit = userRef.child(currentName).child("groups").child(IDGroup).child("Debit");
+                                    refUserDebit = userRef.child(currentName).child("groups").child(IDGroup);
                                     refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
-                                            oldDebit = Double.valueOf(dataSnapshot.getValue().toString());
+                                            Double oldDebit = Double.valueOf(dataSnapshot.child("Debit").getValue().toString());
+                                            Double oldCredit = Double.valueOf(dataSnapshot.child("Credit").getValue().toString());
+                                            Double diff = Math.round((priceEach - oldCredit)*100.0)/100.0;
+                                            Double newCredit, newDebit;
+                                            if (diff>=0){
+                                                newCredit = 0.0;
+                                                newDebit = oldDebit + diff;
+                                            } else {
+                                                newCredit = oldCredit - priceEach;
+                                                newDebit = oldDebit;
+                                            }
                                             // Updating each summary field for the general GroupView
-                                            dataSnapshot.getRef().setValue(oldDebit + priceEach);
+                                            dataSnapshot.child("Debit").getRef().setValue(newDebit);
+                                            dataSnapshot.child("Credit").getRef().setValue(newCredit);
                                         }
 
                                         @Override
