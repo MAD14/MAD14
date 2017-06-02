@@ -48,13 +48,17 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
     private String val;
     private DatabaseReference dataref;
     private Button button;
-    private String value;
+    private String value,receiver,sender,oldDebitsKey;
+    private Double debitValue;
 
     public CustomAdapterSummaryGroup(Context context, ArrayList<Summary> summaryList, String IDGroup, String groupCurrency) {
         this.context = context;
         this.summaryList = summaryList;
         this.IDGroup = IDGroup;
         this.groupCurrency = groupCurrency;
+    }
+    private class ViewHolder{
+        Button button;
     }
 
     @Override
@@ -74,10 +78,18 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
         if (inflater == null)
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
+        if (convertView == null){
             convertView = inflater.inflate(R.layout.personal_summary_item, parent, false);
+            holder = new ViewHolder();
+            holder.button = (Button) convertView.findViewById(R.id.button_payment);
+            holder.button.setTag(position);
+            convertView.setTag(holder);
+            } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         TextView tv = (TextView) convertView.findViewById(R.id.summary_name);
         tv.setText(summaryList.get(position).getName());
@@ -93,7 +105,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
         val = summ.getValue();
         cd = summ.getCredit();
 
-        button = (Button) convertView.findViewById(R.id.button_payment);
+        //button = (Button) convertView.findViewById(R.id.button_payment);
 
         value = summaryList.get(position).getValue();
         Matcher matcher = Pattern.compile("^[\\-0-9]+\\.[0-9]{1}$").matcher(value);
@@ -114,9 +126,9 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             String credit = "+" + value;
             tv.setText(credit);
 
-            button.setText(R.string.confirm);
-            button.setTextColor(context.getResources().getColor(R.color.darkgreen));
-            button.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
+            holder.button.setText(R.string.confirm);
+            holder.button.setTextColor(context.getResources().getColor(R.color.darkgreen));
+            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightgreen));
 
             // check if it's a pending transaction
             DatabaseReference ref= database.getReference("groups/" + IDGroup + "PendingPayment");
@@ -126,7 +138,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                     for(DataSnapshot data : dataSnapshot.getChildren()){
                         if(data.child("Email").getValue().toString().equals(name)){
                             // change text in button --> bold
-                            button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
+                            holder.button.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
                             break;
                         }
                     }
@@ -149,12 +161,12 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             }
             tv.setText(debit);
 
-            button.setText(R.string.pay);
-            button.setTextColor(context.getResources().getColor(R.color.darkred));
-            button.setBackgroundColor(context.getResources().getColor(R.color.lightred));
+            holder.button.setText(R.string.pay);
+            holder.button.setTextColor(context.getResources().getColor(R.color.darkred));
+            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightred));
         }
 
-        button.setOnClickListener(new View.OnClickListener() {
+        holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 final AlertDialog.Builder dialogAlert = new AlertDialog.Builder(context);
@@ -166,21 +178,21 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                         // check su debitor and creditor: if me=creditor no ACK if me = debitor waiting ACK
 
                         if (cd) {
+                            sender = summaryList.get(position).getEmail();
+                            receiver = user;
                             // controllare anche nei pending nel caso ci sia da eliminare
                             DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/debits");
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for (DataSnapshot data : dataSnapshot.getChildren()) {
-                                        if ((data.child("Sender").getValue().toString().equals(name) &&
-                                                data.child("Receiver").getValue().toString().equals(user)) ||
-                                                (data.child("Sender").getValue().toString().equals(user) &&
-                                                        data.child("Receiver").getValue().toString().equals(name))) {
-
+                                        if ((data.child("Sender").getValue().toString().equals(sender) &&
+                                                data.child("Receiver").getValue().toString().equals(receiver))) {
+                                            debitValue = Double.valueOf(data.child("Money").getValue().toString());
                                             // remove data from debitor and creditor
-                                            DatabaseReference creditor = database.getReference("users/" + data.child("Receiver").getValue().toString() + "/credits");
+                                            DatabaseReference creditor = database.getReference("users/" + receiver + "/credit");
                                             creditor.child(data.getKey()).removeValue();
-                                            DatabaseReference debitor = database.getReference("users/" + data.child("Sender").getValue().toString() + "/debits");
+                                            DatabaseReference debitor = database.getReference("users/" + sender + "/debits");
                                             debitor.child(data.getKey()).removeValue();
                                             // remove data from Group branch
                                             data.getRef().removeValue();
@@ -194,6 +206,66 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                                         if(data.child("Creditor").getValue().toString().equals(user) && data.child("Debitor").getValue().toString().equals(name)){
                                                             data.getRef().removeValue();
                                                             break;
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                            //receiver = data.child("Receiver").getValue().toString();
+                                            DatabaseReference receiverRef = database.getReference("users/"
+                                                    + receiver + "/groups/" + IDGroup + "/Credit");
+                                            receiverRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Double oldCredit = Double.valueOf(dataSnapshot.getValue().toString());
+                                                    Double newCredit = Math.round((oldCredit-debitValue)*100.0)/100.0;
+                                                    if (newCredit>0){
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newCredit));
+                                                    } else {
+                                                        dataSnapshot.getRef().setValue(String.valueOf(0.0));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                            //sender = data.child("Sender").getValue().toString();
+                                            DatabaseReference senderRef = database.getReference("users/"
+                                                    + sender + "/groups/" + IDGroup + "/Debit");
+                                            senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    Double oldDebit = Double.valueOf(dataSnapshot.getValue().toString());
+                                                    Double newDebit = Math.round((oldDebit-debitValue)*100.0)/100.0;
+                                                    if (newDebit>0){
+                                                        dataSnapshot.getRef().setValue(String.valueOf(newDebit));
+                                                    } else {
+                                                        dataSnapshot.getRef().setValue(String.valueOf(0.0));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                            DatabaseReference oldDebitsRef = database.getReference("users/"
+                                                    + receiver + "/debits");
+                                            oldDebitsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot data : dataSnapshot.getChildren()){
+                                                        if (data.child("Paying").getValue().toString().equals(sender)){
+                                                            oldDebitsKey = data.getKey();
+                                                            database.getReference("users/" + sender + "/credit/" + oldDebitsKey).removeValue();
+                                                            database.getReference("groups/" + IDGroup + "/debits/" + oldDebitsKey).removeValue();
+                                                            data.getRef().removeValue();
                                                         }
                                                     }
                                                 }

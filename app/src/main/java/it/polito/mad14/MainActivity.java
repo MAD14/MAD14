@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private static FirebaseDatabase database;
     private static String UserID, selectedCurrency;
-    private static DatabaseReference myRef, currencyRef;
+    private static DatabaseReference myRef, userIDRef;
     private FloatingActionButton fab_groups;
     private FloatingActionButton fab_contacts;
     final static int GROUP_CREATION = 1;
@@ -149,10 +149,13 @@ public class MainActivity extends AppCompatActivity {
         fab_groups = (FloatingActionButton) findViewById(R.id.fab_groups_page);
         fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
 
-        currencyRef = database.getReference("users/" + UserID);
-        currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        userIDRef = database.getReference("users/" + UserID);
+        userIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild("ProfileImage")) userIDRef.child("ProfileImage").setValue("no_image");
                 if (!dataSnapshot.hasChild("MyCurrency")){
                     LayoutInflater li = LayoutInflater.from(MainActivity.this);
                     View promptsView = li.inflate(R.layout.spinner_first_currency, null);
@@ -171,7 +174,7 @@ public class MainActivity extends AppCompatActivity {
                                     String str = currencySpinner.getSelectedItem().toString();
                                     String[] parts = str.split(" ");
                                     selectedCurrency = parts[1].replace("(","").replace(")","");
-                                    currencyRef.child("MyCurrency").setValue(selectedCurrency);
+                                    userIDRef.child("MyCurrency").setValue(selectedCurrency);
                                     Toast.makeText(MainActivity.this, getString(R.string.currency_set_to) + " " +
                                             selectedCurrency + ". " + getString(R.string.currency_advisor), Toast.LENGTH_LONG).show();
                                 }
@@ -388,7 +391,7 @@ public class MainActivity extends AppCompatActivity {
 
                         String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                         myRef_summary_debits = database.getReference("users/" + userID + "/debits");
-                        myRef_summary_credits = database.getReference("users/" + userID + "/credits");
+                        myRef_summary_credits = database.getReference("users/" + userID + "/credit");
 
                         CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList,selectedCurrency);
                         list_summary.setAdapter(adapter);
