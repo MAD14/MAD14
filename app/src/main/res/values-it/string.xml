@@ -179,5 +179,6 @@
 
 
     <string name="notification_disabled">Notifiche disabilitate</string>
+    <string name="notification_enabled">Notifiche riattivate</string>
 
 </resources>
