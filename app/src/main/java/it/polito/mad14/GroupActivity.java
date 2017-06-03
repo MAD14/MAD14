@@ -163,7 +163,7 @@ public class GroupActivity extends AppCompatActivity {
                 updates1.put("Value",Math.random());
                 updates1.put("Sound","True");
                 tmp1.updateChildren(updates1);
-                Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
+                Toast.makeText(GroupActivity.this,getString(R.string.notification_enabled),Toast.LENGTH_SHORT).show();
                 tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
                 tmp1.child("Sound").setValue("True");
                 sound = "True";
