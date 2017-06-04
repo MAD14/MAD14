@@ -270,7 +270,9 @@ public class MainActivity extends AppCompatActivity {
         private boolean credit;
         private double USDtoEUR, EURtoUSD;
         private SwipeRefreshLayout swipeContainer,swipeContainer2,swipeContainer3;
-        private CustomAdapter summaryAdapter;
+        private CustomAdapter groupAdapter;
+        private CustomAdapterContacts contactAdapter;
+        private CustomAdapterSummary summaryAdapter;
 
 
         public PlaceholderFragment() {
@@ -289,24 +291,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private View rootView;
-        private ListView list,list_summary;
+        private ListView list,list_summary,list_contact;
 
 
         @Override
         public View onCreateView(final LayoutInflater inflater, final ViewGroup container, Bundle savedInstanceState) {
 
-
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.groups_list_page, container, false);
                 list = (ListView) rootView.findViewById(R.id.list_view_main_activity);
                 noGroup_textView = (TextView) rootView.findViewById(R.id.noGroup_tv);
-
                 swipeContainer = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer2);
 
                 updateListOfGroups();
 
-                summaryAdapter = new CustomAdapter(getContext(),groupsList);
-                list.setAdapter(summaryAdapter);
+                //groupAdapter = new CustomAdapter(getContext(),groupsList);
+                //list.setAdapter(groupAdapter);
 
                 swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                     @Override
@@ -343,7 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
             } else {
                 rootView = inflater.inflate(R.layout.contacts_section_page, container, false);
-                list = (ListView) rootView.findViewById(R.id.lv_contacts_page);
+                list_contact = (ListView) rootView.findViewById(R.id.lv_contacts_page);
                 noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
                 swipeContainer3 = (SwipeRefreshLayout) rootView.findViewById(R.id.swipeContainer3);
 
@@ -363,78 +363,10 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-        private void updateListOfGroups() {
-            myRef = database.getReference("users/" + UserID + "/groups/");
-
-            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    groupsList = new ArrayList<>();
-                    for (DataSnapshot data : dataSnapshot.getChildren()) {
-                        try {
-                            String id = data.getKey();
-                            String nm = data.child("Name").getValue().toString();
-                            String own = data.child("Author").getValue().toString();
-                            String dat = data.child("Date").getValue().toString();
-                            String news = data.child("News").getValue().toString();
-                            String lastChange = data.child("LastChange").getValue().toString();
-                            String credit = "0";
-                            if (data.hasChild("Credit")) {
-                                credit = data.child("Credit").getValue().toString();
-                            }
-                            String debit = "0";
-                            if (data.hasChild("Debit")) {
-                                debit = data.child("Debit").getValue().toString();
-                            }
-                            String image = data.child("Image").getValue().toString();
-                            String currency = data.child("Currency").getValue().toString();
-                            indexGroup = groupsList.size();
-                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency, news, lastChange));
-                        } catch (Error e) {
-                            Toast.makeText(getContext(), e.getMessage(),
-                                    Toast.LENGTH_SHORT).show();
-                        }
-                    }
-
-                    Collections.sort(groupsList, new Comparator<Group>() {
-                        @Override
-                        public int compare(Group group1, Group group2) {
-                            try {
-                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyy HH:mm");
-                                Date d1 = formatter.parse(group1.getLastChange());
-                                long timestamp1 = d1.getTime();
-                                Date d2 = formatter.parse(group2.getLastChange());
-                                long timestamp2 = d2.getTime();
-                                if (timestamp1 <= timestamp2) {
-                                    return 1;
-                                } else {
-                                    return -1;
-                                }
-                            } catch (ParseException e) {
-                                Log.e("error parsing", e.getMessage());
-                            }
-                            return 0;
-                        }
-                    });
-
-
-                    ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
-                    if (list.getAdapter().getCount() == 0) {
-                        noGroup_textView.setVisibility(View.VISIBLE);
-                    }
-                    list.invalidate();
-                    list.requestLayout();
-                }
-
-                @Override
-                public void onCancelled(DatabaseError error) {
-                    Log.w("Failed to read value.", error.toException());
-                }
-            });
-        }
 
         private void updateListOfSummary() {
-
+            summaryList=new ArrayList<>();
+            indexSummary=0;
             DatabaseReference currencyRef = database.getReference("currencies");
             currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -446,9 +378,6 @@ public class MainActivity extends AppCompatActivity {
                     String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
                     myRef_summary_debits = database.getReference("users/" + userID + "/debits");
                     myRef_summary_credits = database.getReference("users/" + userID + "/credits");
-
-                    CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(), summaryList, selectedCurrency);
-                    list_summary.setAdapter(adapter);
 
                     myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -462,9 +391,6 @@ public class MainActivity extends AppCompatActivity {
                                 indexSummary = debitsList.size();
                                 debitsList.add(indexSummary, tmp);
                             }
-                            //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-
-                            //debitsList.addAll(tmpList);
 
                             Iterator<Summary> itDeb = debitsList.iterator();
                             while (itDeb.hasNext()) {
@@ -521,8 +447,8 @@ public class MainActivity extends AppCompatActivity {
                                         creditsList.add(indexSummary, tmp);
                                     }
 
-                                    //tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                                    //creditsList.addAll(tmpList);
+                                    tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
+                                    creditsList.addAll(tmpList);
                                     Iterator<Summary> itCred = creditsList.iterator();
                                     while (itCred.hasNext()) {
                                         Summary sum = itCred.next();
@@ -585,14 +511,91 @@ public class MainActivity extends AppCompatActivity {
 
                 }
             });
-            //summaryList = new ArrayList<>(tot.values());
-            //list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+            summaryList = new ArrayList<>(tot.values());
+            list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
 
         }
 
-        private void updateListContacts() {
+        private void updateListOfGroups() {
+            groupsList=new ArrayList<>();
+            indexGroup=0;
+            myRef = database.getReference("users/" + UserID + "/groups/");
 
+            myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot data : dataSnapshot.getChildren()) {
+                        try {
+                            String id = data.getKey();
+                            String nm = data.child("Name").getValue().toString();
+                            String own = data.child("Author").getValue().toString();
+                            String dat = data.child("Date").getValue().toString();
+                            String news = data.child("News").getValue().toString();
+                            String lastChange = data.child("LastChange").getValue().toString();
+                            String credit = "0";
+                            if (data.hasChild("Credit")) {
+                                credit = data.child("Credit").getValue().toString();
+                            }
+                            String debit = "0";
+                            if (data.hasChild("Debit")) {
+                                debit = data.child("Debit").getValue().toString();
+                            }
+                            String image = data.child("Image").getValue().toString();
+                            String currency = data.child("Currency").getValue().toString();
+                            indexGroup = groupsList.size();
+                            groupsList.add(indexGroup, new Group(id, nm, own, dat, credit, debit, image, currency, news, lastChange));
+                        } catch (Error e) {
+                            Toast.makeText(getContext(), e.getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    Collections.sort(groupsList, new Comparator<Group>() {
+                        @Override
+                        public int compare(Group group1, Group group2) {
+                            try {
+                                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyy HH:mm");
+                                Date d1 = formatter.parse(group1.getLastChange());
+                                long timestamp1 = d1.getTime();
+                                Date d2 = formatter.parse(group2.getLastChange());
+                                long timestamp2 = d2.getTime();
+                                if (timestamp1 <= timestamp2) {
+                                    return 1;
+                                } else {
+                                    return -1;
+                                }
+                            } catch (ParseException e) {
+                                Log.e("error parsing", e.getMessage());
+                            }
+                            return 0;
+                        }
+                    });
+
+
+                    ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
+                    if (list.getAdapter().getCount() == 0) {
+                        noGroup_textView.setVisibility(View.VISIBLE);
+                    }
+                    list.invalidate();
+                    list.requestLayout();
+                }
+
+                @Override
+                public void onCancelled(DatabaseError error) {
+                    Log.w("Failed to read value.", error.toException());
+                }
+            });
+            groupAdapter = new CustomAdapter(getContext(),groupsList);
+            list.setAdapter(groupAdapter);
+
+        }
+
+
+        private void updateListContacts() {
+            contactsList=new ArrayList<>();
+            indexContact=0;
             myRef = database.getReference("users/" + UserID + "/contacts/");
+
             if (myRef != null) {
                 myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
@@ -627,12 +630,13 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
 
-                        if (list.getAdapter().getCount() == 0) {
+                        ((CustomAdapterContacts) list_contact.getAdapter()).setContactsList(contactsList);
+                        if (list_contact.getAdapter().getCount() == 0) {
                             noContact_textView.setVisibility(View.VISIBLE);
                         }
 
-                        list.invalidate();
-                        list.requestLayout();
+                        list_contact.invalidate();
+                        list_contact.requestLayout();
                     }
 
                     @Override
@@ -640,10 +644,14 @@ public class MainActivity extends AppCompatActivity {
                         Log.w("Failed to read value.", error.toException());
                     }
                 });
-            }
 
-            CustomAdapterContacts adapter = new CustomAdapterContacts(getContext(), contactsList);
-            list.setAdapter(adapter);
+
+            }else{
+                noContact_textView.setVisibility(View.VISIBLE);
+            }
+            contactAdapter = new CustomAdapterContacts(getContext(),contactsList);
+            list_contact.setAdapter(contactAdapter);
+
 
         }
     }
