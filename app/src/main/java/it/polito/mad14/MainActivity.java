@@ -74,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
     private ViewPager mViewPager;
     private static FirebaseDatabase database;
     private static String UserID, selectedCurrency;
-    private static DatabaseReference myRef, currencyRef;
+    private static DatabaseReference myRef, userIDRef;
     private FloatingActionButton fab_groups;
     private FloatingActionButton fab_contacts;
     final static int GROUP_CREATION = 1;
@@ -150,10 +150,13 @@ public class MainActivity extends AppCompatActivity {
         fab_groups = (FloatingActionButton) findViewById(R.id.fab_groups_page);
         fab_contacts = (FloatingActionButton) findViewById(R.id.fab_contacts_page);
 
-        currencyRef = database.getReference("users/" + UserID);
-        currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
+
+
+        userIDRef = database.getReference("users/" + UserID);
+        userIDRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChild("ProfileImage")) userIDRef.child("ProfileImage").setValue("no_image");
                 if (!dataSnapshot.hasChild("MyCurrency")){
                     LayoutInflater li = LayoutInflater.from(MainActivity.this);
                     View promptsView = li.inflate(R.layout.spinner_first_currency, null);
@@ -172,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                                     String str = currencySpinner.getSelectedItem().toString();
                                     String[] parts = str.split(" ");
                                     selectedCurrency = parts[1].replace("(","").replace(")","");
-                                    currencyRef.child("MyCurrency").setValue(selectedCurrency);
+                                    userIDRef.child("MyCurrency").setValue(selectedCurrency);
                                     Toast.makeText(MainActivity.this, getString(R.string.currency_set_to) + " " +
                                             selectedCurrency + ". " + getString(R.string.currency_advisor), Toast.LENGTH_LONG).show();
                                 }
@@ -364,6 +367,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+
         private void updateListOfSummary() {
             summaryList=new ArrayList<>();
             indexSummary=0;
@@ -375,9 +379,12 @@ public class MainActivity extends AppCompatActivity {
                     USDtoEUR = Double.parseDouble(dataSnapshot.child("USDtoEUR").getValue().toString());
                     EURtoUSD = Double.parseDouble(dataSnapshot.child("EURtoUSD").getValue().toString());
 
-                    String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
+                    String userID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                     myRef_summary_debits = database.getReference("users/" + userID + "/debits");
-                    myRef_summary_credits = database.getReference("users/" + userID + "/credits");
+                    myRef_summary_credits = database.getReference("users/" + userID + "/credit");
+
+                    CustomAdapterSummary adapter = new CustomAdapterSummary(getContext(),summaryList,selectedCurrency);
+                    list_summary.setAdapter(adapter);
 
                     myRef_summary_debits.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
@@ -432,7 +439,6 @@ public class MainActivity extends AppCompatActivity {
 
                             }
 
-
                             myRef_summary_credits.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -447,12 +453,11 @@ public class MainActivity extends AppCompatActivity {
                                         creditsList.add(indexSummary, tmp);
                                     }
 
-                                    tmpList = ((CustomAdapterSummary)list_summary.getAdapter()).getSummaryList();
-                                    creditsList.addAll(tmpList);
-                                    Iterator<Summary> itCred = creditsList.iterator();
-                                    while (itCred.hasNext()) {
+
+                                    Iterator<Summary> itCred=creditsList.iterator();
+                                    while(itCred.hasNext()){
                                         Summary sum = itCred.next();
-                                        if (tot.containsKey(sum.getName())) {
+                                        if(tot.containsKey(sum.getName())) {
                                             Double newtot;
                                             if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
                                                 Double money = Double.valueOf(sum.getValue()) * EURtoUSD;
@@ -466,9 +471,15 @@ public class MainActivity extends AppCompatActivity {
                                                 Float past = Float.valueOf(tot.get(sum.getName()).getValue());
                                                 newtot = Math.round((past + Float.valueOf(sum.getValue())) * 100.0) / 100.0;
                                             }
+                                            boolean flag = true;
+                                            if (newtot < 0)
+                                                flag = false;
+                                            tot.put(sum.getName(),new Summary(sum.getName(),Double.toString(newtot),sum.getEmail(),
+                                                    selectedCurrency, flag));
 
-                                            tot.put(sum.getName(), new Summary(sum.getName(), Double.toString(newtot), sum.getEmail(),
-                                                    selectedCurrency, true));
+
+
+
 
                                         } else {
                                             if (sum.getCurrency().equals("€") && selectedCurrency.equals("$")) {
@@ -506,6 +517,7 @@ public class MainActivity extends AppCompatActivity {
 
                 }
 
+
                 @Override
                 public void onCancelled(DatabaseError databaseError) {
 
@@ -513,6 +525,7 @@ public class MainActivity extends AppCompatActivity {
             });
             summaryList = new ArrayList<>(tot.values());
             list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
+
 
         }
 
@@ -746,7 +759,7 @@ public class MainActivity extends AppCompatActivity {
                 ((CustomAdapter) list.getAdapter()).getGroupList().add(tmp);
 
 //                list.setAdapter(new CustomAdapter(MainActivity.this,groupList));
-               ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
+                ((CustomAdapter) list.getAdapter()).notifyDataSetChanged();
                 Log.e("provaResult","received and added");
             }
         }
