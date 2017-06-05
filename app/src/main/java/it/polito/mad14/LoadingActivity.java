@@ -58,7 +58,6 @@ public class LoadingActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         UserID = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".", ",");
 
-
 //        // Start animating the image
         img = (ImageView) findViewById(R.id.splash);
         BitmapFactory.Options options = new BitmapFactory.Options();
