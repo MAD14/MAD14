@@ -137,13 +137,10 @@
     <string name="deleting_group">Il gruppo sta venendo eliminato...</string>
     <string name="delete_group_error">Non puoi cancellare questo gruppo.\n
         Devi ancora pagare dei debiti o riscuotere dei crediti.</string>
-<<<<<<< HEAD
-    <string name="friends_added">Amico aggiunti</string>
-    <string name="friends_already_added">Amico già aggiunto</string>
-=======
+
     <string name="friends_added">Amici aggiunti</string>
     <string name="friends_already_added">Amici già aggiunti</string>
->>>>>>> gretaGiovedì
+
     <string name="delete_item_request">Vuoi cancellare questo elemento?</string>
     <string name="deleting_expense">Cancellazione spesa...</string>
 
@@ -182,12 +179,8 @@
     <string name="title_settings">Impostazioni</string>
     <string name="title_edit_group">Modifica gruppo</string>
 
-
-<<<<<<< HEAD
-    <string name="notification_disabled">Notifiche silenziate</string>
-=======
     <string name="notification_disabled">Notifiche disabilitate</string>
     <string name="notification_enabled">Notifiche riattivate</string>
->>>>>>> gretaGiovedì
+    <string name="delete_contact_request">Vuoi eliminare questo utente dai tuoi contatti?</string>
 
 </resources>

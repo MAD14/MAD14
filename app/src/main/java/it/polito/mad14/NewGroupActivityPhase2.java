@@ -342,6 +342,15 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
     }
 
+    public void onBackPressed(){
+        try {
+            database.getReference("groups/" + IDGroup).removeValue();
+        }catch (Exception e){
+
+        }
+        finish();
+    }
+
 
 }
 
