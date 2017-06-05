@@ -141,7 +141,7 @@ public class CustomAdapter extends BaseAdapter{
                         database = FirebaseDatabase.getInstance();
                         group = groupList.get(position);
 
-                        if (groupList.get(position).getCredit().equals("0") && groupList.get(position).getDebit().equals("0")) {
+                        if ((groupList.get(position).getCredit().equals("0") || groupList.get(position).getCredit().equals("0.0")) && (groupList.get(position).getDebit().equals("0") || groupList.get(position).getDebit().equals("0.0"))) {
                             Runnable r = new Runnable() {
                                 @Override
                                 public void run() {
