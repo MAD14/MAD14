@@ -312,7 +312,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                     userRef.child(et_author).child("credit").child(key).updateChildren(debitorMap);
 
                                     Map<String, Object> updates1 = new HashMap<>();
-                                    updates1.put("Action", "A-" + auth.getCurrentUser().getEmail());
+                                    updates1.put("Action", "ADD-E-" + auth.getCurrentUser().getEmail() + et_name.getText().toString());
                                     updates1.put("Value", Math.random());
                                     userRef.child(currentName).child("Expenses").child(IDGroup).updateChildren(updates1);
 
