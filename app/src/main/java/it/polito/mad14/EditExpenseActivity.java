@@ -268,8 +268,10 @@ public class EditExpenseActivity extends AppCompatActivity {
         myRefNew.child("Date").setValue(date);
         myRefNew.child("Description").setValue(description);
         myRefNew.child("Name").setValue(name);
-        myRefNew.child("Image").setValue(encodedImage);
-
+        if(encodedImage!=null)
+            myRefNew.child("Image").setValue(encodedImage);
+        else
+            myRefNew.child("Image").setValue("no_image");
 
         Runnable r = new Runnable() {
             @Override
