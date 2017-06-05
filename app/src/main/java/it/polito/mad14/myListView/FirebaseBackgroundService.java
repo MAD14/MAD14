@@ -55,10 +55,6 @@ public class FirebaseBackgroundService extends Service {
 
                 myRefMembers = database.getReference("users/"+user.getEmail().replace(".",",")+"/Not");
 
-
-
-
-
                 myRefMembers.addChildEventListener(new ChildEventListener() {
                     @Override
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
@@ -182,14 +178,14 @@ public class FirebaseBackgroundService extends Service {
                     return nameUser+" "+surenameUser+" "+getResources().getString(R.string.out);
                 }
                 else{
-                    return info[3]+" "+getResources().getString(R.string.removed);
+                    return info[2]+" "+getResources().getString(R.string.removed);
                 }
             case "MOD":
                 if (info[1].equals("M")){
                     return getResources().getString(R.string.infoMod);
                 }
                 else{
-                    return info[3]+" "+getResources().getString(R.string.expMod);
+                    return info[2]+" "+getResources().getString(R.string.expMod);
                 }
         }
         return "";
