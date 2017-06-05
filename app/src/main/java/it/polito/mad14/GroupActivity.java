@@ -1,5 +1,7 @@
 package it.polito.mad14;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
@@ -87,7 +89,9 @@ public class GroupActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
         setSupportActionBar(toolbar);
-
+        //elimination notifification
+        NotificationManager notifManager= (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+        notifManager.cancelAll();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -302,6 +306,8 @@ public class GroupActivity extends AppCompatActivity {
             user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
             DatabaseReference myRef_expenses = database.getReference("groups/" + IDGroup + "/items");
             DatabaseReference myRef_summary = database.getReference("groups/" + IDGroup + "/debits");
+            DatabaseReference myRef_news = database.getReference("users/"+user+"/groups/" + IDGroup + "/News");
+            myRef_news.setValue("False");
 
             if (getArguments().getInt(ARG_SECTION_NUMBER) == 1) {
                 rootView = inflater.inflate(R.layout.expenses_list_page, container, false);
