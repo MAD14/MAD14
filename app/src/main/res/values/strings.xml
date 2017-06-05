@@ -177,4 +177,14 @@
 
     <string name="title_edit_group">Edit group</string>
     <string name="delete_contact_request">Do you want to delete this user from your contacts?</string>
+    <string name="new_group">You are now in </string>
+    <string name="new_members">New members added</string>
+    <string name="new_exp">has been bought</string>
+    <string name="out">is out</string>
+    <string name="removed">is removed</string>
+    <string name="infoMod">Information has been modified</string>
+    <string name="expMod">has been modified</string>
+
+
+
 </resources>
