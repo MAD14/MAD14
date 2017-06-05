@@ -349,11 +349,12 @@ public class MainActivity extends AppCompatActivity {
         private void updateListOfGroups() {
             groupsList = new ArrayList<>();
             indexGroup=0;
+            noGroup_textView = (TextView) rootView.findViewById(R.id.noGroup_tv);
+
             myRef = database.getReference("users/" + UserID + "/groups/");
             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-
                     for (DataSnapshot data : dataSnapshot.getChildren()) {
                         try {
                             String id = data.getKey();
@@ -425,14 +426,14 @@ public class MainActivity extends AppCompatActivity {
 
             groupAdapter = new CustomAdapter(getContext(), groupsList);
             list.setAdapter(groupAdapter);
-            return;
         }
 
         private void updateListOfSummary() {
+            noSummary_textView = (TextView) rootView.findViewById(R.id.noSummary_tv);
             summaryList = new ArrayList<>();
             debitsList = new ArrayList<>();
             creditsList = new ArrayList<>();
-            tot=new HashMap<>();
+            tot = new HashMap<>();
             indexSummary=0;
             DatabaseReference currencyRef = database.getReference("currencies");
             currencyRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -593,6 +594,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         private void updateListOfContacts() {
+            noContact_textView = (TextView) rootView.findViewById(R.id.noContact_tv);
             contactsList=new ArrayList<>();
             indexContact=0;
             myRef = database.getReference("users/" + UserID + "/contacts/");

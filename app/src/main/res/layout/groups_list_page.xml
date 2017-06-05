@@ -11,21 +11,32 @@
         android:id="@+id/swipeContainer2"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <ListView
-        android:id="@+id/list_view_main_activity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/margin_half"
-        android:layout_marginLeft="@dimen/margin_half"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+            <TextView
+                android:id="@+id/noGroup_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="@string/no_groups"
+                android:visibility="gone"
+                android:textSize="@dimen/description"
+                android:layout_margin="@dimen/margin_double"
+                />
+
+            <ListView
+                android:id="@+id/list_view_main_activity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_half"
+                android:layout_marginLeft="@dimen/margin_half"/>
+
+        </RelativeLayout>
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
-    <TextView
-        android:id="@+id/noGroup_tv"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:text="@string/no_groups"
-        android:visibility="gone"
-        android:textSize="@dimen/description"
-        android:layout_margin="@dimen/margin_double"/>
+
+
 </LinearLayout>
