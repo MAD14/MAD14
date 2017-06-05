@@ -122,6 +122,7 @@ public class CustomAdapter extends BaseAdapter{
                 intent.putExtra("IDGroup",groupList.get(position).getID());
                 intent.putExtra("GroupCurrency",groupList.get(position).getCurrency());
                 intent.putExtra("GroupName",groupList.get(position).getName());
+                intent.putExtra("Sound",groupList.get(position).getSound());
                 context.startActivity(intent);
             }
         });
@@ -154,7 +155,9 @@ public class CustomAdapter extends BaseAdapter{
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             int i = 0;
                                             Map<String, Object> updates = new HashMap<>();
-                                            updates.put("Action","DEL-M-"+currentUser.replace(",","."));
+
+                                            updates.put("Action","DEL-M-"+currentUser.replace(",",".")+"-DUMMY");
+
                                             updates.put("Value",Math.random());
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                 if (data.getKey().equals(currentUser)){//se sono sul user che sta eliminando, cancello tutto
@@ -190,7 +193,6 @@ public class CustomAdapter extends BaseAdapter{
 
                                                 @Override
                                                 public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                                                    System.out.println("Transaction completed");
                                                 }
                                             });
                                         }

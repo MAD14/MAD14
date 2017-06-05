@@ -36,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
 import java.util.Map;
 import java.util.Set;
 
@@ -156,7 +157,7 @@ public class CustomAdapterExpenses extends BaseAdapter {
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     if (dataSnapshot.hasChild("Debits")){
                                         String debits = dataSnapshot.child("Debits").getValue().toString();
-                                        parts = new ArrayList<String>(Arrays.asList(debits.split(",")));
+                                        parts = new ArrayList<>(Arrays.asList(debits.split(",")));
                                         for (i=0; i<parts.size(); i++){
 
                                             r = new Runnable() {

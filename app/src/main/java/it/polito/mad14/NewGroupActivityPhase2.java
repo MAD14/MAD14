@@ -211,6 +211,9 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 updates.put("Action","ADD-M-"+groupAuthor);
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
+
+                updates.put("Sound","True");
+
                 DatabaseReference myRefUser = database.getReference("users");
                 for (String user : emailsToBeSent) {
                     String newUser = user.replace(".",",");
@@ -221,6 +224,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                     groupMap.put("Date",groupDate);
                     groupMap.put("Image",groupImage);
                     groupMap.put("Currency",groupCurrency);
+                    groupMap.put("Sound","True");
                     groupMap.put("News","False");
                     groupMap.put("Credit","0");
                     groupMap.put("Debit","0");
@@ -257,7 +261,6 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 
                         @Override
                         public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                            System.out.println("Transaction completed");
                         }
                     });
                 }

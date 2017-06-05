@@ -132,8 +132,13 @@
     <string name="delete_group_request">Do you want to delete this group?</string>
     <string name="deleting_group">The group is going to be deleted...</string>
     <string name="delete_group_error">You can not delete this group.\nYou must balance your status before.</string>
+<<<<<<< HEAD
     <string name="friends_added">Friend added</string>
     <string name="friends_already_added">Friend already added</string>
+=======
+    <string name="friends_added">Friends added</string>
+    <string name="friends_already_added">Friends already added</string>
+>>>>>>> gretaGiovedì
     <string name="delete_item_request">Do you want to delete this item?</string>
     <string name="deleting_expense">Deleting expense...</string>
     <string name="impossible_del_exp">\Only the owner can delete an expense!</string>
@@ -169,6 +174,11 @@
     <string name="title_reset_password">Reset your password</string>
     <string name="title_settings">Settings</string>
 
+<<<<<<< HEAD
     <string name="notification_disabled">Notification muted</string>
+=======
+    <string name="notification_disabled">Notification disabled</string>
+    <string name="notification_enabled">Notification unmuted</string>
+>>>>>>> gretaGiovedì
     <string name="title_edit_group">Edit group</string>
 </resources>

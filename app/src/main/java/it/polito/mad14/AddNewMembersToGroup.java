@@ -44,7 +44,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
     private ListView list_friends;
     private int nFriends = 0;
     private ArrayList<String> emailsToBeSent = new ArrayList<>();
-    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,creator,oldValue;
+    private String groupName,groupAuthor,groupDescr,groupDate,groupImage,sound;
     private FirebaseDatabase database;
     private Mail inviteMail;
     private DatabaseReference temp_reference,myRefGroup,myRefGroup2;
@@ -70,6 +70,9 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         groupDate= getIntent().getStringExtra("Date");
         groupImage = getIntent().getStringExtra("Image");
         currency = getIntent().getStringExtra("Currency");
+
+        sound = getIntent().getStringExtra("Sound");
+
 
         friends_added = new ArrayList<>();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_invitation);
@@ -195,7 +198,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
                     Toast.makeText(AddNewMembersToGroup.this,getString(R.string.member_already_in_the_group),Toast.LENGTH_SHORT).show();
                 }
                 else{
-                    System.out.println("non trovato");
                     Toast.makeText(AddNewMembersToGroup.this,getString(R.string.user_not_found),Toast.LENGTH_SHORT).show();
                 }
             }
@@ -236,6 +238,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             ref.child("News").setValue("False");
             ref.child("Credit").setValue("0");
             ref.child("Debit").setValue("0");
+            ref.child("Sound").setValue("True");
+
             //aggiorno campo
             DatabaseReference groupCounter = myRefUser.child(newUser).child("GroupsNumb");
             groupCounter.runTransaction(new Transaction.Handler(){
@@ -253,7 +257,6 @@ public class AddNewMembersToGroup extends AppCompatActivity {
 
                 @Override
                 public void onComplete(DatabaseError databaseError, boolean committed, DataSnapshot dataSnapshot) {
-                    System.out.println("Transaction completed");
                 }
             });
         }
@@ -272,9 +275,13 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> updates1 = new HashMap<>();
-                updates1.put("Action","ADD-M-"+userF.getEmail());
+
+                if (friends_added.size() > 1){updates1.put("Action","ADD-M-"+userF.getEmail());}
+                else{updates1.put("Action","ADD-M-"+userF.getEmail()+"-"+friends_added.get(0));}
                 updates1.put("Value",Math.random());
                 updates1.put("Name",groupName);
+                updates1.put("Sound","True");
+
                 for (DataSnapshot data : dataSnapshot.getChildren()) {
                     Log.e("data key", data.getKey());
                     Log.e("1---------", "----");
@@ -340,6 +347,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         Intent intent = new Intent(AddNewMembersToGroup.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         intent.putExtra("GroupName",groupName);
+        intent.putExtra("Sound",sound);
         startActivity(intent);
         finish();
     }

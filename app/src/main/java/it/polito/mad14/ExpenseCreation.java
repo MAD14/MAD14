@@ -62,7 +62,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     private Set<String> contacts;
     private FirebaseDatabase database;
     private float nMembers;
-    private String IDGroup;
+    private String IDGroup,sound;
 
     private ImageButton getExpenseImage;
     private Bitmap expenseImageBitmap;
@@ -122,6 +122,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
         IDGroup= getIntent().getStringExtra("IDGroup");
         groupName = getIntent().getStringExtra("GroupName");
+        sound = getIntent().getStringExtra("Sound");
 
         contacts= new HashSet<>();
 
@@ -259,6 +260,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
             // Updating debits branch of the group
 
+
             refDebits = database.getReference("groups/"+IDGroup+"/debits");
 
             Iterator<String> it=contacts.iterator();
@@ -271,6 +273,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
                     Runnable r = new Runnable() {
                         String currentName = name;
+
                         @Override
                         public void run() {
                             userRef.child(currentName).addListenerForSingleValueEvent(new ValueEventListener() {
@@ -385,6 +388,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("IDGroup",IDGroup);
                     intent.putExtra("GroupCurrency",groupCurrency);
                     intent.putExtra("GroupName",groupName);
+
+                    intent.putExtra("Sound",sound);
+                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
+
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
                     progressBar.setVisibility(View.GONE);
@@ -493,6 +500,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
         Intent intent = new Intent(ExpenseCreation.this,GroupActivity.class);
         intent.putExtra("IDGroup",IDGroup);
         intent.putExtra("Name",groupName);
+        intent.putExtra("Sound",sound);
         startActivity(intent);
         finish();
     }

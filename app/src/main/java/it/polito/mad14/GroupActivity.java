@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -36,6 +37,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.jar.Attributes;
 
 import it.polito.mad14.myDataStructures.Expense;
@@ -49,6 +52,9 @@ public class GroupActivity extends AppCompatActivity {
     public static final int EXPENSE_CREATION=1;
     private static final int RESULT_BACK = 12;
     private DatabaseReference myReference;
+
+    private FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
     private String groupName,groupAuthor,groupDescription,groupDate,groupImage,creator,currency;
     private FirebaseDatabase database;
 
@@ -66,13 +72,17 @@ public class GroupActivity extends AppCompatActivity {
      * The {@link ViewPager} that will host the section contents.
      */
     private ViewPager mViewPager;
-    private String IDGroup;
+    private String IDGroup,sound;
     private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
+        Intent myIntent = getIntent();
+        IDGroup = myIntent.getStringExtra("IDGroup");
+        groupName = myIntent.getStringExtra("GroupName");
+        sound = myIntent.getStringExtra("Sound");
         setContentView(R.layout.activity_group);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar_group);
@@ -92,9 +102,6 @@ public class GroupActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
-        Intent myIntent = getIntent();
-        IDGroup = myIntent.getStringExtra("IDGroup");
-        groupName = myIntent.getStringExtra("GroupName");
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab_group_activity);
@@ -104,6 +111,7 @@ public class GroupActivity extends AppCompatActivity {
                 Intent intent = new Intent(GroupActivity.this,ExpenseCreation.class);
                 intent.putExtra("IDGroup", IDGroup);
                 intent.putExtra("GroupName",groupName);
+                intent.putExtra("Sound",sound);
                 startActivityForResult(intent,EXPENSE_CREATION);
                 finish();
             }
@@ -119,6 +127,16 @@ public class GroupActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_group, menu);
         return true;
     }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if (sound.equals("False")){
+            menu.removeItem(R.id.silenzioso);}
+        else{
+            menu.removeItem(R.id.RiattivaVolume);
+        }
+
+        return true;
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -128,8 +146,30 @@ public class GroupActivity extends AppCompatActivity {
         int id = item.getItemId();
         switch (id){
             case R.id.silenzioso:
-                //TODO: disattivare le notifiche push
+                DatabaseReference tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("Action","SIL-M-"+user.getEmail().replace(".",","));
+                updates.put("Value",Math.random());
+                updates.put("Sound","False");
+                tmp.updateChildren(updates);
                 Toast.makeText(GroupActivity.this,getString(R.string.notification_disabled),Toast.LENGTH_SHORT).show();
+                tmp = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
+                tmp.child("Sound").setValue("False");
+                invalidateOptionsMenu ();
+                sound = "False";
+                break;
+            case R.id.RiattivaVolume:
+                DatabaseReference tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/Not/"+IDGroup);
+                Map<String, Object> updates1 = new HashMap<>();
+                updates1.put("Action","SIL-M-"+user.getEmail().replace(".",","));
+                updates1.put("Value",Math.random());
+                updates1.put("Sound","True");
+                tmp1.updateChildren(updates1);
+                Toast.makeText(GroupActivity.this,getString(R.string.notification_enabled),Toast.LENGTH_SHORT).show();
+                tmp1 = database.getInstance().getReference("users/"+user.getEmail().replace(".",",")+"/groups/"+IDGroup);
+                tmp1.child("Sound").setValue("True");
+                sound = "True";
+                invalidateOptionsMenu ();
                 break;
             case R.id.add_members:
 //
@@ -154,6 +194,8 @@ public class GroupActivity extends AppCompatActivity {
                         intent.putExtra("Description",groupDescription);
                         intent.putExtra("Image",groupImage);
                         intent.putExtra("Currency",currency);
+                        intent.putExtra("Sound",sound);
+
                         startActivity(intent);
                     }
                     @Override
