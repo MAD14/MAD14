@@ -7,13 +7,18 @@
     android:fillViewport="true"
     >
 
-
+    <android.support.v4.widget.SwipeRefreshLayout
+          xmlns:android="http://schemas.android.com/apk/res/android"
+          android:id="@+id/swipeContainer3"
+          android:layout_width="match_parent"
+          android:layout_height="match_parent">
     <ListView
         android:id="@+id/lv_contacts_page"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:nestedScrollingEnabled="true"/>
 
+    </android.support.v4.widget.SwipeRefreshLayout>
     <TextView
         android:id="@+id/noContact_tv"
         android:layout_width="match_parent"
