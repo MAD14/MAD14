@@ -67,7 +67,7 @@ public class FirebaseBackgroundService extends Service {
                             if (!actionman.equals(userMail)){
                                 groupName = dataSnapshot.child("Name").getValue().toString();
                                 groupID = dataSnapshot.getKey().toString();
-                                String msg = "You are now in "+groupName;
+                                String msg = getResources().getString(R.string.new_group)+" "+groupName;
                                 sendNotification(msg,groupName,groupID,"True");
                             }
                         }
@@ -172,24 +172,24 @@ public class FirebaseBackgroundService extends Service {
             case "ADD":
                 if (info[1].equals("M")){
                     if (!info[3].equals("MANY")){return nameUser+" "+surenameUser+" is added";}
-                    else{return "New members added";}
+                    else{return getResources().getString(R.string.new_members);}
                 }
                 else{
-                    return  info[3]+" has been bought";
+                    return  info[3]+" "+getResources().getString(R.string.new_exp);
                 }
             case "DEL":
                 if (info[1].equals("M")){
-                    return nameUser+" "+surenameUser+" is out";
+                    return nameUser+" "+surenameUser+" "+getResources().getString(R.string.out);
                 }
                 else{
-                    return info[3]+" is removed";
+                    return info[3]+" "+getResources().getString(R.string.removed);
                 }
             case "MOD":
                 if (info[1].equals("M")){
-                    return "Information has been modified";
+                    return getResources().getString(R.string.infoMod);
                 }
                 else{
-                    return info[3]+"has been modified";
+                    return info[3]+" "+getResources().getString(R.string.expMod);
                 }
         }
         return "";
