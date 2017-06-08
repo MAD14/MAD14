@@ -64,7 +64,7 @@
     <string name="title_activity_add_new_contacts">Add new contacts</string>
     <string name="add_from_email">Invite new friends through email</string>
     <string name="error_invalid_username">This username is not valid</string>
-    <string name="title_activity_invite_to_join_community">Invite to Shared Boxes</string>
+    <string name="title_activity_invite_to_join_community">Invite to Shared Pokets</string>
     <string name="action_invite_members">Invite your friends</string>
     <string name="add_to_list_invitations">Add to receivers list</string>
     <string name="email">Email</string>

@@ -142,6 +142,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 if (!dataSnapshot.hasChild("ProfileImage")) userIDRef.child("ProfileImage").setValue("no_image");
+                if (!dataSnapshot.hasChild("Bio")) userIDRef.child("Bio").setValue(getString(R.string.default_bio));
                 if (!dataSnapshot.hasChild("MyCurrency")){
                     LayoutInflater li = LayoutInflater.from(MainActivity.this);
                     View promptsView = li.inflate(R.layout.spinner_first_currency, null);

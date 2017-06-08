@@ -30,9 +30,10 @@
         <ImageView
             android:id="@+id/header_cover_image"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="150dp"
+            android:alpha="0.85"
             android:scaleType="centerCrop"
-            android:background="@color/padding"/>
+            android:background="@color/last_frame"/>
 
         <it.polito.mad14.myDataStructures.CircularImageView
             android:id="@+id/user_profile_photo"
@@ -65,9 +66,9 @@
         <RelativeLayout
             android:id="@+id/profile_layout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="160dp"
             android:layout_below="@+id/header_cover_image"
-            android:background="@color/colorPrimaryDark"
+            android:background="@color/colorPrimary"
             android:elevation="4dp"
             android:paddingBottom="24dp">
 
@@ -121,30 +122,32 @@
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/background"
                 android:orientation="horizontal">
 
                 <TextView
                     android:id="@+id/info1_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentTop="true"
                     android:layout_margin="5dp"
                     android:clickable="true"
                     android:elevation="4dp"
                     android:padding="20dp"
                     android:text="@string/username"
-                    android:textSize="@dimen/summary"
-                    android:layout_alignParentTop="true"/>
+                    android:textSize="@dimen/summary" />
 
                 <TextView
                     android:id="@+id/info1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
                     android:layout_margin="5dp"
                     android:elevation="4dp"
                     android:padding="20dp"
                     android:textColor="@color/writing"
                     android:textSize="@dimen/summary"
-                    android:layout_alignParentRight="true"
 
                     />
 
@@ -152,31 +155,34 @@
                     android:id="@+id/icon_edit_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@android:drawable/ic_menu_edit"
+                    android:layout_marginTop="5dp"
                     android:layout_toLeftOf="@id/info1"
                     android:layout_toStartOf="@id/info1"
-                    android:layout_marginTop="5dp"
-                    android:elevation="4dp"
-                    android:padding="13dp"
                     android:clickable="true"
-                    android:onClick="onClickChangeUsername"/>
+                    android:elevation="4dp"
+                    android:onClick="onClickChangeUsername"
+                    android:padding="13dp"
+                    android:src="@android:drawable/ic_menu_edit" />
 
                 <TextView
                     android:id="@+id/info2_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/info1_text"
                     android:layout_margin="5dp"
                     android:clickable="true"
                     android:elevation="4dp"
                     android:padding="20dp"
                     android:text="@string/email"
-                    android:textSize="@dimen/summary"
-                    android:layout_below="@id/info1_text"/>
+                    android:textSize="@dimen/summary" />
 
                 <TextView
                     android:id="@+id/info2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@id/info1"
                     android:layout_margin="5dp"
                     android:layout_marginBottom="3dp"
                     android:layout_marginTop="3dp"
@@ -184,11 +190,7 @@
                     android:elevation="4dp"
                     android:padding="20dp"
                     android:textColor="@color/writing"
-                    android:textSize="@dimen/summary"
-                    android:layout_below="@id/info1"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    />
+                    android:textSize="@dimen/summary" />
             </RelativeLayout>
 
         </RelativeLayout>
