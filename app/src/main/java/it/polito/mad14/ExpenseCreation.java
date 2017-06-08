@@ -392,7 +392,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                     intent.putExtra("GroupName",groupName);
 
                     intent.putExtra("Sound",sound);
-                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(ExpenseCreation.this,groupName,Toast.LENGTH_SHORT).show();
 
                     setResult(RESULT_OK, intent);
                     startActivity(intent);
