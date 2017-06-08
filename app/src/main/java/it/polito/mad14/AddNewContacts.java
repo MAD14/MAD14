@@ -209,11 +209,10 @@ public class AddNewContacts extends AppCompatActivity {
         Context context;
         ArrayList<Contact> partialNames;
         LayoutInflater inflater;
-        private ListView list;
         private DatabaseReference myRef;
         private String image;
         private ImageButton img;
-        private Boolean clicked = false;
+//        private Boolean clicked = false;
 
         public CustomAdapterContactSuggested(Context context, ArrayList<Contact> partialNames) {
             this.context = context;
@@ -222,6 +221,7 @@ public class AddNewContacts extends AppCompatActivity {
 
         private class ViewHolder{
             ImageButton image;
+            Boolean clicked;
         }
 
         @Override
@@ -251,12 +251,12 @@ public class AddNewContacts extends AppCompatActivity {
                 convertView = inflater.inflate(R.layout.contact_item_to_be_added, parent, false);
                 holder = new ViewHolder();
                 holder.image = (ImageButton) convertView.findViewById(R.id.add_contact_suggestion);
+                holder.clicked = false;
                 holder.image.setTag(position);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
             }
-            clicked = false;
 
             TextView tv = (TextView) convertView.findViewById(R.id.tv_contact_name_surname_suggestion);
             tv.setText(partialNames.get(position).getName() + " " + partialNames.get(position).getSurname());
@@ -267,13 +267,13 @@ public class AddNewContacts extends AppCompatActivity {
             holder.image.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.e("position",String.valueOf(position));
-                    Log.e("clicked",String.valueOf(clicked));
+                    Log.e("clicked onClick", String.valueOf(holder.clicked));
 
-                    if (!clicked) {
-                        Toast.makeText(context, context.getString(R.string.friends_added), Toast.LENGTH_SHORT).show();
-                        clicked = true;
+                    if (!holder.clicked) {
+                        Log.e("clicked if", String.valueOf(holder.clicked));
+                        holder.clicked = true;
                         holder.image.setImageResource(R.mipmap.check_icon_green);
+                        alreadyAddedAsFriend.add(partialNames.get(position));
 
                         for (Contact c : searchNames){
                             if (c.getEmail().equals(partialNames.get(position).getEmail())) {
@@ -281,6 +281,7 @@ public class AddNewContacts extends AppCompatActivity {
                                 break;
                             }
                         }
+                        Toast.makeText(context, context.getString(R.string.friends_added), Toast.LENGTH_SHORT).show();
 
                         Runnable r = new Runnable() {
                             @Override
