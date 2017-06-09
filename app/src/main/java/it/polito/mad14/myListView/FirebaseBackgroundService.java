@@ -79,7 +79,7 @@ public class FirebaseBackgroundService extends Service {
 
                         String action = dataSnapshot.child("Action").getValue().toString();
                         info = action.split("-");
-                        if (!info[2].equals(userMail)){
+                        if (!info[2].equals(userMail.replace(".",","))){
                             groupID = dataSnapshot.getKey().toString();
                             groupName = dataSnapshot.child("Name").getValue().toString();
                             notificationSound = dataSnapshot.child("Sound").getValue().toString();

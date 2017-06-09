@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -328,17 +329,23 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
 //        Thread t = new Thread(r);
 //        t.start();
 
-        Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
-        intent.putExtra("IDGroup",IDGroup);
-//        intent.putExtra("Image",groupImage);
-// TODO: the image is too large. possible solution: create bitmap from the received byte[] data and store the image on device.then just parse the path of that image to any other activity according to your requirement.
-        intent.putExtra("Author",groupAuthor);
-        intent.putExtra("Date",groupDate);
-        intent.putExtra("Description",groupDescr);
-        intent.putExtra("Currency",groupCurrency);
-        setResult(RESULT_OK,intent);
-        startActivity(intent);
-        finish();
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                Intent intent = new Intent(NewGroupActivityPhase2.this,MainActivity.class);
+                intent.putExtra("IDGroup",IDGroup);
+        //        intent.putExtra("Image",groupImage);
+
+                intent.putExtra("Author",groupAuthor);
+                intent.putExtra("Date",groupDate);
+                intent.putExtra("Description",groupDescr);
+                intent.putExtra("Currency",groupCurrency);
+                setResult(RESULT_OK,intent);
+                startActivity(intent);
+                finish();
+            }
+        }, 2000);
+
 
     }
 
