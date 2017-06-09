@@ -212,20 +212,21 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
             userRef = database.getReference("users");
             IDExpense = refExp.getKey();
 
+            Map<String, Object> updates = new HashMap<>();
 
-            refExp.child("Price").setValue(price);
+            updates.put("Price",price);
             if (!et_description.getText().toString().isEmpty()){
                 finalDescription = et_description.getText().toString();
             } else {
                 finalDescription = getString(R.string.no_expense_description);
             }
-            refExp.child("Description").setValue(finalDescription);
-            refExp.child("Name").setValue(et_name.getText().toString());
-            refExp.child("Author").setValue(et_author);
-            refExp.child("Image").setValue(encodedExpenseImage);
-            refExp.child("Date").setValue(date);
-            refExp.child("Currency").setValue(groupCurrency);
-
+            updates.put("Description",finalDescription);
+            updates.put("Name",et_name.getText().toString());
+            updates.put("Author",et_author);
+            updates.put("Image",encodedExpenseImage);
+            updates.put("Date",date);
+            updates.put("Currency",groupCurrency);
+            refExp.updateChildren(updates);
             // Calculation of credits and debits
             priceEach=Math.round((Double.valueOf(price)/nMembers)*100.0)/100.0;
             // Total credit the owner should receive
@@ -248,8 +249,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                         cNewDebit = Math.round((cOldDebit - totCredit)*100.0)/100.0;
                     }
                     // Update the value
-                    dataSnapshot.child("Debit").getRef().setValue(cNewDebit);
-                    dataSnapshot.child("Credit").getRef().setValue(cNewCredit);
+                    Map<String, Object> updates1 = new HashMap<>();
+                    updates1.put("Debit",cNewDebit);
+                    updates1.put("Credit",cNewCredit);
+                    creditBranch.updateChildren(updates1);
                 }
 
                 @Override
@@ -331,7 +334,6 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                     refCred.child(key).updateChildren(creditorMap);
 
                                     // questa scrittura bisogna valutare se metterla con le hash map o no
-                                    // TODO: MARCO E' QUESTO!
                                     refUserDebit = userRef.child(currentName).child("groups").child(IDGroup);
                                     refUserDebit.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
@@ -348,8 +350,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
                                                 newDebit = oldDebit;
                                             }
                                             // Updating each summary field for the general GroupView
-                                            dataSnapshot.child("Debit").getRef().setValue(newDebit);
-                                            dataSnapshot.child("Credit").getRef().setValue(newCredit);
+                                            Map<String, Object> updates2 = new HashMap<>();
+                                            updates2.put("Debit",newDebit);
+                                            updates2.put("Credit",newCredit);
+                                            refUserDebit.updateChildren(updates2);
                                         }
 
                                         @Override
