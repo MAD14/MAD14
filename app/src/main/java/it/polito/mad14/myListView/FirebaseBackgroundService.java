@@ -171,7 +171,7 @@ public class FirebaseBackgroundService extends Service {
                     else{return getResources().getString(R.string.new_members);}
                 }
                 else{
-                    return  info[3]+" "+getResources().getString(R.string.new_exp);
+                    return  getResources().getString(R.string.new_exp) + " " + info[3];
                 }
             case "DEL":
                 if (info[1].equals("M")){
