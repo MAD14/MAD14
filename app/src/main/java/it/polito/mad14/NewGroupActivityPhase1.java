@@ -64,6 +64,7 @@ public class NewGroupActivityPhase1 extends AppCompatActivity {
         setContentView(R.layout.activity_new_group_phase1);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_new_group_phase1);
         encodedImage = null;
         strImageUri = noImage;
 

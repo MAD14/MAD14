@@ -45,6 +45,7 @@ public class InviteToJoinCommunity extends AppCompatActivity {
         setContentView(R.layout.activity_invite_to_join_community);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_invite_to_join_community);
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();

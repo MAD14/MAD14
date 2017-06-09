@@ -101,6 +101,7 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R .layout.activity_expense_creation);
+        ExpenseCreation.this.setTitle(R.string.title_expense_creation);
         encodedExpenseImage = "no_image";
 
         // Control internet connection

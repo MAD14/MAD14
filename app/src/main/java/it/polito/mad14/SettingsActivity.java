@@ -54,6 +54,8 @@ public class SettingsActivity extends AppCompatActivity {
         conf.locale = new Locale(lang);
         res.updateConfiguration(conf, res.getDisplayMetrics());
 
+        this.setTitle(R.string.title_settings);
+
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
 
@@ -151,6 +153,7 @@ public class SettingsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SettingsActivity.this, LoadingActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 

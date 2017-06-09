@@ -40,6 +40,7 @@ public class InfoExpenseActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_expense);
+        this.setTitle(R.string.title_activity_info_expense);
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
