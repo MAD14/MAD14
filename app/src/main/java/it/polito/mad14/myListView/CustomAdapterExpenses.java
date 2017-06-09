@@ -40,6 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import it.polito.mad14.AddNewContacts;
 import it.polito.mad14.InfoExpenseActivity;
 import it.polito.mad14.R;
 import it.polito.mad14.myDataStructures.Expense;
@@ -73,6 +74,10 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
     }
 
+    private class ViewHolder{
+        ImageView image;
+    }
+
     @Override
     public int getCount() {
         return expensesList.size();
@@ -90,10 +95,19 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
+
         if (inflater == null)
             inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        if (convertView == null)
+        if (convertView == null){
             convertView = inflater.inflate(R.layout.expense_item,parent,false);
+            holder = new ViewHolder();
+            holder.image = (ImageView) convertView.findViewById(R.id.expense_icon);
+            holder.image.setTag(position);
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         TextView tv = (TextView) convertView.findViewById(R.id.expense_name);
         tv.setText(expensesList.get(position).getName());
@@ -104,24 +118,25 @@ public class CustomAdapterExpenses extends BaseAdapter {
 
         IDExpense = expensesList.get(position).getID();
 
-        ImageView imgbt = (ImageView) convertView.findViewById(R.id.expense_icon);
+//        holder.image = (ImageView) convertView.findViewById(R.id.expense_icon);
         String imageStr = expensesList.get(position).getImage();
         if (imageStr.equals("no_image")) {
             encodedImage = imageStr;
-            imgbt.setBackgroundResource(R.mipmap.expense_icon);
+            holder.image.setImageDrawable(null);
+            holder.image.setBackgroundResource(R.mipmap.expense_icon);
         } else {
             encodedImage = imageStr;
             byte[] decodedImage = Base64.decode(encodedImage, Base64.DEFAULT);
             Bitmap image = BitmapFactory.decodeByteArray(decodedImage, 0, decodedImage.length);
             BitmapDrawable bDrawable = new BitmapDrawable(context.getResources(), image);
-            imgbt.setImageDrawable(bDrawable);
+            holder.image.setImageDrawable(bDrawable);
         }
 
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, InfoExpenseActivity.class);
-                intent.putExtra("IDExpense",IDExpense);
+                intent.putExtra("IDExpense",expensesList.get(position).getID());
                 intent.putExtra("IDGroup",expensesList.get(position).getGroup());
                 intent.putExtra("Name",expensesList.get(position).getName());
                 intent.putExtra("Import",expensesList.get(position).getValue());
