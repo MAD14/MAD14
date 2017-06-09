@@ -67,6 +67,7 @@ public class EditGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_group);
+        this.setTitle(R.string.title_edit_group);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 

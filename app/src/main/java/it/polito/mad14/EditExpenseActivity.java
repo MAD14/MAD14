@@ -62,6 +62,7 @@ public class EditExpenseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_expense);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_edit_expense);
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();

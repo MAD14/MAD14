@@ -70,6 +70,7 @@ public class AddNewContacts extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_contacts);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_add_new_contacts);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         loading = (TextView) findViewById(R.id.loading_tv);
 
