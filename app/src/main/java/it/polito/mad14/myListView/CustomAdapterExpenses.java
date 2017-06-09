@@ -63,6 +63,8 @@ public class CustomAdapterExpenses extends BaseAdapter {
     private List<String> parts;
     private Runnable r;
     private int i;
+    private  String user;
+
 
 
     public CustomAdapterExpenses(Context context, ArrayList<Expense> expensesList) {
@@ -284,13 +286,14 @@ public class CustomAdapterExpenses extends BaseAdapter {
                             Runnable r = new Runnable() {
                                 @Override
                                 public void run() {
+                                    user = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
                                     DatabaseReference membersRef = database.getReference("groups/" + expense.getGroup() + "/members");
                                     membersRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(DataSnapshot dataSnapshot) {
                                             DatabaseReference users = database.getReference("users");
                                             Map<String, Object> updates = new HashMap<>();
-                                            updates.put("Action","DEL-E-"+expense.getName());
+                                            updates.put("Action","DEL-E-"+user+"-"+expense.getName());
                                             updates.put("Value",Math.random());
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {
                                                 users.child(data.getKey()).child("Not").child(expense.getGroup()).updateChildren(updates);

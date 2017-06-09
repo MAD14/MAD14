@@ -70,7 +70,6 @@ public class EditGroupActivity extends AppCompatActivity {
         this.setTitle(R.string.title_edit_group);
 
         currentUser = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
-
         IDGroup = getIntent().getStringExtra("IDGroup");
         groupName = getIntent().getStringExtra("Name");
         dateCreation = getIntent().getStringExtra("Date");
@@ -196,7 +195,7 @@ public class EditGroupActivity extends AppCompatActivity {
             public void run() {
                 Map<String, Object> updates = new HashMap<>();
 
-                updates.put("Action","MOD-M-"+currentUser);
+                updates.put("Action","MOD-M-"+currentUser.replace(".",","));
 
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
