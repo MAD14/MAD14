@@ -157,7 +157,7 @@ public class CustomAdapter extends BaseAdapter{
                                             int i = 0;
                                             Map<String, Object> updates = new HashMap<>();
 
-                                            updates.put("Action","DEL-M-"+currentUser.replace(",",".")+"-DUMMY");
+                                            updates.put("Action","DEL-M-"+currentUser.replace(".",",")+"-DUMMY");
 
                                             updates.put("Value",Math.random());
                                             for (DataSnapshot data : dataSnapshot.getChildren()) {

@@ -54,6 +54,7 @@ public class EditExpenseActivity extends AppCompatActivity {
     private ArrayList<String> membersList = new ArrayList<>();
     private EditText input;
     private TextView editDescription,tv_value, tv_date;
+    private String mailAuthor;
 
 
     @Override
@@ -62,6 +63,7 @@ public class EditExpenseActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_expense);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_edit_expense);
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
@@ -77,6 +79,7 @@ public class EditExpenseActivity extends AppCompatActivity {
         author = getIntent().getStringExtra("Author");
         value = getIntent().getStringExtra("Value");
         oldName = name;
+        mailAuthor = FirebaseAuth.getInstance().getCurrentUser().getEmail().replace(".",",");
 
         collapsingToolbar = (CollapsingToolbarLayout) findViewById(R.id.toolbar_layout);
         collapsingToolbar.setTitle(name);
@@ -277,7 +280,7 @@ public class EditExpenseActivity extends AppCompatActivity {
             @Override
             public void run() {
                 Map<String, Object> updates = new HashMap<>();
-                updates.put("Action","MOD-E-"+oldName);
+                updates.put("Action","MOD-E-"+mailAuthor+"-"+oldName);
                 updates.put("Value",Math.random());
                 for (String user : membersList){
                     //creazione mappa

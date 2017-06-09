@@ -56,6 +56,7 @@ public class InfoGroupActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_info_group);
+        this.setTitle(R.string.title_activity_info_group);
         tvDate = (TextView)findViewById(R.id.tv_date_creation);
         tvDescription = (TextView)findViewById(R.id.tv_description);
         IDGroup = getIntent().getStringExtra("IDGroup");

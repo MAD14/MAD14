@@ -167,7 +167,7 @@ public class FirebaseBackgroundService extends Service {
         switch (info[0]){
             case "ADD":
                 if (info[1].equals("M")){
-                    if (!info[3].equals("MANY")){return nameUser+" "+surenameUser+" is added";}
+                    if (info.length==4){return nameUser+" "+surenameUser+" is added";}
                     else{return getResources().getString(R.string.new_members);}
                 }
                 else{
@@ -178,14 +178,14 @@ public class FirebaseBackgroundService extends Service {
                     return nameUser+" "+surenameUser+" "+getResources().getString(R.string.out);
                 }
                 else{
-                    return info[2]+" "+getResources().getString(R.string.removed);
+                    return info[3]+" "+getResources().getString(R.string.removed);
                 }
             case "MOD":
                 if (info[1].equals("M")){
                     return getResources().getString(R.string.infoMod);
                 }
                 else{
-                    return info[2]+" "+getResources().getString(R.string.expMod);
+                    return info[3]+" "+getResources().getString(R.string.expMod);
                 }
         }
         return "";

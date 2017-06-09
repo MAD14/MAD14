@@ -71,6 +71,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
         setContentView(R.layout.activity_new_group_phase2);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_new_group_phase2);
 
         groupName = getIntent().getStringExtra("Name");
         groupAuthor= getIntent().getStringExtra("Author");
@@ -209,7 +210,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 // Insertion of the group in each user
                 Map<String, Object> updates = new HashMap<>();
                 Map<String, Object> groupMap = new HashMap<>();
-                updates.put("Action","ADD-M-"+groupAuthor);
+                updates.put("Action","ADD-M-"+groupAuthor.replace(".",","));
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
 

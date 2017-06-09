@@ -58,6 +58,7 @@ public class AddNewMembersToGroup extends AppCompatActivity {
         setContentView(R.layout.activity_add_new_members_to_group);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        this.setTitle(R.string.title_activity_add_members_to_group);
 
         // Control internet connection
         if (!isNetworkConnected()) Toast.makeText(this,getString(R.string.no_network_connection),Toast.LENGTH_LONG).show();
@@ -276,8 +277,8 @@ public class AddNewMembersToGroup extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 Map<String, Object> updates1 = new HashMap<>();
 
-                if (friends_added.size() > 1){updates1.put("Action","ADD-M-"+userF.getEmail());}
-                else{updates1.put("Action","ADD-M-"+userF.getEmail()+"-"+friends_added.get(0));}
+                if (friends_added.size() > 1){updates1.put("Action","ADD-M-"+userF.getEmail().replace(".",","));}
+                else{updates1.put("Action","ADD-M-"+userF.getEmail().replace(".",",")+"-"+friends_added.get(0));}
                 updates1.put("Value",Math.random());
                 updates1.put("Name",groupName);
                 updates1.put("Sound","True");
