@@ -316,10 +316,10 @@ public class ExpenseCreation extends AppCompatActivity implements View.OnClickLi
 
                                     Map<String, Object> updates1 = new HashMap<>();
 
-                                    updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail()+"-"+et_name.getText().toString());
+                                    updates1.put("Action","ADD-E-"+auth.getCurrentUser().getEmail().replace(".",",")+"-"+et_name.getText().toString());
 
                                     updates1.put("Value", Math.random());
-                                    userRef.child(currentName).child("Expenses").child(IDGroup).updateChildren(updates1);
+                                    userRef.child(currentName).child("Not").child(IDGroup).updateChildren(updates1);
 
                                     Map<String, Object> creditorMap = new HashMap<>();
 

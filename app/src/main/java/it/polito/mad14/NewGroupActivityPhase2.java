@@ -208,7 +208,7 @@ public class NewGroupActivityPhase2 extends AppCompatActivity  implements View.O
                 // Insertion of the group in each user
                 Map<String, Object> updates = new HashMap<>();
                 Map<String, Object> groupMap = new HashMap<>();
-                updates.put("Action","ADD-M-"+groupAuthor);
+                updates.put("Action","ADD-M-"+groupAuthor.replace(".",","));
                 updates.put("Name",groupName);
                 updates.put("Value",Math.random());
 
