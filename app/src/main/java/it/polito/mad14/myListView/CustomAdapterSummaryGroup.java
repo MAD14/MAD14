@@ -22,6 +22,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -174,12 +176,12 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                 dialogAlert.setMessage(R.string.settle_expense);
                 dialogAlert.setPositiveButton("OK", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-
                         // check su debitor and creditor: if me=creditor no ACK if me = debitor waiting ACK
 
                         if (cd) {
-                            sender = summaryList.get(position).getEmail();
-                            receiver = user;
+                            //notifica a chi da i soldi : pagamento confermato --> quaccky deve ricevere "pagamento coonfermato"
+                            sender = summaryList.get(position).getEmail();//chi da i soldi
+                            receiver = user; //chi riceve i soldi
                             // controllare anche nei pending nel caso ci sia da eliminare
                             DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/debits");
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -238,6 +240,12 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                             //sender = data.child("Sender").getValue().toString();
                                             DatabaseReference senderRef = database.getReference("users/"
                                                     + sender + "/groups/" + IDGroup + "/Debit");
+                                            DatabaseReference senderNot = database.getReference("users/"
+                                                    + sender + "/Not/" + IDGroup);
+                                            Map<String, Object> updates = new HashMap<>();
+                                            updates.put("Action","PAY-CONF-"+receiver.replace(".",","));
+                                            updates.put("Value",Math.random());
+                                            senderNot.updateChildren(updates);
                                             senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -291,7 +299,6 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                 }
                             });
                         }else{
-
                             dataref=database.getReference("groups/"+IDGroup+"/PendingPayment");
                             flag2=false;
                             dataref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -327,6 +334,12 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
                     }
                 });
+                DatabaseReference receriverNot = database.getReference("users/"
+                        + receiver + "/Not/" + IDGroup);
+                Map<String, Object> updates = new HashMap<>();
+                updates.put("Action","PAY-REQ-"+sender.replace(".",","));
+                updates.put("Value",Math.random());
+                receriverNot.updateChildren(updates);
                 AlertDialog alert = dialogAlert.create();
                 alert.show();
 
