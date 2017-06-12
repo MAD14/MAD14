@@ -142,6 +142,7 @@
     <string name="settle_expense">Do you want to settle this operation?</string>
     <string name="confirm_user_payment">Waiting for the confirm of the other user</string>
     <string name="wait_confirm">The other user hasn\'t confirm yet. Please wait the confirmation</string>
+    <string name="wait_for_confirm">Wait confirm</string>
 
     <string name="currency">Currency</string>
     <string name="default_currency">€</string>

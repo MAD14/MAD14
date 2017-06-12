@@ -180,6 +180,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
                         if (cd) {
                             //notifica a chi da i soldi : pagamento confermato --> sender deve ricevere "il receiver conferma il pagamento"
+
                             sender = summaryList.get(position).getEmail();//chi da i soldi
                             receiver = user; //chi riceve i soldi
                             System.out.println("sender: "+sender+" - receiver: "+receiver);
@@ -301,6 +302,10 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                 }
                             });
                         }else{
+                            holder.button.setText(R.string.wait_for_confirm);
+                            holder.button.setTextColor(context.getResources().getColor(R.color.darkgrey));
+                            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightgrey));
+
                             dataref=database.getReference("groups/"+IDGroup+"/PendingPayment");
                             flag2=false;
                             dataref.addListenerForSingleValueEvent(new ValueEventListener() {
