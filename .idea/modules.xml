@@ -2,14 +2,11 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/MAD14.iml" filepath="$PROJECT_DIR$/MAD14.iml" />
       <module fileurl="file://$PROJECT_DIR$/MAD14-final-finish.iml" filepath="$PROJECT_DIR$/MAD14-final-finish.iml" />
       <module fileurl="file://$PROJECT_DIR$/MAD14-screenshot.iml" filepath="$PROJECT_DIR$/MAD14-screenshot.iml" />
       <module fileurl="file://$PROJECT_DIR$/MAD14_definitivo3.iml" filepath="$PROJECT_DIR$/MAD14_definitivo3.iml" />
       <module fileurl="file://$PROJECT_DIR$/MAD14_final.iml" filepath="$PROJECT_DIR$/MAD14_final.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

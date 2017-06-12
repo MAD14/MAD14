@@ -184,6 +184,8 @@
     <string name="removed">is removed</string>
     <string name="infoMod">Information has been modified</string>
     <string name="expMod">has been modified</string>
+    <string name="payReq">is paying</string>
+    <string name="payConf">confirmed payment</string>
 
 
 

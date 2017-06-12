@@ -179,9 +179,10 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                         // check su debitor and creditor: if me=creditor no ACK if me = debitor waiting ACK
 
                         if (cd) {
-                            //notifica a chi da i soldi : pagamento confermato --> quaccky deve ricevere "pagamento coonfermato"
+                            //notifica a chi da i soldi : pagamento confermato --> sender deve ricevere "il receiver conferma il pagamento"
                             sender = summaryList.get(position).getEmail();//chi da i soldi
                             receiver = user; //chi riceve i soldi
+                            System.out.println("sender: "+sender+" - receiver: "+receiver);
                             // controllare anche nei pending nel caso ci sia da eliminare
                             DatabaseReference myRef = database.getReference("groups/" + IDGroup + "/debits");
                             myRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -246,6 +247,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                             updates.put("Action","PAY-CONF-"+receiver.replace(".",","));
                                             updates.put("Value",Math.random());
                                             senderNot.updateChildren(updates);
+                                            System.out.println("Confermo il tuo pagamento");
                                             senderRef.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
@@ -305,7 +307,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
                                     for(DataSnapshot data: dataSnapshot.getChildren()){
-                                        if (data.child("Creditor").getValue().toString().equals(name) &&
+                                         if (data.child("Creditor").getValue().toString().equals(name) &&
                                                 data.child("Debitor").getValue().toString().equals(user)){
                                             flag2=true;
                                             break;
@@ -327,19 +329,21 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
                                 }
                             });
+                            sender = summaryList.get(position).getEmail();//chi da i soldi
+                            receiver = user;//chi riceve i soldi
+                            System.out.println("sender: "+sender+" - receiver: "+receiver);
 
-
-
+                            DatabaseReference receriverNot = database.getReference("users/"
+                                    + sender + "/Not/" + IDGroup);
+                            Map<String, Object> updates = new HashMap<>();
+                            updates.put("Action","PAY-REQ-"+receiver.replace(".",","));
+                            updates.put("Value",Math.random());
+                            receriverNot.updateChildren(updates);
+                            System.out.println("Chiedo di confermare il mio pagamento");
                         }
 
                     }
                 });
-                DatabaseReference receriverNot = database.getReference("users/"
-                        + receiver + "/Not/" + IDGroup);
-                Map<String, Object> updates = new HashMap<>();
-                updates.put("Action","PAY-REQ-"+sender.replace(".",","));
-                updates.put("Value",Math.random());
-                receriverNot.updateChildren(updates);
                 AlertDialog alert = dialogAlert.create();
                 alert.show();
 

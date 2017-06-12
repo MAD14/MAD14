@@ -60,7 +60,7 @@ public class FirebaseBackgroundService extends Service {
                     public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                         if(readMembers >= numberGroups){
                             String actionman = dataSnapshot.child("Action").getValue().toString().split("-")[2];
-                            if (!actionman.equals(userMail)){
+                            if (!actionman.equals(userMail.replace(".",","))){
                                 groupName = dataSnapshot.child("Name").getValue().toString();
                                 groupID = dataSnapshot.getKey().toString();
                                 String msg = getResources().getString(R.string.new_group)+" "+groupName;
@@ -83,7 +83,7 @@ public class FirebaseBackgroundService extends Service {
                             groupID = dataSnapshot.getKey().toString();
                             groupName = dataSnapshot.child("Name").getValue().toString();
                             notificationSound = dataSnapshot.child("Sound").getValue().toString();
-                            if (info[1].equals("M") && (info[0].equals("ADD") || info[0].equals("DEL")) && info.length == 4){
+                            if ((info[1].equals("M") && (info[0].equals("ADD") || info[0].equals("DEL")) && info.length == 4) || (info[0].equals("PAY"))){
                                 DatabaseReference dr;
                                 if(info[0].equals("ADD")){dr = database.getReference("users/"+info[3].replace(".",","));}
                                 else{dr = database.getReference("users/"+info[2].replace(".",","));}
@@ -186,6 +186,15 @@ public class FirebaseBackgroundService extends Service {
                 }
                 else{
                     return info[3]+" "+getResources().getString(R.string.expMod);
+                }
+            case "PAY":
+                if(info[1].equals("CONF")){
+                    System.out.println(nameUser+" "+surenameUser+"pagamento confermato");
+                    return nameUser+" "+surenameUser+" "+getResources().getString(R.string.payConf);
+                }
+                else{
+                    System.out.println(nameUser+" "+surenameUser+"chiede di pagare");
+                    return nameUser+" "+surenameUser+" "+getResources().getString(R.string.payReq);
                 }
         }
         return "";

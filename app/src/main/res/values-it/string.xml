@@ -189,5 +189,7 @@
     <string name="removed">è stato rimosso</string>
     <string name="infoMod">Modifiche nelle informazioni</string>
     <string name="expMod">è stato modificato</string>
+    <string name="payReq">ha pagato</string>
+    <string name="payConf">conferma il pagamento</string>
 
 </resources>
