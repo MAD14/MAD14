@@ -148,6 +148,8 @@
     <string name="settle_expense">Vuoi saldare questa operazione?</string>
     <string name="confirm_user_payment">In attesa della conferma dell\'altro utente </string>
     <string name="wait_confirm">L\'altro utente non ha ancora confermato. Attesa della sua conferma</string>
+    <string name="wait_for_confirm">Attendi conferma</string>
+
 
 
     <string name="currency">Valuta</string>
