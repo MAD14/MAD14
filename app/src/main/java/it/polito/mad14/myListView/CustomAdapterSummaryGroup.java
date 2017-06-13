@@ -303,6 +303,10 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                 }
                             });
                         }else{
+                            holder.button.setText(R.string.wait_for_confirm);
+                            holder.button.setTextColor(context.getResources().getColor(R.color.darkgrey));
+                            holder.button.setBackgroundColor(context.getResources().getColor(R.color.lightgrey));
+
                             dataref=database.getReference("groups/"+IDGroup+"/PendingPayment");
                             flag2=false;
                             dataref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -321,7 +325,6 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                     if(!flag2){
                                         dataref.child(name+"*"+user).child("Creditor").setValue(name);
                                         dataref.child(name+"*"+user).child("Debitor").setValue(user);
-                                        dataref.child(name+"*"+user).child("Money").setValue(val);
                                         // serve solo per mettere ! per i creditori...nelle card biognerà poi controllare che se è nella lista si deve attivare il !
                                         Toast.makeText(context, R.string.confirm_user_payment, Toast.LENGTH_SHORT).show();
                                     }else{
