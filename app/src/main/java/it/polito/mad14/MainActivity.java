@@ -412,9 +412,12 @@ public class MainActivity extends AppCompatActivity {
 
 
                     ((CustomAdapter) list.getAdapter()).setGroupList(groupsList);
-                    if (list.getAdapter().getCount() == 0) {
+
+                    if (list.getAdapter().getCount() == 0)
                         noGroup_textView.setVisibility(View.VISIBLE);
-                    }
+                    else
+                        noGroup_textView.setVisibility(View.GONE);
+
                     list.invalidate();
                     list.requestLayout();
                 }
@@ -563,9 +566,10 @@ public class MainActivity extends AppCompatActivity {
                                     summaryList = new ArrayList<>(tot.values());
                                     list_summary.setAdapter(new CustomAdapterSummary(getContext(), summaryList, selectedCurrency));
 
-                                    if (list_summary.getAdapter().getCount() == 0) {
+                                    if (list_summary.getAdapter().getCount() == 0)
                                         noSummary_textView.setVisibility(View.VISIBLE);
-                                    }
+                                    else
+                                        noSummary_textView.setVisibility(View.GONE);
                                 }
 
                                 @Override
@@ -633,9 +637,11 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                         ((CustomAdapterContacts) list_contact.getAdapter()).setContactsList(contactsList);
-                        if (list_contact.getAdapter().getCount() == 0) {
+
+                        if (list_contact.getAdapter().getCount() == 0)
                             noContact_textView.setVisibility(View.VISIBLE);
-                        }
+                        else
+                            noContact_textView.setVisibility(View.GONE);
 
                         list_contact.invalidate();
                         list_contact.requestLayout();
