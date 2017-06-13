@@ -89,7 +89,7 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
             holder.button = (Button) convertView.findViewById(R.id.button_payment);
             holder.button.setTag(position);
             convertView.setTag(holder);
-            } else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
@@ -180,7 +180,6 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
 
                         if (cd) {
                             //notifica a chi da i soldi : pagamento confermato --> sender deve ricevere "il receiver conferma il pagamento"
-
                             sender = summaryList.get(position).getEmail();//chi da i soldi
                             receiver = user; //chi riceve i soldi
                             System.out.println("sender: "+sender+" - receiver: "+receiver);
@@ -201,16 +200,18 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                                             // remove data from Group branch
                                             data.getRef().removeValue();
 
-                                            //delte also from pending if exist
-                                            DatabaseReference pending = database.getReference("groups/"+IDGroup+"/PendingPayment");
+                                            //delete also from pending if exist
+                                            final DatabaseReference pending = database.getReference("groups/"+IDGroup+"/PendingPayment");
                                             pending.addListenerForSingleValueEvent(new ValueEventListener() {
                                                 @Override
                                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                                                        if(data.child("Creditor").getValue().toString().equals(user) && data.child("Debitor").getValue().toString().equals(name)){
-                                                            data.getRef().removeValue();
-                                                            break;
-                                                        }
+                                                    Log.e("verifica","sono nell'if1 ");
+                                                    Log.e("boolean",String.valueOf(dataSnapshot.hasChild(name+"*"+user)));
+                                                    Log.e("name",name);
+                                                    Log.e("user",user);
+                                                    if(dataSnapshot.hasChild(user+"*"+name)){
+                                                        Log.e("verifica","sono nell'if 2");
+                                                        pending.child(user+"*"+name).removeValue();
                                                     }
                                                 }
 
@@ -311,17 +312,19 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
                             dataref.addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(DataSnapshot dataSnapshot) {
-                                    for(DataSnapshot data: dataSnapshot.getChildren()){
-                                         if (data.child("Creditor").getValue().toString().equals(name) &&
-                                                data.child("Debitor").getValue().toString().equals(user)){
-                                            flag2=true;
-                                            break;
-                                        }
+                                    if(dataSnapshot.hasChild(name+"*"+user)){
+                                        flag2=true;
                                     }
+//                                    for(DataSnapshot data: dataSnapshot.getChildren()){
+//                                         if (data.child("Creditor").getValue().toString().equals(name) &&
+//                                                data.child("Debitor").getValue().toString().equals(user)){
+//                                            flag2=true;
+//                                            break;
+//                                        }
+//                                    }
                                     if(!flag2){
-                                        dataref.child("Creditor").setValue(name);
-                                        dataref.child("Debitor").setValue(user);
-                                        dataref.child("Money").setValue(val);
+                                        dataref.child(name+"*"+user).child("Creditor").setValue(name);
+                                        dataref.child(name+"*"+user).child("Debitor").setValue(user);
                                         // serve solo per mettere ! per i creditori...nelle card biognerà poi controllare che se è nella lista si deve attivare il !
                                         Toast.makeText(context, R.string.confirm_user_payment, Toast.LENGTH_SHORT).show();
                                     }else{
@@ -369,3 +372,4 @@ public class CustomAdapterSummaryGroup extends BaseAdapter {
         this.summaryList = summaryList;
     }
 }
+

@@ -18,6 +18,7 @@
         style="@android:style/Widget.ProgressBar.Large"
         android:layout_centerInParent="true"
         android:visibility="gone"
+        android:translationZ="2dp"
         />
 
     <EditText android:id="@+id/expense_name"
